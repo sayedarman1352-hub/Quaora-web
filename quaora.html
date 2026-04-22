@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUAORA | Summer Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap');
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #E3B778; 
+            background-image: url('image/background.jpeg'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed;
+            margin: 0;
+        }
+        .serif { font-family: 'Playfair Display', serif; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #sideMenu, #cartPanel {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* MODAL MERKEZLEME VE BLUR */
+        .modal-overlay { 
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            z-index: 9999;
+            align-items: center; 
+            justify-content: center; 
+        }
+    </style>
+</head>
+<body>
+
+<div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl transition-all duration-500">
+    <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
+    
+    <div class="mt-8 px-8 flex flex-col h-full"> <div class="mb-8 flex flex-col items-center justify-center group cursor-pointer" onclick="openAuthModal()">
+            <div class="w-14 h-14 rounded-full border-2 border-[#964b00] flex items-center justify-center mb-2 group-hover:bg-[#964b00] group-hover:text-[#FAE29C] transition-all duration-300 shadow-sm">
+                <span class="text-2xl transition-transform group-hover:scale-110">👤</span>
+            </div>
+            <span class="text-[10px] font-black text-[#964b00] uppercase tracking-[0.4em] italic ml-1">Sign In</span>
+        </div>
+
+        <div class="relative mb-8">
+            <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
+            <div class="absolute -bottom-2 left-0 w-12 h-1 bg-[#964b00]/30"></div>
+        </div>
+        
+        <nav class="flex flex-col space-y-4 w-full h-full"> 
+    <a href="quaora.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center">
+        <span class="text-xs mr-2">←</span> MAIN MENU
+    </a>
+    
+    <div class="flex flex-col space-y-3 pt-2">
+        <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
+        
+        <div class="flex flex-col">
+            <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                Collections
+                <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
+            </button>
+            <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
+                <a href="#" class="dq-[#1] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Noir Edit</a>
+                <a href="#" class="dq-[#2] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Sun-Kissed</a>
+                <a href="#" class="dq-[#3] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Velvet Series</a>
+                <a href="#" class="dq-[#4] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Essentials</a>
+            </div>
+        </div>
+
+        <div class="flex flex-col">
+            <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                Swimsuits
+                <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
+            </button>
+            <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
+                <a href="#" class="dq-[#5] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Classic One Piece</a>
+                <a href="#" class="dq-[#6] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Cut-Out Design</a>
+                <a href="#" class="dq-[#7] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Backless Style</a>
+                <a href="#" class="dq-[#8] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Sporty Fit</a>
+            </div>
+        </div>
+
+        <a href="plaj-aksesuarlari.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Tops</a>
+        <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
+        
+        <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+    </div>
+
+    <div class="pt-2">
+        <hr class="border-[#964b00]/10 mb-4">
+        <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
+    </div>
+
+    <div class="mt-auto pt-10 pb-12 w-full">
+        <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
+        <div class="flex flex-col space-y-3 pl-3">
+            <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">INSTAGRAM</a>
+            <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">TIKTOK</a>
+        </div>
+    </div>
+</nav>
+
+<script>
+// Tek bir fonksiyonla tüm açılır menüleri yönetiyoruz
+function toggleMenuSection(sectionId, arrowId) {
+    const content = document.getElementById(sectionId);
+    const arrow = document.getElementById(arrowId);
+    
+    if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+        content.style.maxHeight = '250px'; // İçeriğe göre yükseklik
+        content.style.marginTop = '8px';
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.maxHeight = '0px';
+        content.style.marginTop = '0px';
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+</script>
+</nav>
+
+<script>
+function toggleCollections() {
+    const content = document.getElementById('colItems');
+    const arrow = document.getElementById('colArrow');
+    
+    if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+        content.style.maxHeight = '200px';
+        content.style.marginTop = '8px';
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.maxHeight = '0px';
+        content.style.marginTop = '0px';
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+</script>
+    </div>
+</div>
+
+<div id="cartPanel" class="fixed top-0 right-0 h-full w-0 bg-white z-[101] overflow-x-hidden shadow-2xl flex flex-col">
+    <div class="p-6 flex justify-between items-center border-b">
+        <h2 class="text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
+        <button onclick="toggleCart()" class="text-xl">✕</button>
+    </div>
+    <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4">
+        <p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz henüz boş.</p>
+    </div>
+    <div class="p-6 border-t bg-gray-50">
+        <div class="flex justify-between items-center mb-4">
+            <span class="font-bold uppercase text-xs tracking-widest text-gray-600">Toplam:</span>
+            <span id="cartTotal" class="text-xl font-black text-[#964b00]">₺0,00</span>
+        </div>
+        <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md">SİPARİŞİ TAMAMLA</button>
+    </div>
+</div>
+
+<nav class="flex justify-between items-center p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
+    <div class="flex items-center space-x-6">
+        <button onclick="toggleMenu()" class="flex items-center space-x-3 group focus:outline-none">
+            <div class="space-y-1.5">
+                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
+                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
+                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
+            </div>
+            <span class="text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
+        </button>
+
+        <div class="flex flex-col border-l border-[#964b00]/20 pl-6 cursor-pointer" onclick="window.location.href='quaora.html'">
+            <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none drop-shadow-sm">QUAORA</h1>
+            <p class="text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-14 font-semibold italic">Swimwear</p>
+        </div>
+    </div>
+     
+        <button onclick="toggleCart()" class="text-2xl relative hover:scale-110 transition border-l border-black/10 pl-6 focus:outline-none">
+            🛒
+            <span id="cartCount" class="absolute -top-1 -right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold shadow-sm">0</span>
+        </button>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-16 px-4">
+    <header class="text-center mb-16">
+        <h2 class="text-5xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">Summer Collection</h2>
+        <p class="text-gray-800 mt-4 tracking-[0.3em] uppercase text-sm font-bold bg-white/30 inline-block px-6 py-1 rounded-full shadow-sm border border-white/20">Sezonun En Hit Parçaları</p>
+    </header>
+</main>
+
+<div id="authModal" class="modal-overlay" onclick="if(event.target === this) closeAuthModal()">
+    <div class="bg-white/90 p-8 rounded-[3rem] w-[90%] max-w-md shadow-2xl relative border border-white/50" onclick="event.stopPropagation()">
+        <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black transition-colors">✕</button>
+        
+        <div class="flex justify-center space-x-8 mb-8 border-b border-gray-100 pb-4">
+            <button id="tabLogin" onclick="switchTab('login')" class="text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] transition-all">Giriş Yap</button>
+            <button id="tabRegister" onclick="switchTab('register')" class="text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] transition-all">Kayıt Ol</button>
+        </div>
+
+        <div id="formLogin" class="space-y-4">
+            <input type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input type="password" placeholder="ŞİFRE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <button class="w-full bg-[#964b00] text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-black transition-all">Giriş Yap</button>
+        </div>
+
+        <div id="formRegister" class="space-y-4 hidden">
+            <input type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input type="tel" placeholder="TELEFON NUMARASI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <button class="w-full bg-black text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-[#964b00] transition-all">Hesap Oluştur</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+
+    function toggleMenu() {
+        const menu = document.getElementById("sideMenu");
+        menu.style.width = (menu.style.width === "300px") ? "0" : "300px";
+    }
+
+    function toggleCart() {
+        const panel = document.getElementById("cartPanel");
+        panel.style.width = (panel.style.width === "300px") ? "0" : "300px";
+        if(panel.style.width === "300px") renderCart();
+    }
+
+    function updateCart() {
+        localStorage.setItem('quaora_cart', JSON.stringify(cart));
+        document.getElementById('cartCount').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+    }
+
+    function renderCart() {
+        const items = document.getElementById('cartItems');
+        const totalDisp = document.getElementById('cartTotal');
+        if (cart.length === 0) {
+            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz henüz boş.</p>';
+            totalDisp.innerText = '₺0,00';
+            return;
+        }
+        let total = 0;
+        items.innerHTML = cart.map(item => {
+            total += (item.price * item.qty);
+            return `<div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl shadow-sm border border-black/5">
+                <div><h4 class="font-bold uppercase text-[10px] tracking-tighter">${item.name}</h4><p class="text-[#964b00] font-black italic">₺${item.price.toLocaleString('tr-TR')}</p></div>
+                <button onclick="removeFromCart('${item.name}')" class="text-red-500 font-bold px-2">✕</button></div>`;
+        }).join('');
+        totalDisp.innerText = '₺' + total.toLocaleString('tr-TR');
+    }
+
+    function removeFromCart(name) {
+        cart = cart.filter(item => item.name !== name);
+        updateCart();
+        renderCart();
+    }
+
+    function siparisVer() {
+        if (cart.length === 0) { alert("Sepetiniz boş!"); return; }
+        window.location.href = "https://www.shopier.com/quaora/45868772";
+    }
+
+    // AUTH MODAL FONKSİYONLARI
+    function openAuthModal() {
+        document.getElementById('authModal').style.display = 'flex';
+        toggleMenu(); 
+    }
+
+    function closeAuthModal() {
+        document.getElementById('authModal').style.display = 'none';
+    }
+
+    function switchTab(type) {
+        const loginForm = document.getElementById('formLogin');
+        const registerForm = document.getElementById('formRegister');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+
+        if (type === 'login') {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            tabLogin.className = "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] transition-all";
+            tabRegister.className = "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00]";
+        } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            tabRegister.className = "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] transition-all";
+            tabLogin.className = "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00]";
+        }
+    }
+
+    updateCart();
+</script>
+</body>
+</html>
