@@ -176,34 +176,29 @@
         </div>
 
         <div id="formRegister" class="space-y-4 hidden">
-    <input id="regUser" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-    <input id="regEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-    <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-    <input id="regPhone" type="tel" placeholder="TELEFON NUMARASI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-    
-    <div class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-[#964b00] transition-colors group cursor-pointer relative" id="photoDropArea">
-    <input id="regPhoto" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="showPhotoSelected()">
-    <div class="text-center" id="photoStatus">
-        <span class="text-2xl mb-1 block group-hover:scale-110 transition-transform">📸</span>
-        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest group-hover:text-[#964b00]">Profil Fotoğrafı Yükle</p>
+            <input id="regUser" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regPhone" type="tel" placeholder="TELEFON NUMARASI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            
+            <div class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-[#964b00] transition-colors group cursor-pointer relative" id="photoDropArea">
+                <input id="regPhoto" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="showPhotoSelected()">
+                <div class="text-center" id="photoStatus">
+                    <span class="text-2xl mb-1 block group-hover:scale-110 transition-transform">📸</span>
+                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest group-hover:text-[#964b00]">Profil Fotoğrafı Yükle</p>
+                </div>
+            </div>
+
+            <button onclick="handleRegister()" class="w-full bg-black text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-[#964b00] transition-all">Hesap Oluştur</button>
+        </div>
     </div>
 </div>
-
-    <button onclick="handleRegister()" class="w-full bg-black text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-[#964b00] transition-all">Hesap Oluştur</button>
-</div>
-    </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- FIREBASE AYARLARI ---
     const firebaseConfig = {
         apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
         authDomain: "quaora-web.firebaseapp.com",
@@ -214,12 +209,11 @@
         measurementId: "G-0V1BRZ8T51"
     };
 
-    // Firebase Başlat
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- SEPET SİSTEMİ ---
+    // --- SEPET VE MENÜ ---
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
 
     window.toggleMenu = () => {
@@ -247,9 +241,10 @@
         if(panel.style.width === "300px") renderCart();
     };
 
-    const updateCart = () => {
+    window.updateCart = () => {
         localStorage.setItem('quaora_cart', JSON.stringify(cart));
-        document.getElementById('cartCount').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+        const count = cart.reduce((sum, item) => sum + item.qty, 0);
+        document.getElementById('cartCount').innerText = count;
     };
 
     const renderCart = () => {
@@ -272,7 +267,7 @@
 
     window.removeFromCart = (name) => {
         cart = cart.filter(item => item.name !== name);
-        updateCart();
+        window.updateCart();
         renderCart();
     };
 
@@ -281,7 +276,7 @@
         window.location.href = "https://www.shopier.com/quaora/45868772";
     };
 
-    // --- MODAL VE TAB KONTROLLERİ ---
+    // --- MODAL & TAB ---
     window.openAuthModal = () => {
         document.getElementById('authModal').style.display = 'flex';
         const menu = document.getElementById("sideMenu");
@@ -311,44 +306,46 @@
         }
     };
 
-    // --- FIREBASE İŞLEMLERİ ---
+    // --- FIREBASE AUTH & FIRESTORE ---
+    window.handleRegister = async () => {
+        const username = document.getElementById('regUser').value;
+        const email = document.getElementById('regEmail').value;
+        const phone = document.getElementById('regPhone').value;
+        const pass = document.getElementById('regPass').value;
+        const photoFile = document.getElementById('regPhoto').files[0];
 
-   window.handleRegister = async () => {
-    const username = document.getElementById('regUser').value;
-    const email = document.getElementById('regEmail').value;
-    const phone = document.getElementById('regPhone').value; // Yeni alan
-    const pass = document.getElementById('regPass').value;
-    const photoFile = document.getElementById('regPhoto').files[0];
+        if(!username || !email || !pass || !phone) return alert("Boş alan bırakma kanka!");
 
-    if(!username || !email || !pass || !phone) return alert("Boş alan bırakma kanka!");
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
 
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-        const user = userCredential.user;
+            let photoData = "";
+            if(photoFile) {
+                const reader = new FileReader();
+                photoData = await new Promise(resolve => {
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(photoFile);
+                });
+            }
 
-        let photoData = "";
-        if(photoFile) {
-            const reader = new FileReader();
-            photoData = await new Promise(resolve => {
-                reader.onload = e => resolve(e.target.result);
-                reader.readAsDataURL(photoFile);
+            await setDoc(doc(db, "users", user.uid), {
+                username: username,
+                email: email,
+                phone: phone,
+                photo: photoData
             });
+
+            alert("Kayıt başarılı! Hoş geldin " + username);
+            window.switchTab('login');
+        } catch (error) {
+            if (error.code === 'auth/email-already-in-use') {
+                alert("Bu e-posta zaten kullanımda kanka!");
+            } else {
+                alert("Hata: " + error.message);
+            }
         }
-
-        // Firestore'a telefon numarasını da ekliyoruz
-        await setDoc(doc(db, "users", user.uid), {
-            username: username,
-            email: email,
-            phone: phone, // Database'de "phone" adıyla göreceksin
-            photo: photoData
-        });
-
-        alert("Kayıt başarılı! Hoş geldin " + username);
-        window.switchTab('login');
-    } catch (error) {
-        alert("Hata: " + error.message);
-    }
-};
+    };
 
     window.handleLogin = async () => {
         const email = document.getElementById('loginEmail').value;
@@ -373,8 +370,8 @@
         }
     };
 
-    // Başlangıç ayarları
-    updateCart();
+    // Sayfa yüklendiğinde sepeti güncelle
+    window.updateCart();
 </script>
 </body>
 </html>
