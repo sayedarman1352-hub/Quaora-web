@@ -179,6 +179,7 @@
     <input id="regUser" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
     <input id="regEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
     <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+    <input id="regPhone" type="tel" placeholder="TELEFON NUMARASI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
     
     <div class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-[#964b00] transition-colors group cursor-pointer relative" id="photoDropArea">
     <input id="regPhoto" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="showPhotoSelected()">
@@ -312,43 +313,42 @@
 
     // --- FIREBASE İŞLEMLERİ ---
 
-    window.handleRegister = async () => {
-        const username = document.getElementById('regUser').value;
-        const email = document.getElementById('regEmail').value;
-        const pass = document.getElementById('regPass').value;
-        const photoFile = document.getElementById('regPhoto').files[0];
+   window.handleRegister = async () => {
+    const username = document.getElementById('regUser').value;
+    const email = document.getElementById('regEmail').value;
+    const phone = document.getElementById('regPhone').value; // Yeni alan
+    const pass = document.getElementById('regPass').value;
+    const photoFile = document.getElementById('regPhoto').files[0];
 
-        if(!username || !email || !pass) return alert("Boş alan bırakma kanka!");
+    if(!username || !email || !pass || !phone) return alert("Boş alan bırakma kanka!");
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-            const user = userCredential.user;
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
 
-            let photoData = "";
-            if(photoFile) {
-                const reader = new FileReader();
-                photoData = await new Promise(resolve => {
-                    reader.onload = e => resolve(e.target.result);
-                    reader.readAsDataURL(photoFile);
-                });
-            }
-
-            await setDoc(doc(db, "users", user.uid), {
-                username: username,
-                email: email,
-                photo: photoData
+        let photoData = "";
+        if(photoFile) {
+            const reader = new FileReader();
+            photoData = await new Promise(resolve => {
+                reader.onload = e => resolve(e.target.result);
+                reader.readAsDataURL(photoFile);
             });
-
-            alert("Kayıt başarılı! Hoş geldin " + username);
-            window.switchTab('login');
-        } catch (error) {
-            if (error.code === 'auth/email-already-in-use') {
-                alert("Bu e-posta zaten kullanımda kanka!");
-            } else {
-                alert("Hata: " + error.message);
-            }
         }
-    };
+
+        // Firestore'a telefon numarasını da ekliyoruz
+        await setDoc(doc(db, "users", user.uid), {
+            username: username,
+            email: email,
+            phone: phone, // Database'de "phone" adıyla göreceksin
+            photo: photoData
+        });
+
+        alert("Kayıt başarılı! Hoş geldin " + username);
+        window.switchTab('login');
+    } catch (error) {
+        alert("Hata: " + error.message);
+    }
+};
 
     window.handleLogin = async () => {
         const email = document.getElementById('loginEmail').value;
