@@ -26,7 +26,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        #sideMenu, #cartPanel {
+        #sideMenu, #cartPanel, #profileSidePanel {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -48,7 +48,7 @@
     <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
     
     <div class="mt-8 px-8 flex flex-col h-full"> 
-        <div class="mb-8 flex flex-col items-center justify-center group cursor-pointer" onclick="openAuthModal()">
+        <div id="userActionWrapper" class="mb-8 flex flex-col items-center justify-center group cursor-pointer" onclick="openAuthModal()">
             <div id="userPhotoContainer" class="w-14 h-14 rounded-full border-2 border-[#964b00] flex items-center justify-center mb-2 group-hover:bg-[#964b00] group-hover:text-[#FAE29C] transition-all duration-300 shadow-sm overflow-hidden">
                 <span id="userDefaultIcon" class="text-2xl transition-transform group-hover:scale-110">👤</span>
             </div>
@@ -113,14 +113,35 @@
     </div>
 </div>
 
+<div id="profileSidePanel" class="fixed top-0 left-0 h-full w-0 bg-white z-[110] overflow-x-hidden shadow-2xl flex flex-col border-r border-black/5">
+    <div class="p-8 flex justify-between items-center border-b border-gray-50">
+        <h2 class="text-xl font-black serif text-[#964b00] tracking-widest uppercase">PROFİLİM</h2>
+        <button onclick="closeProfilePanel()" class="text-xl hover:rotate-90 transition-transform">✕</button>
+    </div>
+    <div class="p-8 space-y-8 overflow-y-auto flex-grow">
+        <div class="flex flex-col items-center">
+            <div id="panelUserPhoto" class="w-24 h-24 rounded-full border-4 border-[#FAE29C] shadow-lg overflow-hidden mb-4 bg-gray-50 flex items-center justify-center"><span class="text-4xl">👤</span></div>
+            <p id="panelUserName" class="font-black text-[#964b00] uppercase tracking-widest">KULLANICI</p>
+        </div>
+        <div class="space-y-4">
+            <input id="updUser" type="text" placeholder="AD SOYAD" class="w-full p-4 rounded-2xl bg-gray-50 border-none outline-none text-xs font-bold uppercase tracking-widest">
+            <input id="updPhone" type="tel" placeholder="TELEFON" class="w-full p-4 rounded-2xl bg-gray-50 border-none outline-none text-xs font-bold uppercase tracking-widest">
+            <div class="relative border-2 border-dashed border-gray-100 rounded-2xl p-4 text-center cursor-pointer">
+                <input id="updPhoto" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="showUpdPhotoSelected()">
+                <div id="updPhotoStatus" class="text-[9px] font-black text-gray-400 uppercase">Fotoğrafı Güncelle</div>
+            </div>
+        </div>
+        <button onclick="handleUpdateProfile()" class="w-full bg-[#964b00] text-white py-4 rounded-2xl font-black tracking-widest uppercase text-[10px] shadow-xl hover:bg-black transition-all">GÜNCELLE</button>
+        <button onclick="handleLogout()" class="w-full border-2 border-red-50 text-red-500 py-3 rounded-2xl font-black tracking-widest uppercase text-[10px] hover:bg-red-500 hover:text-white transition-all">ÇIKIŞ<button>
+    </div>
+</div>
+
 <div id="cartPanel" class="fixed top-0 right-0 h-full w-0 bg-white z-[101] overflow-x-hidden shadow-2xl flex flex-col">
     <div class="p-6 flex justify-between items-center border-b">
         <h2 class="text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
         <button onclick="toggleCart()" class="text-xl">✕</button>
     </div>
-    <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4">
-        <p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz henüz boş.</p>
-    </div>
+    <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4"></div>
     <div class="p-6 border-t bg-gray-50">
         <div class="flex justify-between items-center mb-4">
             <span class="font-bold uppercase text-xs tracking-widest text-gray-600">Toplam:</span>
@@ -140,16 +161,13 @@
             </div>
             <span class="text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
         </button>
-
         <div class="flex flex-col border-l border-[#964b00]/20 pl-6 cursor-pointer" onclick="window.location.href='index.html'">
-            <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none drop-shadow-sm">QUAORA</h1>
+            <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
             <p class="text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-14 font-semibold italic">Swimwear</p>
         </div>
     </div>
-     
-    <button onclick="toggleCart()" class="text-2xl relative hover:scale-110 transition border-l border-black/10 pl-6 focus:outline-none">
-        🛒
-        <span id="cartCount" class="absolute -top-1 -right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold shadow-sm">0</span>
+    <button onclick="toggleCart()" class="text-2xl relative border-l border-black/10 pl-6 focus:outline-none">
+        🛒 <span id="cartCount" class="absolute -top-1 -right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
     </button>
 </nav>
 
@@ -162,33 +180,25 @@
 
 <div id="authModal" class="modal-overlay" onclick="if(event.target === this) closeAuthModal()">
     <div class="bg-white/90 p-8 rounded-[3rem] w-[90%] max-w-md shadow-2xl relative border border-white/50" onclick="event.stopPropagation()">
-        <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black transition-colors">✕</button>
-        
+        <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black">✕</button>
         <div class="flex justify-center space-x-8 mb-8 border-b border-gray-100 pb-4">
-            <button id="tabLogin" onclick="switchTab('login')" class="text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] transition-all">Giriş Yap</button>
-            <button id="tabRegister" onclick="switchTab('register')" class="text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] transition-all">Kayıt Ol</button>
+            <button id="tabLogin" onclick="switchTab('login')" class="text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all">Giriş Yap</button>
+            <button id="tabRegister" onclick="switchTab('register')" class="text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1 transition-all">Kayıt Ol</button>
         </div>
-
         <div id="formLogin" class="space-y-4">
-            <input id="loginEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="loginPass" type="password" placeholder="ŞİFRE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="loginEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="loginPass" type="password" placeholder="ŞİFRE" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
             <button onclick="handleLogin()" class="w-full bg-[#964b00] text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-black transition-all">Giriş Yap</button>
         </div>
-
         <div id="formRegister" class="space-y-4 hidden">
-            <input id="regUser" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="regEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="regPhone" type="tel" placeholder="TELEFON NUMARASI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
-            
-            <div class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-[#964b00] transition-colors group cursor-pointer relative" id="photoDropArea">
+            <input id="regUser" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regPhone" type="tel" placeholder="TELEFON" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <div class="relative border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center cursor-pointer">
                 <input id="regPhoto" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="showPhotoSelected()">
-                <div class="text-center" id="photoStatus">
-                    <span class="text-2xl mb-1 block group-hover:scale-110 transition-transform">📸</span>
-                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest group-hover:text-[#964b00]">Profil Fotoğrafı Yükle</p>
-                </div>
+                <div id="photoStatus" class="text-[9px] font-black text-gray-400 uppercase">Profil Fotoğrafı Seç</div>
             </div>
-
             <button onclick="handleRegister()" class="w-full bg-black text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-[#964b00] transition-all">Hesap Oluştur</button>
         </div>
     </div>
@@ -196,8 +206,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -213,9 +223,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- SEPET VE MENÜ ---
-    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
-
+    // --- MENÜ VE PANEL FONKSİYONLARI ---
     window.toggleMenu = () => {
         const menu = document.getElementById("sideMenu");
         menu.style.width = (menu.style.width === "300px") ? "0" : "300px";
@@ -235,57 +243,19 @@
         }
     };
 
-    window.toggleCart = () => {
-        const panel = document.getElementById("cartPanel");
-        panel.style.width = (panel.style.width === "300px") ? "0" : "300px";
-        if(panel.style.width === "300px") renderCart();
+    window.openProfilePanel = () => {
+        document.getElementById("profileSidePanel").style.width = (window.innerWidth < 768) ? "100%" : "380px";
+        document.getElementById("sideMenu").style.width = "0";
     };
 
-    window.updateCart = () => {
-        localStorage.setItem('quaora_cart', JSON.stringify(cart));
-        const count = cart.reduce((sum, item) => sum + item.qty, 0);
-        document.getElementById('cartCount').innerText = count;
-    };
+    window.closeProfilePanel = () => { document.getElementById("profileSidePanel").style.width = "0"; };
 
-    const renderCart = () => {
-        const items = document.getElementById('cartItems');
-        const totalDisp = document.getElementById('cartTotal');
-        if (cart.length === 0) {
-            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz henüz boş.</p>';
-            totalDisp.innerText = '₺0,00';
-            return;
-        }
-        let total = 0;
-        items.innerHTML = cart.map(item => {
-            total += (item.price * item.qty);
-            return `<div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl shadow-sm border border-black/5">
-                <div><h4 class="font-bold uppercase text-[10px] tracking-tighter">${item.name}</h4><p class="text-[#964b00] font-black italic">₺${item.price.toLocaleString('tr-TR')}</p></div>
-                <button onclick="removeFromCart('${item.name}')" class="text-red-500 font-bold px-2">✕</button></div>`;
-        }).join('');
-        totalDisp.innerText = '₺' + total.toLocaleString('tr-TR');
-    };
-
-    window.removeFromCart = (name) => {
-        cart = cart.filter(item => item.name !== name);
-        window.updateCart();
-        renderCart();
-    };
-
-    window.siparisVer = () => {
-        if (cart.length === 0) { alert("Sepetiniz boş!"); return; }
-        window.location.href = "https://www.shopier.com/quaora/45868772";
-    };
-
-    // --- MODAL & TAB ---
     window.openAuthModal = () => {
         document.getElementById('authModal').style.display = 'flex';
-        const menu = document.getElementById("sideMenu");
-        if(menu.style.width === "300px") window.toggleMenu();
+        toggleMenu();
     };
 
-    window.closeAuthModal = () => {
-        document.getElementById('authModal').style.display = 'none';
-    };
+    window.closeAuthModal = () => { document.getElementById('authModal').style.display = 'none'; };
 
     window.switchTab = (type) => {
         const isLogin = type === 'login';
@@ -295,81 +265,76 @@
         document.getElementById('tabRegister').className = !isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
     };
 
-    window.showPhotoSelected = () => {
-        const input = document.getElementById('regPhoto');
-        const statusDiv = document.getElementById('photoStatus');
-        const dropArea = document.getElementById('photoDropArea');
-        if (input.files && input.files[0]) {
-            dropArea.classList.remove('border-gray-200');
-            dropArea.classList.add('border-green-500', 'bg-green-50');
-            statusDiv.innerHTML = `<span class="text-2xl mb-1 block">✅</span><p class="text-[9px] font-black text-green-600 uppercase">FOTOĞRAF SEÇİLDİ</p>`;
-        }
-    };
-
-    // --- FIREBASE AUTH & FIRESTORE ---
+    // --- FIREBASE AUTH ---
     window.handleRegister = async () => {
-        const username = document.getElementById('regUser').value;
-        const email = document.getElementById('regEmail').value;
-        const phone = document.getElementById('regPhone').value;
-        const pass = document.getElementById('regPass').value;
-        const photoFile = document.getElementById('regPhoto').files[0];
-
-        if(!username || !email || !pass || !phone) return alert("Boş alan bırakma");
-
+        const u = document.getElementById('regUser').value, e = document.getElementById('regEmail').value, p = document.getElementById('regPass').value, ph = document.getElementById('regPhone').value, pf = document.getElementById('regPhoto').files[0];
+        if(!u || !e || !p) return alert("Eksikleri doldur kanka!");
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-            const user = userCredential.user;
-
-            let photoData = "";
-            if(photoFile) {
-                const reader = new FileReader();
-                photoData = await new Promise(resolve => {
-                    reader.onload = e => resolve(e.target.result);
-                    reader.readAsDataURL(photoFile);
-                });
-            }
-
-            await setDoc(doc(db, "users", user.uid), {
-                username: username,
-                email: email,
-                phone: phone,
-                photo: photoData
-            });
-
-            alert("Kayıt başarılı! Şimdi giriş yapabilirsin.");
-            window.switchTab('login');
-        } catch (error) {
-            alert("Hata: " + error.message);
-        }
+            const res = await createUserWithEmailAndPassword(auth, e, p);
+            let b64 = ""; if(pf) b64 = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(pf); });
+            await setDoc(doc(db, "users", res.user.uid), { username: u, email: e, phone: ph, photo: b64 });
+            alert("Kayıt ok! Giriş yapabilirsin."); window.switchTab('login');
+        } catch (err) { alert(err.message); }
     };
 
     window.handleLogin = async () => {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
-
-        if(!email || !pass) return alert("E-posta ve şifreni gir");
-
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-            const user = userCredential.user;
-
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                document.getElementById('userStatusText').innerText = data.username.toUpperCase();
-                if(data.photo) {
-                    document.getElementById('userPhotoContainer').innerHTML = `<img src="${data.photo}" class="w-full h-full object-cover">`;
-                }
-                alert("Giriş yapıldı: " + data.username);
-                window.closeAuthModal();
-            }
-        } catch (error) {
-            console.error("Giriş hatası:", error);
-            alert("E-posta veya şifre yanlış.");
-        }
+        const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
+        try { await signInWithEmailAndPassword(auth, e, p); location.reload(); } catch (err) { alert("Hatalı giriş!"); }
     };
 
-    // İlk yükleme
+    window.handleUpdateProfile = async () => {
+        const user = auth.currentUser;
+        const data = { username: document.getElementById('updUser').value, phone: document.getElementById('updPhone').value };
+        const pf = document.getElementById('updPhoto').files[0];
+        if(pf) data.photo = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(pf); });
+        await updateDoc(doc(db, "users", user.uid), data);
+        alert("Güncellendi!"); location.reload();
+    };
+
+    window.handleLogout = async () => { await auth.signOut(); location.reload(); };
+
+    // --- OTURUM TAKİBİ ---
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if (snap.exists()) {
+                const d = snap.data();
+                document.getElementById('userStatusText').innerText = d.username.toUpperCase();
+                document.getElementById('panelUserName').innerText = d.username;
+                document.getElementById('updUser').value = d.username;
+                document.getElementById('updPhone').value = d.phone || "";
+                if(d.photo) {
+                    const img = `<img src="${d.photo}" class="w-full h-full object-cover">`;
+                    document.getElementById('userPhotoContainer').innerHTML = img;
+                    document.getElementById('panelUserPhoto').innerHTML = img;
+                }
+                document.getElementById('userActionWrapper').onclick = openProfilePanel;
+            }
+        }
+    });
+
+    // --- SEPET SİSTEMİ ---
+    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+    window.toggleCart = () => {
+        const p = document.getElementById("cartPanel");
+        p.style.width = (p.style.width === "300px") ? "0" : "300px";
+        if(p.style.width === "300px") renderCart();
+    };
+    window.updateCart = () => {
+        localStorage.setItem('quaora_cart', JSON.stringify(cart));
+        document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
+    };
+    const renderCart = () => {
+        const items = document.getElementById('cartItems');
+        if (cart.length === 0) { items.innerHTML = '<p class="text-center text-gray-500 mt-10">Sepet boş.</p>'; return; }
+        items.innerHTML = cart.map(i => `<div class="flex justify-between p-4 bg-gray-50 rounded-2xl border border-black/5"><div><h4 class="font-bold text-[10px] uppercase">${i.name}</h4><p class="text-[#964b00] font-black">₺${i.price.toLocaleString('tr-TR')}</p></div><button onclick="removeFromCart('${i.name}')" class="text-red-500 font-bold">✕</button></div>`).join('');
+        document.getElementById('cartTotal').innerText = '₺' + cart.reduce((s, i) => s + (i.price * i.qty), 0).toLocaleString('tr-TR');
+    };
+    window.removeFromCart = (name) => { cart = cart.filter(i => i.name !== name); window.updateCart(); renderCart(); };
+    window.siparisVer = () => { if (cart.length > 0) window.location.href = "https://www.shopier.com/quaora/45868772"; };
+
+    window.showPhotoSelected = () => { document.getElementById('photoStatus').innerText = "✅ SEÇİLDİ"; };
+    window.showUpdPhotoSelected = () => { document.getElementById('updPhotoStatus').innerText = "✅ SEÇİLDİ"; };
     window.updateCart();
 </script>
 </body>
