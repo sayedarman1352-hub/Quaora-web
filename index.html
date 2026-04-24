@@ -314,7 +314,7 @@
         const pass = document.getElementById('regPass').value;
         const photoFile = document.getElementById('regPhoto').files[0];
 
-        if(!username || !email || !pass || !phone) return alert("Boş alan bırakma kanka!");
+        if(!username || !email || !pass || !phone) return alert("Boş alan bırakma");
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
@@ -347,7 +347,7 @@
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
 
-        if(!email || !pass) return alert("E-posta ve şifreni gir kanka!");
+        if(!email || !pass) return alert("E-posta ve şifreni gir");
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, pass);
@@ -365,7 +365,7 @@
             }
         } catch (error) {
             console.error("Giriş hatası:", error);
-            alert("Giriş patladı: E-posta veya şifre yanlış.");
+            alert("E-posta veya şifre yanlış.");
         }
     };
 
