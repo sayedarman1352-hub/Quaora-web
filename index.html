@@ -20,6 +20,12 @@
         }
         .serif { font-family: 'Playfair Display', serif; }
         
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
         #sideMenu, #cartPanel {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -46,33 +52,61 @@
             <div id="userPhotoContainer" class="w-14 h-14 rounded-full border-2 border-[#964b00] flex items-center justify-center mb-2 group-hover:bg-[#964b00] group-hover:text-[#FAE29C] transition-all duration-300 shadow-sm overflow-hidden">
                 <span id="userDefaultIcon" class="text-2xl transition-transform group-hover:scale-110">👤</span>
             </div>
-            <span id="userStatusText" class="text-[10px] font-black text-[#964b00] uppercase tracking-[0.4em] italic ml-1 text-center">Sign In</span>
+            <span id="userStatusText" class="text-[10px] font-black text-[#964b00] uppercase tracking-[0.4em] italic ml-1">Sign In</span>
         </div>
 
-        <nav class="flex flex-col space-y-4 w-full h-full text-[#964b00]"> 
-            <a href="index.html" class="text-lg font-bold hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center">
+        <div class="relative mb-8">
+            <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
+            <div class="absolute -bottom-2 left-0 w-12 h-1 bg-[#964b00]/30"></div>
+        </div>
+        
+        <nav class="flex flex-col space-y-4 w-full h-full"> 
+            <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center">
                 <span class="text-xs mr-2">←</span> MAIN MENU
             </a>
             
             <div class="flex flex-col space-y-3 pt-2">
-                <a href="#" class="text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest">New</a>
+                <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
+                
                 <div class="flex flex-col">
                     <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
                         Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
                     </button>
-                    <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                    <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
                         <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Noir Edit</a>
                         <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Sun-Kissed</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Velvet Series</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Essentials</a>
                     </div>
                 </div>
-                <a href="#" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
+
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Classic One Piece</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Cut-Out Design</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Backless Style</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Sporty Fit</a>
+                    </div>
+                </div>
+
+                <a href="plaj-aksesuarlari.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Tops</a>
+                <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
+                <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
             </div>
 
-            <div class="mt-auto pt-10 pb-12">
+            <div class="pt-2">
+                <hr class="border-[#964b00]/10 mb-4">
+                <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
+            </div>
+
+            <div class="mt-auto pt-10 pb-12 w-full">
                 <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
-                <div class="flex flex-col space-y-3 pl-3 text-xs font-black uppercase">
-                    <a href="https://www.instagram.com/quaoratr" target="_blank" class="underline underline-offset-4 tracking-widest">INSTAGRAM</a>
-                    <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="underline underline-offset-4 tracking-widest">TIKTOK</a>
+                <div class="flex flex-col space-y-3 pl-3">
+                    <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">INSTAGRAM</a>
+                    <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">TIKTOK</a>
                 </div>
             </div>
         </nav>
@@ -84,21 +118,21 @@
         <h2 class="text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
         <button onclick="toggleCart()" class="text-xl">✕</button>
     </div>
-    <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4 text-center">
-        <p class="text-gray-500 mt-10 text-sm italic">Sepetiniz boş.</p>
+    <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4">
+        <p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz henüz boş.</p>
     </div>
     <div class="p-6 border-t bg-gray-50">
         <div class="flex justify-between items-center mb-4">
             <span class="font-bold uppercase text-xs tracking-widest text-gray-600">Toplam:</span>
             <span id="cartTotal" class="text-xl font-black text-[#964b00]">₺0,00</span>
         </div>
-        <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all">SİPARİŞİ TAMAMLA</button>
+        <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md">SİPARİŞİ TAMAMLA</button>
     </div>
 </div>
 
 <nav class="flex justify-between items-center p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
     <div class="flex items-center space-x-6">
-        <button onclick="toggleMenu()" class="flex items-center space-x-3 focus:outline-none">
+        <button onclick="toggleMenu()" class="flex items-center space-x-3 group focus:outline-none">
             <div class="space-y-1.5">
                 <span class="block w-6 h-[3px] bg-[#964b00]"></span>
                 <span class="block w-6 h-[3px] bg-[#964b00]"></span>
@@ -108,137 +142,238 @@
         </button>
 
         <div class="flex flex-col border-l border-[#964b00]/20 pl-6 cursor-pointer" onclick="window.location.href='index.html'">
-            <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
+            <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none drop-shadow-sm">QUAORA</h1>
             <p class="text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-14 font-semibold italic">Swimwear</p>
         </div>
     </div>
-    <button onclick="toggleCart()" class="text-2xl relative border-l border-black/10 pl-6">
-        🛒 <span id="cartCount" class="absolute -top-1 -right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
+     
+    <button onclick="toggleCart()" class="text-2xl relative hover:scale-110 transition border-l border-black/10 pl-6 focus:outline-none">
+        🛒
+        <span id="cartCount" class="absolute -top-1 -right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold shadow-sm">0</span>
     </button>
 </nav>
 
 <main class="max-w-7xl mx-auto py-16 px-4">
     <header class="text-center mb-16">
-        <h2 class="text-5xl md:text-6xl font-black text-[#964b00] serif italic">Summer Collection</h2>
-        <p class="text-gray-800 mt-4 tracking-[0.3em] uppercase text-sm font-bold bg-white/30 inline-block px-6 py-1 rounded-full border border-white/20">Sezonun En Hit Parçaları</p>
+        <h2 class="text-5xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">Summer Collection</h2>
+        <p class="text-gray-800 mt-4 tracking-[0.3em] uppercase text-sm font-bold bg-white/30 inline-block px-6 py-1 rounded-full shadow-sm border border-white/20">Sezonun En Hit Parçaları</p>
     </header>
 </main>
 
 <div id="authModal" class="modal-overlay" onclick="if(event.target === this) closeAuthModal()">
-    <div class="bg-white/95 p-8 rounded-[3rem] w-[90%] max-w-md shadow-2xl relative border border-white/50" onclick="event.stopPropagation()">
-        <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black">✕</button>
+    <div class="bg-white/90 p-8 rounded-[3rem] w-[90%] max-w-md shadow-2xl relative border border-white/50" onclick="event.stopPropagation()">
+        <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black transition-colors">✕</button>
         
         <div class="flex justify-center space-x-8 mb-8 border-b border-gray-100 pb-4">
-            <button id="tabLogin" onclick="switchTab('login')" class="text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1">Giriş Yap</button>
-            <button id="tabRegister" onclick="switchTab('register')" class="text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1">Kayıt Ol</button>
+            <button id="tabLogin" onclick="switchTab('login')" class="text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] transition-all">Giriş Yap</button>
+            <button id="tabRegister" onclick="switchTab('register')" class="text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] transition-all">Kayıt Ol</button>
         </div>
 
         <div id="formLogin" class="space-y-4">
-            <input id="loginEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 outline-none text-xs font-bold tracking-widest uppercase focus:ring-2 focus:ring-[#964b00]">
-            <input id="loginPass" type="password" placeholder="ŞİFRE" class="w-full p-4 rounded-2xl bg-gray-100 outline-none text-xs font-bold tracking-widest uppercase focus:ring-2 focus:ring-[#964b00]">
-            <button onclick="handleLogin()" class="w-full bg-[#964b00] text-white py-4 rounded-2xl font-black uppercase text-xs shadow-lg hover:bg-black transition-all">Giriş Yap</button>
+            <input id="loginEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="loginPass" type="password" placeholder="ŞİFRE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+            <button onclick="handleLogin()" class="w-full bg-[#964b00] text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-black transition-all">Giriş Yap</button>
         </div>
 
         <div id="formRegister" class="space-y-4 hidden">
-            <input id="regName" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 outline-none text-xs font-bold tracking-widest uppercase focus:ring-2 focus:ring-[#964b00]">
-            <input id="regEmail" type="email" placeholder="E-POSTA ADRESİ" class="w-full p-4 rounded-2xl bg-gray-100 outline-none text-xs font-bold tracking-widest uppercase focus:ring-2 focus:ring-[#964b00]">
-            <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 outline-none text-xs font-bold tracking-widest uppercase focus:ring-2 focus:ring-[#964b00]">
-            <div class="flex flex-col items-center gap-2">
-                <label class="text-[10px] font-bold text-gray-400 uppercase italic">Profil Fotoğrafı Seç</label>
-                <input id="regPhoto" type="file" accept="image/*" class="text-[10px] text-gray-500 file:bg-[#FAE29C] file:rounded-full file:border-0 file:px-4 file:py-1">
-            </div>
-            <button onclick="handleRegister()" class="w-full bg-black text-white py-4 rounded-2xl font-black uppercase text-xs shadow-lg hover:bg-[#964b00] transition-all">Hesap Oluştur</button>
-        </div>
+    <input id="regUser" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+    <input id="regEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+    <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-[#964b00] outline-none text-xs font-bold tracking-widest uppercase">
+    
+    <div class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-[#964b00] transition-colors group cursor-pointer relative" id="photoDropArea">
+    <input id="regPhoto" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="showPhotoSelected()">
+    <div class="text-center" id="photoStatus">
+        <span class="text-2xl mb-1 block group-hover:scale-110 transition-transform">📸</span>
+        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest group-hover:text-[#964b00]">Profil Fotoğrafı Yükle</p>
     </div>
 </div>
 
-<script>
+    <button onclick="handleRegister()" class="w-full bg-black text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-[#964b00] transition-all">Hesap Oluştur</button>
+</div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // --- FIREBASE AYARLARI ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
+        authDomain: "quaora-web.firebaseapp.com",
+        projectId: "quaora-web",
+        storageBucket: "quaora-web.firebasestorage.app",
+        messagingSenderId: "69244174750",
+        appId: "1:69244174750:web:5c9e82172704bb39a2568f",
+        measurementId: "G-0V1BRZ8T51"
+    };
+
+    // Firebase Başlat
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // --- SEPET SİSTEMİ ---
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
 
-    // Menü/Sepet Kontrolleri
-    function toggleMenu() {
+    window.toggleMenu = () => {
         const menu = document.getElementById("sideMenu");
         menu.style.width = (menu.style.width === "300px") ? "0" : "300px";
-    }
+    };
 
-    function toggleMenuSection(id, arrowId) {
-        const el = document.getElementById(id);
+    window.toggleMenuSection = (sectionId, arrowId) => {
+        const content = document.getElementById(sectionId);
         const arrow = document.getElementById(arrowId);
-        if (el.style.maxHeight === '0px' || el.style.maxHeight === '') {
-            el.style.maxHeight = '300px'; arrow.style.transform = 'rotate(180deg)';
+        if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
+            content.style.maxHeight = '250px';
+            content.style.marginTop = '8px';
+            arrow.style.transform = 'rotate(180deg)';
         } else {
-            el.style.maxHeight = '0px'; arrow.style.transform = 'rotate(0deg)';
+            content.style.maxHeight = '0px';
+            content.style.marginTop = '0px';
+            arrow.style.transform = 'rotate(0deg)';
         }
-    }
+    };
 
-    function toggleCart() {
-        const p = document.getElementById("cartPanel");
-        p.style.width = (p.style.width === "300px") ? "0" : "300px";
-        if(p.style.width === "300px") renderCart();
-    }
+    window.toggleCart = () => {
+        const panel = document.getElementById("cartPanel");
+        panel.style.width = (panel.style.width === "300px") ? "0" : "300px";
+        if(panel.style.width === "300px") renderCart();
+    };
 
-    function updateCart() {
+    const updateCart = () => {
         localStorage.setItem('quaora_cart', JSON.stringify(cart));
-        document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
-    }
+        document.getElementById('cartCount').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+    };
 
-    function renderCart() {
+    const renderCart = () => {
         const items = document.getElementById('cartItems');
         const totalDisp = document.getElementById('cartTotal');
         if (cart.length === 0) {
-            items.innerHTML = '<p class="text-gray-500 mt-10 text-sm italic">Sepetiniz boş.</p>';
-            totalDisp.innerText = '₺0,00'; return;
+            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz henüz boş.</p>';
+            totalDisp.innerText = '₺0,00';
+            return;
         }
-        let total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        items.innerHTML = cart.map(i => `<div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-black/5"><div><h4 class="font-bold text-[10px] uppercase">${i.name}</h4><p class="text-[#964b00] font-black">₺${i.price.toLocaleString('tr-TR')}</p></div><button onclick="removeFromCart('${i.name}')" class="text-red-500 font-bold">✕</button></div>`).join('');
+        let total = 0;
+        items.innerHTML = cart.map(item => {
+            total += (item.price * item.qty);
+            return `<div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl shadow-sm border border-black/5">
+                <div><h4 class="font-bold uppercase text-[10px] tracking-tighter">${item.name}</h4><p class="text-[#964b00] font-black italic">₺${item.price.toLocaleString('tr-TR')}</p></div>
+                <button onclick="removeFromCart('${item.name}')" class="text-red-500 font-bold px-2">✕</button></div>`;
+        }).join('');
         totalDisp.innerText = '₺' + total.toLocaleString('tr-TR');
-    }
+    };
 
-    function removeFromCart(n) { cart = cart.filter(i => i.name !== n); updateCart(); renderCart(); }
-    function siparisVer() { if (cart.length === 0) { alert("Sepetiniz boş!"); return; } window.location.href = "https://www.shopier.com/quaora"; }
+    window.removeFromCart = (name) => {
+        cart = cart.filter(item => item.name !== name);
+        updateCart();
+        renderCart();
+    };
 
-    // AUTH MANTIĞI
-    function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; toggleMenu(); }
-    function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+    window.siparisVer = () => {
+        if (cart.length === 0) { alert("Sepetiniz boş!"); return; }
+        window.location.href = "https://www.shopier.com/quaora/45868772";
+    };
 
-    function switchTab(t) {
-        const isL = t === 'login';
-        document.getElementById('formLogin').classList.toggle('hidden', !isL);
-        document.getElementById('formRegister').classList.toggle('hidden', isL);
-        document.getElementById('tabLogin').className = isL ? "text-sm font-black uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1" : "text-sm font-black uppercase text-gray-400 pb-1";
-        document.getElementById('tabRegister').className = !isL ? "text-sm font-black uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1" : "text-sm font-black uppercase text-gray-400 pb-1";
-    }
+    // --- MODAL VE TAB KONTROLLERİ ---
+    window.openAuthModal = () => {
+        document.getElementById('authModal').style.display = 'flex';
+        const menu = document.getElementById("sideMenu");
+        if(menu.style.width === "300px") window.toggleMenu();
+    };
 
-    async function handleRegister() {
-        const name = document.getElementById('regName').value;
+    window.closeAuthModal = () => {
+        document.getElementById('authModal').style.display = 'none';
+    };
+
+    window.switchTab = (type) => {
+        const isLogin = type === 'login';
+        document.getElementById('formLogin').classList.toggle('hidden', !isLogin);
+        document.getElementById('formRegister').classList.toggle('hidden', isLogin);
+        document.getElementById('tabLogin').className = isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
+        document.getElementById('tabRegister').className = !isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
+    };
+
+    window.showPhotoSelected = () => {
+        const input = document.getElementById('regPhoto');
+        const statusDiv = document.getElementById('photoStatus');
+        const dropArea = document.getElementById('photoDropArea');
+        if (input.files && input.files[0]) {
+            dropArea.classList.remove('border-gray-200');
+            dropArea.classList.add('border-green-500', 'bg-green-50');
+            statusDiv.innerHTML = `<span class="text-2xl mb-1 block">✅</span><p class="text-[9px] font-black text-green-600 uppercase">FOTOĞRAF SEÇİLDİ</p>`;
+        }
+    };
+
+    // --- FIREBASE İŞLEMLERİ ---
+
+    window.handleRegister = async () => {
+        const username = document.getElementById('regUser').value;
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
         const photoFile = document.getElementById('regPhoto').files[0];
-        if(!name || !email || !pass) return alert("Alanları doldur!");
 
-        let photo = "";
-        if(photoFile) {
-            const reader = new FileReader();
-            photo = await new Promise(r => { reader.onload = e => r(e.target.result); reader.readAsDataURL(photoFile); });
+        if(!username || !email || !pass) return alert("Boş alan bırakma kanka!");
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
+
+            let photoData = "";
+            if(photoFile) {
+                const reader = new FileReader();
+                photoData = await new Promise(resolve => {
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(photoFile);
+                });
+            }
+
+            await setDoc(doc(db, "users", user.uid), {
+                username: username,
+                email: email,
+                photo: photoData
+            });
+
+            alert("Kayıt başarılı! Hoş geldin " + username);
+            window.switchTab('login');
+        } catch (error) {
+            if (error.code === 'auth/email-already-in-use') {
+                alert("Bu e-posta zaten kullanımda kanka!");
+            } else {
+                alert("Hata: " + error.message);
+            }
         }
-        localStorage.setItem('quaora_user_' + email, JSON.stringify({ name, email, pass, photo }));
-        alert("Hesap açıldı " + name + "!"); switchTab('login');
-    }
+    };
 
-    function handleLogin() {
+    window.handleLogin = async () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
-        const user = JSON.parse(localStorage.getItem('quaora_user_' + email));
 
-        if (user && user.pass === pass) {
-            alert("Giriş yapıldı!");
-            document.getElementById('userStatusText').innerText = user.name.toUpperCase();
-            if(user.photo) {
-                document.getElementById('userPhotoContainer').innerHTML = `<img src="${user.photo}" class="w-full h-full object-cover">`;
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
+
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                document.getElementById('userStatusText').innerText = data.username.toUpperCase();
+                if(data.photo) {
+                    document.getElementById('userPhotoContainer').innerHTML = `<img src="${data.photo}" class="w-full h-full object-cover">`;
+                }
+                alert("Giriş yapıldı: " + data.username);
+                window.closeAuthModal();
             }
-            closeAuthModal();
-        } else { alert("Hata!"); }
-    }
+        } catch (error) {
+            alert("Giriş patladı: E-posta veya şifre yanlış.");
+        }
+    };
+
+    // Başlangıç ayarları
     updateCart();
 </script>
 </body>
