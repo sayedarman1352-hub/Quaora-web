@@ -336,20 +336,18 @@
                 photo: photoData
             });
 
-            alert("Kayıt başarılı! Hoş geldin " + username);
+            alert("Kayıt başarılı! Şimdi giriş yapabilirsin.");
             window.switchTab('login');
         } catch (error) {
-            if (error.code === 'auth/email-already-in-use') {
-                alert("Bu e-posta zaten kullanımda kanka!");
-            } else {
-                alert("Hata: " + error.message);
-            }
+            alert("Hata: " + error.message);
         }
     };
 
     window.handleLogin = async () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
+
+        if(!email || !pass) return alert("E-posta ve şifreni gir kanka!");
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, pass);
@@ -366,11 +364,12 @@
                 window.closeAuthModal();
             }
         } catch (error) {
+            console.error("Giriş hatası:", error);
             alert("Giriş patladı: E-posta veya şifre yanlış.");
         }
     };
 
-    // Sayfa yüklendiğinde sepeti güncelle
+    // İlk yükleme
     window.updateCart();
 </script>
 </body>
