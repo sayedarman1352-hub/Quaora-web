@@ -32,9 +32,7 @@
             background: #dc2626;
             color: white;
             font-weight: 900;
-            padding: 4px 12px;
             border-radius: 8px;
-            font-size: 0.75rem;
             letter-spacing: 0.1em;
         }
 
@@ -121,56 +119,56 @@
 </div>
 
 <div id="cartPanel" class="fixed top-0 right-0 h-full w-0 bg-white z-[101] overflow-x-hidden shadow-2xl flex flex-col">
-    <div class="p-6 flex justify-between items-center border-b">
-        <h2 class="text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
+    <div class="p-4 md:p-6 flex justify-between items-center border-b">
+        <h2 class="text-xl md:text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
         <button onclick="toggleCart()" class="text-xl">✕</button>
     </div>
-    <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4"></div>
-    <div class="p-6 border-t bg-gray-50">
+    <div id="cartItems" class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4"></div>
+    <div class="p-4 md:p-6 border-t bg-gray-50">
         <div class="flex justify-between items-center mb-4">
             <span class="font-bold uppercase text-[10px] tracking-widest text-gray-500">Toplam Tutar:</span>
-            <span id="cartTotal" class="text-xl font-black text-[#964b00]">₺0,00</span>
+            <span id="cartTotal" class="text-lg md:text-xl font-black text-[#964b00]">₺0,00</span>
         </div>
-        <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md uppercase text-sm">Siparişi Tamamla</button>
+        <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-3 md:py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md uppercase text-sm">Siparişi Tamamla</button>
     </div>
 </div>
 
-<nav class="flex justify-between items-center p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
-    <div class="flex items-center space-x-6">
-        <button onclick="toggleMenu()" class="flex items-center space-x-3 group focus:outline-none">
-            <div class="space-y-1.5">
-                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
-                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
-                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
+<nav class="flex justify-between items-center p-4 md:p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
+    <div class="flex items-center space-x-4 md:space-x-6">
+        <button onclick="toggleMenu()" class="flex items-center space-x-2 md:space-x-3 group focus:outline-none">
+            <div class="space-y-1 md:space-y-1.5">
+                <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
             </div>
-            <span class="text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
+            <span class="hidden md:inline text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
         </button>
-        <div class="flex flex-col border-l border-[#964b00]/20 pl-6 cursor-pointer" onclick="window.location.href='index.html'">
-            <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
-            <p class="text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-14 font-semibold italic">Outlet</p>
+        <div class="flex flex-col border-l border-[#964b00]/20 pl-4 md:pl-6 cursor-pointer" onclick="window.location.href='index.html'">
+            <h1 class="text-2xl md:text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
+            <p class="text-[8px] md:text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-10 md:ml-14 font-semibold italic">Outlet</p>
         </div>
     </div>
     
-    <div class="flex items-center gap-6">
-        <button id="adminAddProductBtn" onclick="openProductAdmin()" class="hidden bg-black text-white text-[10px] font-black tracking-widest px-4 py-2 rounded-lg hover:bg-red-600 transition-colors uppercase">
+    <div class="flex items-center gap-4 md:gap-6">
+        <button id="adminAddProductBtn" onclick="openProductAdmin()" class="hidden bg-black text-white text-[8px] md:text-[10px] font-black tracking-widest px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-red-600 transition-colors uppercase">
             + Ürün Ekle
         </button>
 
-        <button onclick="toggleCart()" class="text-2xl relative hover:scale-110 transition focus:outline-none border-l border-black/10 pl-6">
+        <button onclick="toggleCart()" class="text-xl md:text-2xl relative hover:scale-110 transition focus:outline-none border-l border-black/10 pl-4 md:pl-6">
             🛒
-            <span id="cartCount" class="absolute -top-1 -right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
+            <span id="cartCount" class="absolute -top-1 -right-1 md:-right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
         </button>
     </div>
 </nav>
 
-<main class="max-w-7xl mx-auto py-16 px-4">
-    <header class="text-center mb-16">
-        <div class="inline-block bg-red-600 text-white text-[9px] font-black px-4 py-1 rounded-full mb-4 animate-pulse tracking-[0.2em]">SON ŞANS</div>
-        <h2 class="text-5xl md:text-6xl font-black text-red-600 serif italic drop-shadow-sm">Sale Outlet</h2>
-        <p class="text-gray-900 mt-4 tracking-[0.3em] uppercase text-[10px] font-bold bg-white/30 inline-block px-4 py-1 rounded-full border border-white/20">Seçili Ürünlerde %50'ye Varan İndirim</p>
+<main class="max-w-7xl mx-auto py-8 md:py-16 px-2 md:px-4">
+    <header class="text-center mb-10 md:mb-16">
+        <div class="inline-block bg-red-600 text-white text-[8px] md:text-[9px] font-black px-3 py-1 rounded-full mb-2 md:mb-4 animate-pulse tracking-[0.2em]">SON ŞANS</div>
+        <h2 class="text-4xl md:text-6xl font-black text-red-600 serif italic drop-shadow-sm">Sale Outlet</h2>
+        <p class="text-gray-900 mt-2 md:mt-4 tracking-[0.2em] md:tracking-[0.3em] uppercase text-[8px] md:text-[10px] font-bold bg-white/30 inline-block px-3 py-1 rounded-full border border-white/20">Seçili Ürünlerde %50'ye Varan İndirim</p>
     </header>
 
-    <div id="outletProductGrid" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
+    <div id="outletProductGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8"></div>
 </main>
 
 <div id="productAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -190,18 +188,18 @@
             </div>
         </div>
 
-        <div class="md:w-1/2 p-8 overflow-y-auto no-scrollbar">
-            <h2 id="modalTitle" class="font-black tracking-widest text-2xl text-[#964b00] mb-6 uppercase serif">YENİ OUTLET ÜRÜNÜ</h2>
+        <div class="md:w-1/2 p-6 md:p-8 overflow-y-auto no-scrollbar">
+            <h2 id="modalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif">YENİ OUTLET ÜRÜNÜ</h2>
             
             <div class="space-y-4">
                 <div>
                     <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Ürün İsmi</label>
-                    <input type="text" id="pName" placeholder="Örn: Sunset Glow Bikini" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
+                    <input type="text" id="pName" placeholder="Örn: Sunset Glow" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
                 </div>
 
                 <div class="flex gap-4">
                     <div class="w-1/2">
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Eski Fiyat (₺)</label>
+                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Eski (₺)</label>
                         <input type="number" id="pOldPrice" placeholder="1400" oninput="calculateDiscount()" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
                     </div>
                     <div class="w-1/2 relative">
@@ -218,57 +216,57 @@
                         <div class="flex flex-col items-center gap-2">
                             <div class="relative">
                                 <input type="checkbox" id="size32" value="32" class="size-checkbox hidden" onchange="toggleStockInput('32')">
-                                <label for="size32" class="cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[3rem] text-center">32</label>
+                                <label for="size32" class="cursor-pointer px-3 py-2 md:px-4 md:py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[2.5rem] md:min-w-[3rem] text-center">32</label>
                             </div>
-                            <input type="number" id="stock-32" placeholder="Adet" min="1" class="hidden w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
+                            <input type="number" id="stock-32" placeholder="Adet" min="1" class="hidden w-12 md:w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
                         </div>
 
                         <div class="flex flex-col items-center gap-2">
                             <div class="relative">
                                 <input type="checkbox" id="size34" value="34" class="size-checkbox hidden" onchange="toggleStockInput('34')">
-                                <label for="size34" class="cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[3rem] text-center">34</label>
+                                <label for="size34" class="cursor-pointer px-3 py-2 md:px-4 md:py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[2.5rem] md:min-w-[3rem] text-center">34</label>
                             </div>
-                            <input type="number" id="stock-34" placeholder="Adet" min="1" class="hidden w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
+                            <input type="number" id="stock-34" placeholder="Adet" min="1" class="hidden w-12 md:w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
                         </div>
 
                         <div class="flex flex-col items-center gap-2">
                             <div class="relative">
                                 <input type="checkbox" id="size36" value="36" class="size-checkbox hidden" onchange="toggleStockInput('36')">
-                                <label for="size36" class="cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[3rem] text-center">36</label>
+                                <label for="size36" class="cursor-pointer px-3 py-2 md:px-4 md:py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[2.5rem] md:min-w-[3rem] text-center">36</label>
                             </div>
-                            <input type="number" id="stock-36" placeholder="Adet" min="1" class="hidden w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
+                            <input type="number" id="stock-36" placeholder="Adet" min="1" class="hidden w-12 md:w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
                         </div>
 
                         <div class="flex flex-col items-center gap-2">
                             <div class="relative">
                                 <input type="checkbox" id="size38" value="38" class="size-checkbox hidden" onchange="toggleStockInput('38')">
-                                <label for="size38" class="cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[3rem] text-center">38</label>
+                                <label for="size38" class="cursor-pointer px-3 py-2 md:px-4 md:py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[2.5rem] md:min-w-[3rem] text-center">38</label>
                             </div>
-                            <input type="number" id="stock-38" placeholder="Adet" min="1" class="hidden w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
+                            <input type="number" id="stock-38" placeholder="Adet" min="1" class="hidden w-12 md:w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
                         </div>
 
                         <div class="flex flex-col items-center gap-2">
                             <div class="relative">
                                 <input type="checkbox" id="size40" value="40" class="size-checkbox hidden" onchange="toggleStockInput('40')">
-                                <label for="size40" class="cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[3rem] text-center">40</label>
+                                <label for="size40" class="cursor-pointer px-3 py-2 md:px-4 md:py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[2.5rem] md:min-w-[3rem] text-center">40</label>
                             </div>
-                            <input type="number" id="stock-40" placeholder="Adet" min="1" class="hidden w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
+                            <input type="number" id="stock-40" placeholder="Adet" min="1" class="hidden w-12 md:w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
                         </div>
 
                         <div class="flex flex-col items-center gap-2">
                             <div class="relative">
                                 <input type="checkbox" id="size42" value="42" class="size-checkbox hidden" onchange="toggleStockInput('42')">
-                                <label for="size42" class="cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[3rem] text-center">42</label>
+                                <label for="size42" class="cursor-pointer px-3 py-2 md:px-4 md:py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[2.5rem] md:min-w-[3rem] text-center">42</label>
                             </div>
-                            <input type="number" id="stock-42" placeholder="Adet" min="1" class="hidden w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
+                            <input type="number" id="stock-42" placeholder="Adet" min="1" class="hidden w-12 md:w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
                         </div>
 
                         <div class="flex flex-col items-center gap-2">
                             <div class="relative">
                                 <input type="checkbox" id="size44" value="44" class="size-checkbox hidden" onchange="toggleStockInput('44')">
-                                <label for="size44" class="cursor-pointer px-4 py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[3rem] text-center">44</label>
+                                <label for="size44" class="cursor-pointer px-3 py-2 md:px-4 md:py-2.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-600 transition-colors shadow-sm hover:border-[#964b00] block min-w-[2.5rem] md:min-w-[3rem] text-center">44</label>
                             </div>
-                            <input type="number" id="stock-44" placeholder="Adet" min="1" class="hidden w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
+                            <input type="number" id="stock-44" placeholder="Adet" min="1" class="hidden w-12 md:w-14 text-center text-[10px] font-bold border border-gray-200 rounded-md py-1 focus:outline-none focus:border-[#964b00] bg-gray-50 text-gray-800">
                         </div>
 
                     </div>
@@ -310,16 +308,18 @@
     window.currentEditId = null;
     let currentImagesBase64 = [];
 
-    // --- SEPET VE MENÜ SİSTEMİ ---
     window.toggleCart = () => {
         const p = document.getElementById("cartPanel");
-        p.style.width = p.style.width === "300px" ? "0" : "300px";
-        if (p.style.width === "300px") window.renderCart();
+        // Mobilde sepetin çok geniş açılmaması için
+        const w = window.innerWidth < 768 ? "100%" : "350px"; 
+        p.style.width = p.style.width === w ? "0" : w;
+        if (p.style.width === w) window.renderCart();
     };
     
     window.toggleMenu = () => {
         const m = document.getElementById("sideMenu");
-        m.style.width = m.style.width === "300px" ? "0" : "300px";
+        const w = window.innerWidth < 768 ? "100%" : "300px";
+        m.style.width = m.style.width === w ? "0" : w;
     };
 
     window.toggleMenuSection = (sectionId, arrowId) => {
@@ -351,11 +351,11 @@
         items.innerHTML = cart.map(i => {
             total += (i.price * i.qty);
             return `
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-black/5">
+                <div class="flex justify-between items-center bg-gray-50 p-3 md:p-4 rounded-xl border border-black/5">
                     <div>
-                        <h4 class="font-bold uppercase text-[10px] tracking-tight text-gray-800">${i.name}</h4>
-                        <p class="text-[9px] font-bold text-gray-500 mb-1">Beden: <span class="text-[#964b00]">${i.size}</span> | Adet: ${i.qty}</p>
-                        <p class="text-[#964b00] font-black text-sm italic">₺${(i.price * i.qty).toLocaleString('tr-TR')}</p>
+                        <h4 class="font-bold uppercase text-[10px] md:text-[11px] tracking-tight text-gray-800">${i.name}</h4>
+                        <p class="text-[9px] md:text-[10px] font-bold text-gray-500 mb-1">Beden: <span class="text-[#964b00]">${i.size}</span> | Adet: ${i.qty}</p>
+                        <p class="text-[#964b00] font-black text-xs md:text-sm italic">₺${(i.price * i.qty).toLocaleString('tr-TR')}</p>
                     </div>
                     <button onclick="removeFromCart('${i.cartItemId}')" class="text-red-500 font-bold px-2 hover:scale-110">✕</button>
                 </div>
@@ -370,7 +370,6 @@
         
         if (!size) return alert("Lütfen sepete eklemeden önce bir beden seçin!");
         
-        // Veritabanı geriye dönük uyumluluğu kontrol ediliyor
         const pSizeStocks = product.sizeStocks || {};
         if(Object.keys(pSizeStocks).length === 0 && product.sizes) {
             product.sizes.forEach(s => pSizeStocks[s] = product.stock || 1);
@@ -403,7 +402,6 @@
     };
     window.updateCart();
 
-    // --- ÜRÜN EKLEME / DÜZENLEME MODAL KONTROLLERİ ---
     window.renderAdminImagePreviews = () => {
         const container = document.getElementById('imagePreviewContainer');
         if(currentImagesBase64.length === 0) {
@@ -411,9 +409,9 @@
             return;
         }
         container.innerHTML = currentImagesBase64.map((img, index) => `
-            <div class="relative rounded-xl overflow-hidden h-40 border-2 border-white shadow-md group">
+            <div class="relative rounded-xl overflow-hidden h-32 md:h-40 border-2 border-white shadow-md group">
                 <img src="${img}" class="w-full h-full object-cover">
-                <button onclick="removeAdminImage(${index}, event)" class="absolute top-2 right-2 bg-red-600 text-white w-8 h-8 flex items-center justify-center rounded-full font-black text-sm opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-800 hover:scale-110">✕</button>
+                <button onclick="removeAdminImage(${index}, event)" class="absolute top-2 right-2 bg-red-600 text-white w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full font-black text-xs opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-800">✕</button>
             </div>
         `).join('');
     };
@@ -445,7 +443,6 @@
         document.getElementById('pOldPrice').value = '';
         document.getElementById('pNewPrice').value = '';
         
-        // Tüm beden ve stok kutularını sıfırla
         document.querySelectorAll('.size-checkbox').forEach(cb => {
             cb.checked = false;
             const input = document.getElementById(`stock-${cb.value}`);
@@ -475,13 +472,11 @@
         document.getElementById('pOldPrice').value = p.originalPrice;
         document.getElementById('pNewPrice').value = p.salePrice;
         
-        // Eskiden eklenmiş ürünler için uyumluluk
         const pSizeStocks = p.sizeStocks || {};
         if(Object.keys(pSizeStocks).length === 0 && p.sizes && p.sizes.length > 0) {
             p.sizes.forEach(s => pSizeStocks[s] = p.stock || 1);
         }
 
-        // Beden ve stok kutularını doldur
         document.querySelectorAll('.size-checkbox').forEach(cb => {
             const size = cb.value;
             if (pSizeStocks[size]) {
@@ -524,6 +519,7 @@
             const percent = Math.round(((oldP - newP) / oldP) * 100);
             badge.innerText = `-%${percent}`;
             badge.classList.remove('hidden');
+            badge.classList.add('px-2', 'py-1'); // Padding reset for smaller screens
         } else {
             badge.classList.add('hidden');
         }
@@ -590,9 +586,9 @@
                     originalPrice: oldP,
                     salePrice: newP,
                     discount: discountPercent,
-                    sizeStocks: sizeStocks, // Yeni yapı
-                    sizes: Object.keys(sizeStocks), // Geriye dönük sorgu kolaylığı
-                    stock: totalStock, // Eski yapı bozulmasın diye toplam stok bilgisi
+                    sizeStocks: sizeStocks,
+                    sizes: Object.keys(sizeStocks),
+                    stock: totalStock,
                     images: currentImagesBase64
                 });
                 alert("Ürün başarıyla güncellendi!");
@@ -619,11 +615,9 @@
         }
     };
 
-    // --- LİSTELEME VE KART FONKSİYONLARI ---
     window.selectSize = (productId, size) => {
         window.selectedSizes[productId] = size;
         document.querySelectorAll(`.size-btn-${productId}`).forEach(btn => {
-            // Seçili olmayan ve stoğu olan butonların stili
             if(!btn.disabled) {
                 btn.classList.remove('bg-[#964b00]', 'text-white', 'border-[#964b00]');
                 btn.classList.add('bg-white/50', 'text-gray-800', 'border-black/10');
@@ -653,7 +647,6 @@
         if(confirm("Bu outlet ürününü silmek istediğinize emin misiniz?")) {
             try {
                 await deleteDoc(doc(db, "outlet_products", id));
-                alert("Ürün başarıyla silindi!");
             } catch (error) {
                 console.error("Hata:", error);
                 alert("Ürün silinirken bir hata oluştu.");
@@ -665,7 +658,7 @@
         const grid = document.getElementById('outletProductGrid');
         
         if(products.length === 0) {
-            grid.innerHTML = '<p class="text-center col-span-3 text-[#964b00] font-bold italic mt-10">Şu an indirimde ürün bulunmamaktadır.</p>';
+            grid.innerHTML = '<p class="text-center col-span-2 md:col-span-3 lg:col-span-4 text-[#964b00] font-bold italic mt-10">Şu an indirimde ürün bulunmamaktadır.</p>';
             return;
         }
 
@@ -673,13 +666,11 @@
             const images = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
             const mainImg = images.length > 0 ? images[0] : '';
             
-            // Geriye dönük veri uyumluluğu (Eski ürünleri yeniye çevirme mantığı)
             const pSizeStocks = p.sizeStocks || {};
             if(Object.keys(pSizeStocks).length === 0 && p.sizes) {
                 p.sizes.forEach(s => pSizeStocks[s] = p.stock || 1);
             }
             
-            // Tüm bedenlerin toplam stoğu
             const totalStock = Object.values(pSizeStocks).reduce((sum, val) => sum + val, 0);
 
             let sliderHtml = '';
@@ -690,52 +681,52 @@
                     ${images.map(img => `<img src="${img}" class="snap-center shrink-0 w-full h-full object-cover">`).join('')}
                 </div>`;
                 sliderControls = `
-                    <button onclick="scrollSlider('${p.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-8 h-8 rounded-full font-bold shadow hover:bg-white z-10">❮</button>
-                    <button onclick="scrollSlider('${p.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-8 h-8 rounded-full font-bold shadow hover:bg-white z-10">❯</button>
+                    <button onclick="scrollSlider('${p.id}', -1)" class="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow hover:bg-white z-10 text-[10px] md:text-sm">❮</button>
+                    <button onclick="scrollSlider('${p.id}', 1)" class="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow hover:bg-white z-10 text-[10px] md:text-sm">❯</button>
                 `;
             } else {
                 sliderHtml = `<img src="${mainImg}" class="w-full h-full object-cover">`;
             }
 
             const adminButtons = isAdmin ? `
-                <div class="absolute top-2 right-2 z-20 flex flex-col gap-2">
-                    <button onclick="editProduct('${p.id}')" class="bg-blue-600 text-white w-8 h-8 rounded-full font-bold shadow-lg text-xs hover:bg-blue-800 transition-colors">✎</button>
-                    <button onclick="deleteProduct('${p.id}')" class="bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow-lg text-xs hover:bg-red-800 transition-colors">✕</button>
+                <div class="absolute top-2 right-2 z-20 flex flex-col gap-1.5 md:gap-2">
+                    <button onclick="editProduct('${p.id}')" class="bg-blue-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-blue-800 transition-colors">✎</button>
+                    <button onclick="deleteProduct('${p.id}')" class="bg-red-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-red-800 transition-colors">✕</button>
                 </div>
             ` : '';
 
             return `
-            <article class="glass-card rounded-[2rem] overflow-hidden flex flex-col group relative shadow-xl">
+            <article class="glass-card rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col group relative shadow-xl">
                 ${adminButtons}
-                <div class="relative h-[26rem] overflow-hidden bg-white/50">
+                <div class="relative h-56 md:h-[26rem] overflow-hidden bg-white/50">
                     ${sliderHtml}
                     ${sliderControls}
                     
-                    <div class="absolute top-4 left-4 discount-tag shadow-lg">
+                    <div class="absolute top-2 left-2 md:top-4 md:left-4 discount-tag shadow-lg text-[10px] md:text-xs px-2 py-1 md:px-3 md:py-1.5">
                         -%${p.discount || Math.round(((p.originalPrice - p.salePrice) / p.originalPrice) * 100)}
                     </div>
-                    ${totalStock < 5 && totalStock > 0 ? `<div class="absolute bottom-4 left-4 bg-black text-white text-[9px] px-3 py-1.5 rounded-full font-black tracking-[0.2em] uppercase shadow-lg">SON ${totalStock} ÜRÜN</div>` : ''}
-                    ${totalStock === 0 ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-10"><span class="bg-black text-white px-6 py-2 rounded-xl font-black tracking-widest text-sm uppercase rotate-[-10deg]">Tükendi</span></div>` : ''}
+                    ${totalStock < 5 && totalStock > 0 ? `<div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 bg-black text-white text-[8px] md:text-[9px] px-2 py-1 md:px-3 md:py-1.5 rounded-full font-black tracking-[0.2em] uppercase shadow-lg">SON ${totalStock}</div>` : ''}
+                    ${totalStock === 0 ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-10"><span class="bg-black text-white px-3 py-1.5 md:px-6 md:py-2 rounded-lg md:rounded-xl font-black tracking-widest text-[10px] md:text-sm uppercase rotate-[-10deg]">Tükendi</span></div>` : ''}
                 </div>
                 
-                <div class="p-8 flex flex-col flex-grow">
-                    <h3 class="text-xl font-black text-gray-900 uppercase tracking-widest mb-2">${p.name}</h3>
+                <div class="p-3 md:p-8 flex flex-col flex-grow">
+                    <h3 class="text-xs md:text-xl font-black text-gray-900 uppercase tracking-widest mb-1.5 md:mb-2 line-clamp-2">${p.name}</h3>
                     
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="text-2xl font-black text-red-600 italic">₺${p.salePrice}</span>
-                        <span class="text-sm font-bold text-gray-500 line-through">₺${p.originalPrice}</span>
+                    <div class="flex items-center gap-2 mb-3 md:mb-6 flex-wrap">
+                        <span class="text-sm md:text-2xl font-black text-red-600 italic">₺${p.salePrice}</span>
+                        <span class="text-[10px] md:text-sm font-bold text-gray-500 line-through">₺${p.originalPrice}</span>
                     </div>
 
-                    <div class="mb-6">
-                        <p class="text-[9px] font-black uppercase tracking-widest text-gray-500 mb-2">Beden Seçimi</p>
-                        <div class="flex flex-wrap gap-3 mt-1">
+                    <div class="mb-3 md:mb-6">
+                        <p class="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-gray-500 mb-1.5 md:mb-2">Beden</p>
+                        <div class="flex flex-wrap gap-1.5 md:gap-3 mt-1">
                             ${Object.keys(pSizeStocks).map(s => {
                                 const stockOfSize = pSizeStocks[s];
                                 const isOutOfStock = stockOfSize <= 0;
                                 return `
                                     <button id="size-btn-${p.id}-${s}" 
                                             onclick="${isOutOfStock ? '' : `selectSize('${p.id}', '${s}')`}"
-                                            class="size-btn-${p.id} px-5 py-2.5 bg-white/50 border border-black/10 rounded-xl text-sm font-bold ${isOutOfStock ? 'text-gray-300 line-through opacity-50 cursor-not-allowed' : 'text-gray-800 hover:border-[#964b00] cursor-pointer'} transition-colors focus:outline-none shadow-sm"
+                                            class="size-btn-${p.id} px-2 py-1.5 md:px-5 md:py-2.5 bg-white/50 border border-black/10 rounded-lg md:rounded-xl text-[10px] md:text-sm font-bold ${isOutOfStock ? 'text-gray-300 line-through opacity-50 cursor-not-allowed' : 'text-gray-800 hover:border-[#964b00] cursor-pointer'} transition-colors focus:outline-none shadow-sm min-w-[2rem] md:min-w-[3rem]"
                                             ${isOutOfStock ? 'disabled' : ''}>
                                         ${s}
                                     </button>
@@ -746,8 +737,8 @@
 
                     <button onclick="addToCart('${p.id}', '${p.name}', ${p.salePrice})" 
                             ${totalStock === 0 ? 'disabled' : ''}
-                            class="mt-auto w-full ${totalStock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#964b00] hover:bg-black active:scale-95'} text-white py-4 rounded-xl font-black tracking-[0.2em] uppercase text-[11px] transition-all shadow-lg">
-                        ${totalStock === 0 ? 'STOKTA YOK' : 'Sepete Ekle'}
+                            class="mt-auto w-full ${totalStock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#964b00] hover:bg-black active:scale-95'} text-white py-2.5 md:py-4 rounded-lg md:rounded-xl font-black tracking-[0.1em] md:tracking-[0.2em] uppercase text-[9px] md:text-[11px] transition-all shadow-lg">
+                        ${totalStock === 0 ? 'TÜKENDİ' : 'Sepete Ekle'}
                     </button>
                 </div>
             </article>
@@ -768,7 +759,6 @@
         });
     };
 
-    // --- AUTHENTICATION KONTROLÜ ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
             isAdmin = true;
