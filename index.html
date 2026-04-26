@@ -11,13 +11,34 @@
         body { 
             font-family: 'Poppins', sans-serif; 
             background-color: #E3B778; 
-            background-image: url(''); 
-            background-size: cover; 
-            background-position: center; 
-            background-repeat: no-repeat; 
-            background-attachment: fixed;
-            margin: 0;
-        }
+            body { 
+    font-family: 'Poppins', sans-serif; 
+    background-color: #E3B778; 
+    margin: 0;
+            }
+#hit-slider {
+    width: 300px;  /* Genişlik */
+    height: 300px; /* Yükseklik (4:3 için genişliğin 0.75 katı) */
+    margin: 0 auto; /* Ortalamak için */
+}
+
+#bg-slideshow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-image 1.5s ease-in-out; 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-attachment: fixed;
+    margin: 0;
+    }
         .serif { font-family: 'Playfair Display', serif; }
         
         .glass-card {
@@ -40,9 +61,16 @@
             align-items: center; 
             justify-content: center; 
         }
+    }
+    #hit-slider {
+    background-image: url('image/ciftfoto.jpg'); /* İlk fotoğraf */
+    width: 100%;
+    height: 100%;
+}
     </style>
 </head>
 <body>
+ <div id="bg-slideshow"></div>   
  <div id="menuOverlay" onclick="toggleMenu(); closeCart(); closeProfilePanel();" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
 
 <div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl transition-all duration-500">
@@ -189,10 +217,18 @@
 
 <main class="max-w-7xl mx-auto py-16 px-4">
     <header class="text-center mb-16">
-        <h2 class="text-5xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">Summer Collection</h2>
-        <p class="text-gray-800 mt-4 tracking-[0.3em] uppercase text-sm font-bold bg-white/30 inline-block px-6 py-1 rounded-full shadow-sm border border-white/20">Sezonun En Hit Parçaları</p>
-    </header>
+    <h2 class="text-5xl md:text-6xl font-black text-[#964b00] serif italic">Summer Collection</h2>
+    <p class="text-gray-800 mt-4 tracking-[0.3em] uppercase text-sm font-bold">Sezonun En Hit Parçaları</p>
+
+    <div class="mt-10 w-[300px] h-[300px] mx-auto px-0">
+    <div class="relative overflow-hidden rounded-[2rem] shadow-2xl border-4 border-white/50 w-full h-full">
+        <div id="hit-slider" class="w-full h-full bg-cover bg-center transition-all duration-1000 ease-in-out aspect-square">
+            </div>
+    </div>
+</div>
+</header>
 </main>
+
 
 <div id="authModal" class="modal-overlay" onclick="if(event.target === this) closeAuthModal()">
     <div class="bg-white/90 p-8 rounded-[3rem] w-[90%] max-w-md shadow-2xl relative border border-white/50" onclick="event.stopPropagation()">
@@ -427,9 +463,29 @@
 
     window.showPhotoSelected = () => getEl('photoStatus').innerText = "✅ FOTOĞRAF SEÇİLDİ";
     window.showUpdPhotoSelected = () => getEl('updPhotoStatus').innerText = "✅ YENİ FOTOĞRAF HAZIR";
+    const hitImages = [
+    'image/ciftfoto.jpg',
+    'image/tekfoto.jpg',
+    'image/tekli.jpg'
+];
 
-    // Başlangıç Ayarları
-    window.updateCart();
+let hitIndex = 0;
+const sliderElement = document.getElementById('hit-slider');
+
+function rotateHitSlider() {
+    hitIndex = (hitIndex + 1) % hitImages.length;
+    
+    // Önce hafif bir karartma efekti (isteğe bağlı)
+    sliderElement.style.opacity = "0.8";
+    
+    setTimeout(() => {
+        sliderElement.style.backgroundImage = `url('${hitImages[hitIndex]}')`;
+        sliderElement.style.opacity = "1";
+    }, 300);
+}
+
+// 4 saniyede bir pencere içindeki foto dönsün
+setInterval(rotateHitSlider, 4000);
 </script>
 </body>
 </html>
