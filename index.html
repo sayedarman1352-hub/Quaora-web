@@ -557,63 +557,7 @@
             getEl('userActionWrapper').onclick = window.openAuthModal;
         }
     });
-    window.handleSliderPhotoUpload = async () => {
-        const fileInput = getEl('newSliderPhoto');
-        if (!fileInput || !fileInput.files || !fileInput.files[0]) {
-            return alert("Lütfen önce bir fotoğraf seçin!");
-        }
-        
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = async (e) => {
-            let base64Image = e.target.result;
-
-            // --- OTOMATİK BOYUT DÜŞÜRÜCÜ (1MB ÜSTÜ İÇİN) ---
-            if (file.size > 1024 * 1024) { // 1MB'dan büyükse
-                console.log("Dosya büyük, sıkıştırılıyor...");
-                
-                base64Image = await new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-
-                        // Max genişliği 1920px yapalım (HD kalite yeterli), oranları koruyalım
-                        const MAX_WIDTH = 1920;
-                        if (width > MAX_WIDTH) {
-                            height = Math.round((height * MAX_WIDTH) / width);
-                            width = MAX_WIDTH;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        // JPEG formatında %70 kalite ile sıkıştır (1MB altına çok rahat düşer)
-                        resolve(canvas.toDataURL('image/jpeg', 0.7));
-                    };
-                    img.src = e.target.result;
-                });
-            }
-
-            try {
-                // Firebase'e gönder (Sıkışmış veya zaten küçük olan halini)
-                await addDoc(collection(db, "slider_images"), { 
-                    url: base64Image, 
-                    createdAt: Date.now() 
-                });
-                alert(file.size > 1024 * 1024 ? "Fotoğraf optimize edilerek eklendi!" : "Fotoğraf başarıyla eklendi!");
-                fileInput.value = ""; 
-            } catch (error) {
-                alert("Hata: Fotoğraf hala çok büyük veya internet bağlantısı kesildi.");
-                console.error(error);
-            }
-        };
-        reader.readAsDataURL(file); 
-    };
+    
 
     // --- DİNAMİK SLIDER MANTIĞI ---
     let hitIndex = 0;
