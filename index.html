@@ -66,6 +66,7 @@
             background-size: cover;
             background-position: center;
         }
+        
     </style>
 </head>
 <body>
@@ -81,6 +82,11 @@
             </div>
             <span id="userStatusText" class="text-[10px] font-black text-[#964b00] uppercase tracking-[0.4em] italic ml-1">Sign In</span>
         </div>
+        <div id="adminAccess" class="hidden mb-6">
+    <button onclick="openAdminPanel()" class="w-full bg-[#964b00] text-white py-3 rounded-xl font-black text-[10px] tracking-[0.3em] uppercase shadow-lg border-2 border-white/20">
+       Admin Paneli
+    </button>
+</div>
         <div class="relative mb-6">
             <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
             <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
@@ -207,6 +213,41 @@
 <main class="max-w-7xl mx-auto py-16 px-4 relative min-h-screen">
     <div class="relative w-[320px] h-[400px] mx-auto mt-[-40px] group">
         
+        <div id="adminQuickAdd" class="hidden absolute top-2 -right-3 z-[80]">
+    <button onclick="openSliderAdmin()" class="w-11 h-11 bg-[#964b00] text-white rounded-full shadow-2xl flex items-center justify-center text-2xl font-bold border-[3px] border-white hover:scale-110 active:scale-95 transition-all">
+        +
+    </button>
+</div>
+
+<div id="sliderAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+        
+        <div class="p-5 bg-[#964b00] text-white flex justify-between items-center">
+            <h2 class="font-black tracking-widest text-lg">SLIDER YÖNETİMİ</h2>
+            <button onclick="closeSliderAdmin()" class="text-white hover:scale-110 active:scale-95 transition-transform font-black text-2xl leading-none">✕</button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-grow flex flex-col gap-6 bg-gray-50">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-black/5">
+                <h3 class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2">Yeni Fotoğraf Ekle</h3>
+                
+                <input type="file" id="newSliderPhoto" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#964b00]/10 file:text-[#964b00] hover:file:bg-[#964b00]/20 mb-4 transition-all cursor-pointer">
+                
+                <button onclick="handleSliderPhotoUpload()" class="w-full bg-[#964b00] text-white font-black tracking-widest text-sm py-3 rounded-xl hover:bg-[#7a3d00] hover:shadow-lg transition-all active:scale-95">
+                    GÜNCELLE
+                </button>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-black/5">
+                <h3 class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2">Mevcut Fotoğraflar (Sil)</h3>
+                
+                <div id="sliderAdminList" class="flex flex-col gap-3">
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
         <div class="relative overflow-hidden rounded-[2rem] shadow-2xl border-4 border-white/50 w-full h-full z-10 bg-gray-200">
             <div id="hit-slider-container">
                 </div>
@@ -219,13 +260,13 @@
             </div>
 
         <header class="absolute bottom-2 left-0 right-0 text-center z-20 pointer-events-none">
-    <h1 class="text-3xl md:text-4xl font-black text-white serif italic drop-shadow-2xl leading-none px-4">
-        Summer Collection
-    </h1>
-    <p class="text-white mt-1.5 tracking-[0.2em] uppercase text-[9px] font-bold drop-shadow-md opacity-90">
-        Sezonun En Hit Parçaları
-    </p>
-</header>
+            <h1 class="text-3xl md:text-4xl font-black text-white serif italic drop-shadow-2xl leading-none px-4">
+                Summer Collection
+            </h1>
+            <p class="text-white mt-1.5 tracking-[0.2em] uppercase text-[9px] font-bold drop-shadow-md opacity-90">
+                Sezonun En Hit Parçaları
+            </p>
+        </header>
     </div>
 </main>
 
@@ -258,7 +299,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -277,10 +318,13 @@
     const getEl = (id) => document.getElementById(id);
     const overlay = getEl("menuOverlay");
 
+    // --- PANEL KONTROLLERİ ---
     window.closeAllPanels = () => {
-        getEl("sideMenu").style.width = "0";
-        getEl("cartPanel").style.width = "0";
-        getEl("profileSidePanel").style.width = "0";
+        const panels = ["sideMenu", "cartPanel", "profileSidePanel", "adminPanel"];
+        panels.forEach(id => {
+            const el = getEl(id);
+            if(el) el.style.width = "0";
+        });
         if(overlay) overlay.classList.add("hidden");
     };
 
@@ -297,12 +341,14 @@
     window.toggleMenuSection = (sectionId, arrowId) => {
         const content = getEl(sectionId);
         const arrow = getEl(arrowId);
+        if(!content || !arrow) return;
         const isClosed = content.style.maxHeight === '0px' || content.style.maxHeight === '';
         content.style.maxHeight = isClosed ? '350px' : '0px';
         content.style.marginTop = isClosed ? '8px' : '0px';
         arrow.style.transform = isClosed ? 'rotate(180deg)' : 'rotate(0deg)';
     };
 
+    // --- SEPET SİSTEMİ ---
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
     window.toggleCart = () => {
         const p = getEl("cartPanel");
@@ -317,11 +363,13 @@
 
     window.updateCart = () => {
         localStorage.setItem('quaora_cart', JSON.stringify(cart));
-        getEl('cartCount').innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
+        const countEl = getEl('cartCount');
+        if(countEl) countEl.innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
     };
 
     const renderCart = () => {
         const items = getEl('cartItems');
+        if (!items) return;
         if (cart.length === 0) { 
             items.innerHTML = '<div class="flex flex-col items-center justify-center h-40 text-gray-400 italic">Sepetiniz şu an boş.</div>'; 
             return; 
@@ -335,7 +383,8 @@
                 <button onclick="removeFromCart('${i.name}')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-red-500 transition-colors">✕</button>
             </div>
         `).join('');
-        getEl('cartTotal').innerText = '₺' + cart.reduce((s, i) => s + (i.price * (i.qty || 1)), 0).toLocaleString('tr-TR');
+        const totalEl = getEl('cartTotal');
+        if(totalEl) totalEl.innerText = '₺' + cart.reduce((s, i) => s + (i.price * (i.qty || 1)), 0).toLocaleString('tr-TR');
     };
 
     window.removeFromCart = (name) => { 
@@ -348,6 +397,7 @@
         if (cart.length > 0) window.location.href = "https://www.shopier.com/quaora/45868772"; 
     };
 
+    // --- PROFİL VE AUTH ---
     window.openProfilePanel = () => {
         closeAllPanels();
         getEl("profileSidePanel").style.width = (window.innerWidth < 768) ? "100%" : "380px";
@@ -362,126 +412,228 @@
         const isLogin = type === 'login';
         getEl('formLogin').classList.toggle('hidden', !isLogin);
         getEl('formRegister').classList.toggle('hidden', isLogin);
-        getEl('tabLogin').className = isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
-        getEl('tabRegister').className = !isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
     };
 
     window.handleRegister = async () => {
-        const fields = { u: getEl('regUser').value, e: getEl('regEmail').value, p: getEl('regPass').value, ph: getEl('regPhone').value };
-        const pf = getEl('regPhoto').files[0];
-        if(!fields.u || !fields.e || !fields.p) return alert("Zorunlu alanları doldur kanka!");
+        const fields = { u: getEl('regUser').value, e: getEl('regEmail').value, p: getEl('regPass').value };
+        if(!fields.u || !fields.e || !fields.p) return alert("Zorunlu alanları doldur!");
         try {
             const res = await createUserWithEmailAndPassword(auth, fields.e, fields.p);
-            let b64 = "";
-            if(pf) b64 = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(pf); });
-            await setDoc(doc(db, "users", res.user.uid), { username: fields.u, email: fields.e, phone: fields.ph, photo: b64, createdAt: new Date().toISOString() });
-            alert("Harika! Aramıza hoş geldin.");
+            await setDoc(doc(db, "users", res.user.uid), { username: fields.u, email: fields.e, createdAt: new Date().toISOString() });
+            alert("Kayıt başarılı!");
             window.switchTab('login');
         } catch (err) { alert("Hata: " + err.message); }
     };
 
     window.handleLogin = async () => {
         const e = getEl('loginEmail').value, p = getEl('loginPass').value;
-        try { await signInWithEmailAndPassword(auth, e, p); window.closeAuthModal(); } catch (err) { alert("E-posta veya şifre hatalı!"); }
+        try { await signInWithEmailAndPassword(auth, e, p); window.closeAuthModal(); } catch (err) { alert("Hata!"); }
     };
 
     window.handleUpdateProfile = async () => {
         const user = auth.currentUser; if(!user) return;
         const data = { username: getEl('updUser').value, phone: getEl('updPhone').value };
-        const pf = getEl('updPhoto').files[0];
-        if(pf) data.photo = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(pf); });
-        await updateDoc(doc(db, "users", user.uid), data);
-        alert("Profilin güncellendi!");
-        location.reload();
+        const photoInput = getEl('updPhoto');
+        if(photoInput && photoInput.files[0]) {
+            data.photo = await new Promise(r => { 
+                const rd = new FileReader(); 
+                rd.onload = ev => r(ev.target.result); 
+                rd.readAsDataURL(photoInput.files[0]); 
+            });
+        }
+        try {
+            await updateDoc(doc(db, "users", user.uid), data);
+            alert("Profilin güncellendi!");
+            location.reload();
+        } catch(e) { alert("Hata oluştu!"); }
     };
 
     window.handleLogout = async () => { 
-        if(confirm("Çıkış yapmak istediğine emin misin?")) { await auth.signOut(); location.reload(); }
+        if(confirm("Çıkış yapmak istiyor musunuz?")) { await auth.signOut(); location.reload(); }
     };
 
+    // --- SLIDER YÖNETİM PANELİ (YENİ SİSTEM) ---
+    window.openSliderAdmin = () => {
+        const modal = getEl('sliderAdminModal');
+        if(modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            window.loadSliderAdminImages();
+        }
+    };
+
+    window.closeSliderAdmin = () => {
+        const modal = getEl('sliderAdminModal');
+        if(modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    };
+
+    window.handleSliderPhotoUpload = async () => {
+        const fileInput = getEl('newSliderPhoto');
+        if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+            return alert("Lütfen önce bir fotoğraf seçin!");
+        }
+        
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = async (e) => {
+            const base64Image = e.target.result;
+            try {
+                await addDoc(collection(db, "slider_images"), { 
+                    url: base64Image, 
+                    createdAt: Date.now() 
+                });
+                alert("Fotoğraf eklendi ve slider güncellendi!");
+                fileInput.value = ""; 
+            } catch (error) {
+                alert("Yükleme sırasında hata oluştu!");
+                console.error(error);
+            }
+        };
+        reader.readAsDataURL(file); 
+    };
+
+    window.loadSliderAdminImages = () => {
+        onSnapshot(collection(db, "slider_images"), (snap) => {
+            const list = getEl('sliderAdminList');
+            if(!list) return;
+            
+            if(snap.empty) {
+                list.innerHTML = '<p class="text-xs text-gray-400 italic font-bold">Slider şu an boş.</p>';
+                return;
+            }
+            
+            list.innerHTML = snap.docs.map(doc => `
+                <div class="flex items-center gap-4 bg-gray-50 p-2 rounded-xl border border-black/5 transition-all hover:border-[#964b00]/30">
+                    <img src="${doc.data().url}" class="w-14 h-14 object-cover rounded-lg shadow-sm border border-black/5">
+                    <div class="flex-grow"></div>
+                    <button onclick="deleteSliderImg('${doc.id}')" class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white font-black tracking-widest px-4 py-2 rounded-lg text-[10px] transition-colors shadow-sm">
+                        SİL
+                    </button>
+                </div>
+            `).join('');
+        });
+    };
+
+    window.deleteSliderImg = async (id) => {
+        if(confirm("Bu fotoğrafı silmek istediğinize emin misiniz?")) {
+            await deleteDoc(doc(db, "slider_images", id));
+        }
+    };
+
+    // --- DURUM TAKİBİ ---
     onAuthStateChanged(auth, async (user) => {
+        const adminSec = getEl('adminAccess');
+        const quickAdd = getEl('adminQuickAdd');
+        
         if (user) {
+            const isAdmin = user.email === "quaoratr@gmail.com";
+            if(isAdmin) {
+                if(adminSec) adminSec.classList.remove("hidden");
+                if(quickAdd) quickAdd.classList.remove("hidden");
+            } else {
+                if(adminSec) adminSec.classList.add("hidden");
+                if(quickAdd) quickAdd.classList.add("hidden");
+            }
+
             const snap = await getDoc(doc(db, "users", user.uid));
             if (snap.exists()) {
                 const d = snap.data();
                 getEl('userStatusText').innerText = d.username.toUpperCase();
-                getEl('panelUserName').innerText = d.username;
-                getEl('updUser').value = d.username;
-                getEl('updPhone').value = d.phone || "";
-                if(d.photo) {
-                    const img = `<img src="${d.photo}" class="w-full h-full object-cover">`;
-                    getEl('userPhotoContainer').innerHTML = img;
-                    getEl('panelUserPhoto').innerHTML = img;
-                }
                 getEl('userActionWrapper').onclick = window.openProfilePanel;
+                if(getEl('updUser')) getEl('updUser').value = d.username || "";
+                if(getEl('updPhone')) getEl('updPhone').value = d.phone || "";
+                if(d.photo && getEl('panelUserPhoto')) {
+                    getEl('panelUserPhoto').innerHTML = `<img src="${d.photo}" class="w-full h-full object-cover">`;
+                }
             }
         } else {
+            if(adminSec) adminSec.classList.add("hidden");
+            if(quickAdd) quickAdd.classList.add("hidden");
             getEl('userStatusText').innerText = "Sign In";
             getEl('userActionWrapper').onclick = window.openAuthModal;
         }
     });
 
-    window.showPhotoSelected = () => getEl('photoStatus').innerText = "✅ FOTOĞRAF SEÇİLDİ";
-    window.showUpdPhotoSelected = () => getEl('updPhotoStatus').innerText = "✅ YENİ FOTOĞRAF HAZIR";
+    // --- DİNAMİK SLIDER MANTIĞI ---
+    let hitIndex = 0;
+    let sliderInterval;
+    const hitContainer = getEl('hit-slider-container');
+    const dotsContainer = getEl('slider-dots');
 
-    // --- HIT SLIDER SİSTEMİ ---
-const hitImages = ['image/ciftfoto.jpg', 'image/tekfoto.jpg', 'image/tekli.jpg', 'image/yesil.jpg', 'image/siyah.jpg', 'image/czigiki.jpg'];
-let hitIndex = 0;
-let sliderInterval;
-
-const hitContainer = document.getElementById('hit-slider-container');
-const dotsContainer = document.getElementById('slider-dots');
-
-// 1. Başlatma: Fotoları ve Noktaları ekle
-hitContainer.innerHTML = hitImages.map(img => `<div class="slide-item" style="background-image: url('${img}')"></div>`).join('');
-dotsContainer.innerHTML = hitImages.map((_, i) => `<div onclick="goToSlide(${i})" class="dot w-2 h-2 rounded-full bg-white/30 cursor-pointer transition-all border border-black/10"></div>`).join('');
-
-const dots = document.querySelectorAll('.dot');
-
-function updateSlider() {
-    const offset = hitIndex * 100;
-    hitContainer.style.transform = `translateX(-${offset}%)`;
-    
-    // Noktaları güncelle
-    dots.forEach((dot, i) => {
-        dot.style.background = i === hitIndex ? "white" : "rgba(255,255,255,0.3)";
-        dot.style.width = i === hitIndex ? "16px" : "8px"; // Aktif olan uzasın
+    onSnapshot(collection(db, "slider_images"), (snap) => {
+        const imgs = snap.docs.map(d => d.data().url);
+        if(!hitContainer) return;
+        if(imgs.length === 0) {
+            hitContainer.innerHTML = '<div class="slide-item flex items-center justify-center bg-gray-100 italic">Görsel bulunamadı.</div>';
+            return;
+        }
+        hitContainer.innerHTML = imgs.map(img => `<div class="slide-item" style="background-image: url('${img}')"></div>`).join('');
+        dotsContainer.innerHTML = imgs.map((_, i) => `<div onclick="goToSlide(${i})" class="dot w-2 h-2 rounded-full bg-white/30 cursor-pointer transition-all"></div>`).join('');
+        window.hitImagesCount = imgs.length;
+        updateSlider();
+        startTimer();
     });
-}
 
-// Navigasyon Fonksiyonları
-window.nextSlide = () => {
-    hitIndex = (hitIndex + 1) % hitImages.length;
-    updateSlider();
-    resetTimer();
-};
+    function updateSlider() {
+        if(!window.hitImagesCount || !hitContainer) return;
+        hitContainer.style.transform = `translateX(-${hitIndex * 100}%)`;
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, i) => {
+            dot.style.background = i === hitIndex ? "white" : "rgba(255,255,255,0.3)";
+            dot.style.width = i === hitIndex ? "16px" : "8px";
+        });
+    }
 
-window.prevSlide = () => {
-    hitIndex = (hitIndex - 1 + hitImages.length) % hitImages.length;
-    updateSlider();
-    resetTimer();
-};
+    window.nextSlide = () => {
+        if(!window.hitImagesCount) return;
+        hitIndex = (hitIndex + 1) % window.hitImagesCount;
+        updateSlider();
+        resetTimer();
+    };
 
-window.goToSlide = (index) => {
-    hitIndex = index;
-    updateSlider();
-    resetTimer();
-};
+    window.prevSlide = () => {
+        if(!window.hitImagesCount) return;
+        hitIndex = (hitIndex - 1 + window.hitImagesCount) % window.hitImagesCount;
+        updateSlider();
+        resetTimer();
+    };
 
-// Zamanlayıcı
-function startTimer() {
-    sliderInterval = setInterval(nextSlide, 2000);
-}
-
-function resetTimer() {
-    clearInterval(sliderInterval);
-    startTimer();
-}
-
-// İlk çalıştırma
-updateSlider();
-startTimer();
+    window.goToSlide = (idx) => { hitIndex = idx; updateSlider(); resetTimer(); };
+    function startTimer() { clearInterval(sliderInterval); sliderInterval = setInterval(window.nextSlide, 3500); }
+    function resetTimer() { startTimer(); }
 
 </script>
 </body>
+<div id="sliderAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+        
+        <div class="p-5 bg-[#964b00] text-white flex justify-between items-center">
+            <h2 class="font-black tracking-widest text-lg">SLIDER YÖNETİMİ</h2>
+            <button onclick="closeSliderAdmin()" class="text-white hover:scale-110 active:scale-95 transition-transform font-black text-2xl leading-none">✕</button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-grow flex flex-col gap-6 bg-gray-50">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-black/5">
+                <h3 class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2">Yeni Fotoğraf Ekle</h3>
+                
+                <input type="file" id="newSliderPhoto" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#964b00]/10 file:text-[#964b00] hover:file:bg-[#964b00]/20 mb-4 transition-all cursor-pointer">
+                
+                <button onclick="handleSliderPhotoUpload()" class="w-full bg-[#964b00] text-white font-black tracking-widest text-sm py-3 rounded-xl hover:bg-[#7a3d00] hover:shadow-lg transition-all active:scale-95">
+                    GÜNCELLE
+                </button>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-black/5">
+                <h3 class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2">Mevcut Fotoğraflar (Sil)</h3>
+                
+                <div id="sliderAdminList" class="flex flex-col gap-3">
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
 </html>
