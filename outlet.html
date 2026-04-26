@@ -44,6 +44,10 @@
             color: white;
             border-color: #964b00;
         }
+
+        /* Slider için scrollbar gizleme */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
@@ -56,47 +60,57 @@
             <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
             <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
         </div>
-        
-        <nav class="flex flex-col space-y-4 w-full h-full text-gray-800"> 
+        <nav class="flex flex-col space-y-3 w-full"> 
             <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
                 <span class="text-xs mr-2">←</span> MAIN MENU
             </a>
-            
-            <a href="yeni-gelenler.html" class="text-lg font-bold text-[#964b00] border-b border-[#964b00]/20 w-fit uppercase tracking-widest">New</a>
-            
-            <div class="flex flex-col w-full">
-                <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold hover:text-[#964b00] uppercase tracking-widest focus:outline-none w-full">
-                    Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                </button>
-                <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
+            <div class="flex flex-col space-y-4 pt-1">
+                <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini üstleri</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> mayokini altları</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini üstleri</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini altları</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('topsItems', 'topsArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="topsItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
+                    </div>
+                </div>
+                <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
+                <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
+                <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+                <div class="pt-2">
+                    <hr class="border-[#964b00]/10 mb-4">
+                    <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
                 </div>
             </div>
-
-            <div class="flex flex-col w-full">
-                <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold hover:text-[#964b00] uppercase tracking-widest focus:outline-none w-full">
-                    Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                </button>
-                <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
-                </div>
-            </div>
-
-            <a href="bottom.html" class="text-lg font-bold hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
-            <a href="bottom.html" class="text-lg font-bold hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
-            <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
-            
-            <div class="pt-2">
-                <hr class="border-[#964b00]/10 mb-4">
-                <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
-            </div>
-
-            <div class="mt-auto py-8">
+            <div class="py-8">
                 <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
                 <div class="flex flex-col space-y-3 pl-3">
                     <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">INSTAGRAM</a>
@@ -106,7 +120,6 @@
         </nav>
     </div>
 </div>
-
 
 <div id="cartPanel" class="fixed top-0 right-0 h-full w-0 bg-white z-[101] overflow-x-hidden shadow-2xl flex flex-col">
     <div class="p-6 flex justify-between items-center border-b">
@@ -158,41 +171,42 @@
         <p class="text-gray-900 mt-4 tracking-[0.3em] uppercase text-[10px] font-bold bg-white/30 inline-block px-4 py-1 rounded-full border border-white/20">Seçili Ürünlerde %50'ye Varan İndirim</p>
     </header>
 
-    <div id="outletProductGrid" class="grid grid-cols-1 md:grid-cols-3 gap-12">
-        </div>
+    <div id="outletProductGrid" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
 </main>
 
 <div id="productAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-fadeIn relative">
-        
         <button onclick="closeProductAdmin()" class="absolute top-4 right-4 z-50 text-black/50 hover:text-black font-black text-2xl bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all">✕</button>
 
         <div class="md:w-1/2 bg-gray-100 p-6 flex flex-col items-center justify-center border-r border-black/5 relative group cursor-pointer" onclick="document.getElementById('newProductPhoto').click()">
-            <input type="file" id="newProductPhoto" accept="image/*" class="hidden" onchange="previewProductImage(this)">
+            <input type="file" id="newProductPhoto" accept="image/*" multiple class="hidden" onchange="previewProductImage(this)">
             
-            <div id="imagePreviewContainer" class="w-full h-full min-h-[400px] rounded-2xl border-2 border-dashed border-[#964b00]/30 flex flex-col items-center justify-center text-[#964b00]/50 group-hover:bg-[#964b00]/5 transition-all overflow-hidden relative">
+            <div id="imagePreviewContainer" class="w-full h-full min-h-[400px] rounded-2xl border-2 border-dashed border-[#964b00]/30 flex flex-col items-center justify-center text-[#964b00]/50 hover:bg-[#964b00]/5 transition-all overflow-hidden relative">
                 <span class="text-4xl mb-2">+</span>
-                <span class="text-xs font-black uppercase tracking-widest">Fotoğraf Seç</span>
-                <img id="imagePreview" src="" class="hidden absolute inset-0 w-full h-full object-cover">
+                <span class="text-xs font-black uppercase tracking-widest text-center px-4">Birden Fazla Fotoğraf Seçebilirsiniz</span>
             </div>
         </div>
 
         <div class="md:w-1/2 p-8 overflow-y-auto">
             <h2 class="font-black tracking-widest text-2xl text-[#964b00] mb-6 uppercase serif">Yeni Outlet Ürünü</h2>
             
-            <div class="space-y-5">
+            <div class="space-y-4">
                 <div>
                     <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Ürün İsmi</label>
                     <input type="text" id="pName" placeholder="Örn: Sunset Glow Bikini" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
                 </div>
 
                 <div class="flex gap-4">
-                    <div class="w-1/2">
+                    <div class="w-1/3">
+                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Stok Adedi</label>
+                        <input type="number" id="pStock" placeholder="20" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
+                    </div>
+                    <div class="w-1/3">
                         <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Eski Fiyat (₺)</label>
                         <input type="number" id="pOldPrice" placeholder="1400" oninput="calculateDiscount()" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
                     </div>
-                    <div class="w-1/2 relative">
-                        <label class="block text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Satış Fiyatı (₺)</label>
+                    <div class="w-1/3 relative">
+                        <label class="block text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Satış (₺)</label>
                         <input type="number" id="pNewPrice" placeholder="980" oninput="calculateDiscount()" class="w-full bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm font-black focus:outline-none focus:border-red-500">
                         <div id="discountBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-md hidden">-%0</div>
                     </div>
@@ -238,22 +252,41 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- SEPET SİSTEMİ (STANDART) ---
+    window.selectedSizes = {};
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+    let isAdmin = false;
+    let unsubscribeProducts = null; // Listeyi güncellerken çakışma olmaması için
+
+    // --- SEPET VE MENÜ SİSTEMİ ---
     window.toggleCart = () => {
         const p = document.getElementById("cartPanel");
         p.style.width = p.style.width === "300px" ? "0" : "300px";
         if (p.style.width === "300px") window.renderCart();
     };
+    
     window.toggleMenu = () => {
         const m = document.getElementById("sideMenu");
         m.style.width = m.style.width === "300px" ? "0" : "300px";
     };
+
+    window.toggleMenuSection = (sectionId, arrowId) => {
+        const section = document.getElementById(sectionId);
+        const arrow = document.getElementById(arrowId);
+        if (section.style.maxHeight && section.style.maxHeight !== "0px") {
+            section.style.maxHeight = "0px";
+            arrow.style.transform = "rotate(0deg)";
+        } else {
+            section.style.maxHeight = section.scrollHeight + "px";
+            arrow.style.transform = "rotate(180deg)";
+        }
+    };
+
     window.updateCart = () => {
         localStorage.setItem('quaora_cart', JSON.stringify(cart));
         const c = document.getElementById('cartCount');
         if(c) c.innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
     };
+    
     window.renderCart = () => {
         const items = document.getElementById('cartItems');
         const tDisp = document.getElementById('cartTotal');
@@ -267,44 +300,49 @@
             return `
                 <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-black/5">
                     <div>
-                        <h4 class="font-bold uppercase text-[9px] tracking-tight text-gray-800">${i.name} (${i.qty})</h4>
+                        <h4 class="font-bold uppercase text-[10px] tracking-tight text-gray-800">${i.name}</h4>
+                        <p class="text-[9px] font-bold text-gray-500 mb-1">Beden: <span class="text-[#964b00]">${i.size}</span> | Adet: ${i.qty}</p>
                         <p class="text-[#964b00] font-black text-sm italic">₺${(i.price * i.qty).toLocaleString('tr-TR')}</p>
                     </div>
-                    <button onclick="removeFromCart('${i.name}')" class="text-red-500 font-bold px-2 hover:scale-110">✕</button>
+                    <button onclick="removeFromCart('${i.cartItemId}')" class="text-red-500 font-bold px-2 hover:scale-110">✕</button>
                 </div>
             `;
         }).join('');
         tDisp.innerText = '₺' + total.toLocaleString('tr-TR');
     };
-    window.addToCart = (name, price) => {
-        const idx = cart.findIndex(i => i.name === name);
-        if (idx > -1) cart[idx].qty += 1; else cart.push({ name, price, qty: 1 });
+
+    window.addToCart = (id, name, price, stock) => {
+        const size = window.selectedSizes[id];
+        if (!size) return alert("Lütfen sepete eklemeden önce bir beden seçin!");
+        
+        const cartItemId = id + "_" + size; 
+        const index = cart.findIndex(i => i.cartItemId === cartItemId);
+        
+        let currentQty = index > -1 ? cart[index].qty : 0;
+        if (currentQty >= stock) {
+            return alert(`Maalesef stokta yeterli ürün yok!`);
+        }
+
+        if (index > -1) { 
+            cart[index].qty += 1; 
+        } else { 
+            cart.push({ cartItemId, id, name, price, size, qty: 1, stock }); 
+        }
         window.updateCart(); window.toggleCart();
     };
-    window.removeFromCart = (name) => {
-        cart = cart.filter(i => i.name !== name);
+
+    window.removeFromCart = (cartItemId) => {
+        cart = cart.filter(i => i.cartItemId !== cartItemId);
         window.updateCart(); window.renderCart();
     };
+    
     window.siparisVer = () => {
         if(cart.length > 0) window.location.href = "https://www.shopier.com/quaora/45868772";
     };
-    window.updateCart(); // Başlangıçta sepeti yükle
-
-    // --- ADMİN VE YETKİ KONTROLÜ ---
-    let isAdmin = false;
-    onAuthStateChanged(auth, (user) => {
-        if (user && user.email === "quaoratr@gmail.com") {
-            isAdmin = true;
-            document.getElementById('adminAddProductBtn').classList.remove('hidden');
-            window.loadOutletProducts(); // Silme butonları admin için eklensin diye yenile
-        } else {
-            isAdmin = false;
-            document.getElementById('adminAddProductBtn').classList.add('hidden');
-        }
-    });
+    window.updateCart();
 
     // --- ÜRÜN EKLEME MODAL KONTROLLERİ ---
-    let currentImageBase64 = null;
+    let currentImagesBase64 = [];
 
     window.openProductAdmin = () => {
         document.getElementById('productAdminModal').classList.remove('hidden');
@@ -316,7 +354,6 @@
         document.getElementById('productAdminModal').classList.remove('flex');
     };
 
-    // İndirim Hesaplama
     window.calculateDiscount = () => {
         const oldP = parseFloat(document.getElementById('pOldPrice').value);
         const newP = parseFloat(document.getElementById('pNewPrice').value);
@@ -331,53 +368,59 @@
         }
     };
 
-    // Fotoğraf Seçme ve Sıkıştırma
-    window.previewProductImage = (input) => {
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = async (e) => {
-                let base64 = e.target.result;
-                
-                // 1MB üstüyse sıkıştır
-                if (file.size > 1024 * 1024) {
-                    base64 = await new Promise((resolve) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            let w = img.width; let h = img.height;
-                            if (w > 1200) { h = Math.round((h * 1200) / w); w = 1200; }
-                            canvas.width = w; canvas.height = h;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, w, h);
-                            resolve(canvas.toDataURL('image/jpeg', 0.7));
-                        };
-                        img.src = e.target.result;
-                    });
-                }
+    window.previewProductImage = async (input) => {
+        if (input.files && input.files.length > 0) {
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            previewContainer.innerHTML = '<span class="text-xs font-black tracking-widest text-[#964b00]/50 animate-pulse">FOTOĞRAFLAR İŞLENİYOR...</span>';
+            currentImagesBase64 = [];
 
-                currentImageBase64 = base64;
-                const imgEl = document.getElementById('imagePreview');
-                imgEl.src = base64;
-                imgEl.classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
+            const gridHtml = document.createElement('div');
+            gridHtml.className = "grid grid-cols-2 gap-2 w-full h-full p-2 overflow-y-auto";
+
+            for (let i = 0; i < input.files.length; i++) {
+                const file = input.files[i];
+                let base64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        if (file.size > 1024 * 1024) {
+                            const img = new Image();
+                            img.onload = () => {
+                                const canvas = document.createElement('canvas');
+                                let w = img.width; let h = img.height;
+                                if (w > 1200) { h = Math.round((h * 1200) / w); w = 1200; }
+                                canvas.width = w; canvas.height = h;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0, w, h);
+                                resolve(canvas.toDataURL('image/jpeg', 0.7));
+                            };
+                            img.src = e.target.result;
+                        } else {
+                            resolve(e.target.result);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+                
+                currentImagesBase64.push(base64);
+                gridHtml.innerHTML += `<div class="rounded-xl overflow-hidden h-32 border border-[#964b00]/20"><img src="${base64}" class="w-full h-full object-cover"></div>`;
+            }
+            
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(gridHtml);
         }
     };
 
-    // Firebase'e Kaydetme
     window.saveProduct = async () => {
         const name = document.getElementById('pName').value;
         const oldP = parseFloat(document.getElementById('pOldPrice').value);
         const newP = parseFloat(document.getElementById('pNewPrice').value);
+        const stock = parseInt(document.getElementById('pStock').value);
         
-        // Seçili bedenleri topla
         const sizes = [];
         document.querySelectorAll('.size-checkbox:checked').forEach(cb => sizes.push(cb.value));
 
-        if (!currentImageBase64 || !name || !oldP || !newP || sizes.length === 0) {
-            return alert("Lütfen fotoğraf, isim, fiyatlar ve en az bir beden seçin!");
+        if (currentImagesBase64.length === 0 || !name || !oldP || !newP || isNaN(stock) || sizes.length === 0) {
+            return alert("Lütfen fotoğraf, isim, stok, fiyatlar ve en az bir beden seçin!");
         }
 
         const discountPercent = Math.round(((oldP - newP) / oldP) * 100);
@@ -388,22 +431,14 @@
                 originalPrice: oldP,
                 salePrice: newP,
                 discount: discountPercent,
+                stock: stock,
                 sizes: sizes,
-                image: currentImageBase64,
+                images: currentImagesBase64,
                 createdAt: Date.now()
             });
             
-            alert("Ürün başarıyla outlet'e eklendi!");
-            
-            // Formu temizle ve kapat
-            document.getElementById('pName').value = "";
-            document.getElementById('pOldPrice').value = "";
-            document.getElementById('pNewPrice').value = "";
-            document.querySelectorAll('.size-checkbox').forEach(cb => cb.checked = false);
-            document.getElementById('imagePreview').classList.add('hidden');
-            document.getElementById('discountBadge').classList.add('hidden');
-            currentImageBase64 = null;
-            window.closeProductAdmin();
+            alert("Ürün başarıyla eklendi!");
+            setTimeout(() => window.location.reload(), 500);
 
         } catch (error) {
             console.error(error);
@@ -411,11 +446,33 @@
         }
     };
 
-    // --- ÜRÜNLERİ LİSTELEME ---
+    // --- LİSTELEME VE KART FONKSİYONLARI ---
+    window.selectSize = (productId, size) => {
+        window.selectedSizes[productId] = size;
+        document.querySelectorAll(`.size-btn-${productId}`).forEach(btn => {
+            btn.classList.remove('bg-[#964b00]', 'text-white', 'border-[#964b00]');
+            btn.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
+        });
+        
+        const selectedBtn = document.getElementById(`size-btn-${productId}-${size}`);
+        if (selectedBtn) {
+            selectedBtn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
+            selectedBtn.classList.add('bg-[#964b00]', 'text-white', 'border-[#964b00]');
+        }
+    };
+
+    window.scrollSlider = (id, direction) => {
+        const slider = document.getElementById(`slider-${id}`);
+        if(slider) slider.scrollBy({ left: direction * 320, behavior: 'smooth' });
+    };
+
     window.loadOutletProducts = () => {
+        // Eski dinleyiciyi temizle ki çifte yükleme yapmasın
+        if(unsubscribeProducts) unsubscribeProducts();
+
         const q = query(collection(db, "outlet_products"), orderBy("createdAt", "desc"));
         
-        onSnapshot(q, (snap) => {
+        unsubscribeProducts = onSnapshot(q, (snap) => {
             const grid = document.getElementById('outletProductGrid');
             if (!grid) return;
             
@@ -427,32 +484,67 @@
             grid.innerHTML = snap.docs.map(docSnap => {
                 const p = docSnap.data();
                 const id = docSnap.id;
+                const stockVal = p.stock || 0;
+                const isOutOfStock = stockVal <= 0; // Stok kontrolü
                 
-                // Admin ise Sil butonu göster
-                const deleteBtn = isAdmin ? `<button onclick="deleteProduct('${id}')" class="absolute top-6 right-6 z-20 bg-black/50 text-white p-2 rounded-full hover:bg-red-600 backdrop-blur-sm transition-all text-xs">🗑️</button>` : '';
+                const imgArray = p.images && p.images.length > 0 ? p.images : [p.image];
+                const sliderHtml = imgArray.map(img => `<img src="${img}" class="min-w-full w-full h-[400px] object-cover snap-center ${isOutOfStock ? 'grayscale opacity-80' : ''}">`).join('');
+                
+                let sliderNav = '';
+                if(imgArray.length > 1) {
+                    sliderNav = `
+                        <button onclick="scrollSlider('${id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm z-20">❮</button>
+                        <button onclick="scrollSlider('${id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm z-20">❯</button>
+                    `;
+                }
+
+                // EĞER STOK YOKSA BEDENLERİ TIKLANAMAZ (DISABLED) YAP
+                const sizesHtml = p.sizes.map(s => {
+                    if (isOutOfStock) {
+                        return `<button disabled class="bg-gray-100 border border-gray-200 text-gray-400 text-[10px] font-black px-3 py-1.5 rounded-lg shadow-sm cursor-not-allowed opacity-50 flex-shrink-0">${s}</button>`;
+                    } else {
+                        return `<button onclick="selectSize('${id}', '${s}')" id="size-btn-${id}-${s}" class="size-btn-${id} bg-white border border-gray-200 text-gray-700 hover:border-[#964b00] text-[10px] font-black px-3 py-1.5 rounded-lg shadow-sm transition-all focus:outline-none flex-shrink-0">${s}</button>`;
+                    }
+                }).join('');
+
+                // SADECE ADMİN İÇİN STOK ROZETİ GÖSTER
+                const stockBadge = isAdmin ? `<div class="absolute bottom-4 left-4 z-20 bg-black/80 text-white text-[9px] px-2 py-1 rounded shadow-md backdrop-blur-sm font-bold tracking-widest uppercase border border-white/20">📦 Stok: ${stockVal}</div>` : '';
+                
+                const deleteBtn = isAdmin ? `<button onclick="deleteProduct('${id}')" class="absolute top-4 right-4 z-30 bg-black/50 text-white p-2 rounded-full hover:bg-red-600 backdrop-blur-sm transition-all text-xs">🗑️</button>` : '';
+
+                // EĞER STOK YOKSA SEPET BUTONUNU BİTTİ YAP
+                const actionBtn = isOutOfStock 
+                    ? `<div class="bg-gray-400 text-white w-14 h-10 rounded-2xl flex items-center justify-center text-[10px] font-black tracking-widest shadow-lg flex-shrink-0 cursor-not-allowed">BİTTİ</div>`
+                    : `<button onclick="addToCart('${id}', '${p.name}', ${p.salePrice}, ${stockVal})" class="bg-[#964b00] text-white w-10 h-10 rounded-2xl flex items-center justify-center text-xl shadow-lg hover:bg-black transition-all active:scale-90 flex-shrink-0">+</button>`;
 
                 return `
-                <div class="group glass-card p-4 rounded-[2.5rem] shadow-2xl hover:-translate-y-3 transition-all duration-500 relative">
+                <div class="group glass-card p-3 rounded-[2.5rem] shadow-2xl hover:-translate-y-2 transition-all duration-500 relative w-[320px] mx-auto flex flex-col">
                     ${deleteBtn}
-                    <div class="overflow-hidden rounded-[2rem] h-[450px] relative bg-gray-200">
-                        <div class="absolute top-6 left-6 z-10">
-                            <span class="discount-tag">-${p.discount}%</span>
+                    
+                    <div class="overflow-hidden rounded-[2rem] h-[400px] w-full relative bg-gray-200">
+                        <div class="absolute top-4 left-4 z-20">
+                            <span class="discount-tag shadow-lg">-${p.discount}%</span>
                         </div>
-                        <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        
-                        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            ${p.sizes.map(s => `<span class="bg-white/80 backdrop-blur-md text-black text-[10px] font-black px-2 py-1 rounded-md shadow-sm">${s}</span>`).join('')}
+                        ${stockBadge}
+                        ${sliderNav}
+                        <div id="slider-${id}" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar w-full h-[400px] scroll-smooth">
+                            ${sliderHtml}
                         </div>
                     </div>
-                    <div class="mt-6 flex justify-between items-center px-4 pb-2">
+                    
+                    <div class="mt-4 flex overflow-x-auto no-scrollbar gap-2 px-1 py-1 snap-x justify-center">
+                        ${sizesHtml}
+                    </div>
+
+                    <div class="mt-4 flex justify-between items-end px-2 pb-2">
                         <div>
-                            <h4 class="font-black text-gray-900 uppercase text-xs italic tracking-tighter truncate max-w-[180px]">${p.name}</h4>
+                            <h4 class="font-black text-gray-900 uppercase text-[11px] italic tracking-tighter truncate max-w-[180px] ${isOutOfStock ? 'text-gray-400 line-through' : ''}">${p.name}</h4>
                             <div class="flex items-center space-x-3 mt-1">
-                                <p class="text-gray-500 line-through text-xs font-bold">₺${p.originalPrice.toLocaleString('tr-TR')}</p>
-                                <p class="text-red-600 font-black text-xl italic">₺${p.salePrice.toLocaleString('tr-TR')}</p>
+                                <p class="text-gray-500 line-through text-[10px] font-bold">₺${p.originalPrice.toLocaleString('tr-TR')}</p>
+                                <p class="${isOutOfStock ? 'text-gray-400' : 'text-red-600'} font-black text-lg italic">₺${p.salePrice.toLocaleString('tr-TR')}</p>
                             </div>
                         </div>
-                        <button onclick="addToCart('${p.name}', ${p.salePrice})" class="bg-[#964b00] text-white w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-lg hover:bg-black transition-all active:scale-90">+</button>
+                        ${actionBtn}
                     </div>
                 </div>
                 `;
@@ -460,15 +552,24 @@
         });
     };
 
-    // Ürün Silme Fonksiyonu
     window.deleteProduct = async (id) => {
         if(confirm("Bu ürünü silmek istediğinize emin misiniz?")) {
             await deleteDoc(doc(db, "outlet_products", id));
         }
     };
 
-    // Sayfa açıldığında ürünleri yükle
-    window.loadOutletProducts();
+    // --- ADMİN VE YETKİ KONTROLÜ (EN SONA ALINDI Kİ DOĞRU ÇALIŞSIN) ---
+    onAuthStateChanged(auth, (user) => {
+        if (user && user.email === "quaoratr@gmail.com") {
+            isAdmin = true;
+            document.getElementById('adminAddProductBtn').classList.remove('hidden');
+        } else {
+            isAdmin = false;
+            document.getElementById('adminAddProductBtn').classList.add('hidden');
+        }
+        // Kullanıcı giriş durumu belli olunca ürünleri yükle!
+        window.loadOutletProducts();
+    });
 
 </script>
 

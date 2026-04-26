@@ -41,46 +41,57 @@
             <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
         </div>
         
-        <nav class="flex flex-col space-y-4 w-full h-full text-gray-800"> 
+        <nav class="flex flex-col space-y-3 w-full"> 
             <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
                 <span class="text-xs mr-2">←</span> MAIN MENU
             </a>
-            
-            <a href="yeni-gelenler.html" class="text-lg font-bold text-[#964b00] border-b border-[#964b00]/20 w-fit uppercase tracking-widest">New</a>
-            
-            <div class="flex flex-col w-full">
-                <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold hover:text-[#964b00] uppercase tracking-widest focus:outline-none w-full">
-                    Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                </button>
-                <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
+            <div class="flex flex-col space-y-4 pt-1">
+                <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini üstleri</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> mayokini altları</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini üstleri</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini altları</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('topsItems', 'topsArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="topsItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
+                    </div>
+                </div>
+                <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
+                <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
+                <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+                <div class="pt-2">
+                    <hr class="border-[#964b00]/10 mb-4">
+                    <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
                 </div>
             </div>
-
-            <div class="flex flex-col w-full">
-                <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold hover:text-[#964b00] uppercase tracking-widest focus:outline-none w-full">
-                    Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                </button>
-                <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini</a>
-                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
-                </div>
-            </div>
-
-            <a href="bottom.html" class="text-lg font-bold hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
-            <a href="bottom.html" class="text-lg font-bold hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
-            <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
-            
-            <div class="pt-2">
-                <hr class="border-[#964b00]/10 mb-4">
-                <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
-            </div>
-
-            <div class="mt-auto py-8">
+            <div class="py-8">
                 <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
                 <div class="flex flex-col space-y-3 pl-3">
                     <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">INSTAGRAM</a>
