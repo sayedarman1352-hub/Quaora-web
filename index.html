@@ -43,40 +43,41 @@
     </style>
 </head>
 <body>
+ <div id="menuOverlay" onclick="toggleMenu(); closeCart(); closeProfilePanel();" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
 
 <div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl transition-all duration-500">
     <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
     
     <div class="mt-8 px-8 flex flex-col h-full"> 
-        <div id="userActionWrapper" class="mb-8 flex flex-col items-center justify-center group cursor-pointer" onclick="openAuthModal()">
+        <div id="userActionWrapper" class="mb-6 flex flex-col items-center justify-center group cursor-pointer" onclick="openAuthModal()">
             <div id="userPhotoContainer" class="w-14 h-14 rounded-full border-2 border-[#964b00] flex items-center justify-center mb-2 group-hover:bg-[#964b00] group-hover:text-[#FAE29C] transition-all duration-300 shadow-sm overflow-hidden">
                 <span id="userDefaultIcon" class="text-2xl transition-transform group-hover:scale-110">👤</span>
             </div>
             <span id="userStatusText" class="text-[10px] font-black text-[#964b00] uppercase tracking-[0.4em] italic ml-1">Sign In</span>
         </div>
 
-        <div class="relative mb-8">
+        <div class="relative mb-6">
             <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
-            <div class="absolute -bottom-2 left-0 w-12 h-1 bg-[#964b00]/30"></div>
+            <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
         </div>
         
-        <nav class="flex flex-col space-y-4 w-full h-full"> 
-            <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center">
+        <nav class="flex flex-col space-y-3 w-full"> 
+            <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
                 <span class="text-xs mr-2">←</span> MAIN MENU
             </a>
             
-            <div class="flex flex-col space-y-3 pt-2">
+            <div class="flex flex-col space-y-4 pt-1">
                 <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
                 
                 <div class="flex flex-col">
                     <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
                         Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
                     </button>
-                    <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Noir Edit</a>
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Sun-Kissed</a>
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Velvet Series</a>
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Essentials</a>
+                    <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
                     </div>
                 </div>
 
@@ -84,29 +85,44 @@
                     <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
                         Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
                     </button>
-                    <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Classic One Piece</a>
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Cut-Out Design</a>
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Backless Style</a>
-                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Sporty Fit</a>
+                    <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini üstleri</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> mayokini altları</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini üstleri</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini altları</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
                     </div>
                 </div>
 
-                <a href="plaj-aksesuarlari.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Tops</a>
+                <div class="flex flex-col">
+                    <button onclick="toggleMenuSection('topsItems', 'topsArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                        accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="topsItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
+                        <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
+                    </div>
+                </div>
+
+                <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
                 <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
                 <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+                
+                <div class="pt-2">
+                    <hr class="border-[#964b00]/10 mb-4">
+                    <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
+                </div>
             </div>
 
-            <div class="pt-2">
-                <hr class="border-[#964b00]/10 mb-4">
-                <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
-            </div>
-
-            <div class="mt-auto pt-10 pb-12 w-full">
+            <div class="py-8">
                 <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
                 <div class="flex flex-col space-y-3 pl-3">
-                    <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">INSTAGRAM</a>
-                    <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">TIKTOK</a>
+                    <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">INSTAGRAM</a>
+                    <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">TIKTOK</a>
                 </div>
             </div>
         </nav>
@@ -223,118 +239,196 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- MENÜ VE PANEL FONKSİYONLARI ---
-    window.toggleMenu = () => {
-        const menu = document.getElementById("sideMenu");
-        menu.style.width = (menu.style.width === "300px") ? "0" : "300px";
+    // --- YARDIMCI UI FONKSİYONLARI ---
+    const getEl = (id) => document.getElementById(id);
+    const overlay = getEl("menuOverlay");
+
+    // Tüm panelleri kapatan merkezi fonksiyon
+    window.closeAllPanels = () => {
+        getEl("sideMenu").style.width = "0";
+        getEl("cartPanel").style.width = "0";
+        getEl("profileSidePanel").style.width = "0";
+        if(overlay) overlay.classList.add("hidden");
     };
 
-    window.toggleMenuSection = (sectionId, arrowId) => {
-        const content = document.getElementById(sectionId);
-        const arrow = document.getElementById(arrowId);
-        if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
-            content.style.maxHeight = '250px';
-            content.style.marginTop = '8px';
-            arrow.style.transform = 'rotate(180deg)';
-        } else {
-            content.style.maxHeight = '0px';
-            content.style.marginTop = '0px';
-            arrow.style.transform = 'rotate(0deg)';
+    // --- MENÜ SİSTEMİ ---
+    window.toggleMenu = () => {
+        const menu = getEl("sideMenu");
+        const isOpen = menu.style.width === "300px";
+        closeAllPanels(); // Diğerlerini kapat
+        if (!isOpen) {
+            menu.style.width = "300px";
+            if(overlay) overlay.classList.remove("hidden");
         }
     };
 
-    window.openProfilePanel = () => {
-        document.getElementById("profileSidePanel").style.width = (window.innerWidth < 768) ? "100%" : "380px";
-        document.getElementById("sideMenu").style.width = "0";
+    window.toggleMenuSection = (sectionId, arrowId) => {
+        const content = getEl(sectionId);
+        const arrow = getEl(arrowId);
+        const isClosed = content.style.maxHeight === '0px' || content.style.maxHeight === '';
+        
+        content.style.maxHeight = isClosed ? '350px' : '0px';
+        content.style.marginTop = isClosed ? '8px' : '0px';
+        arrow.style.transform = isClosed ? 'rotate(180deg)' : 'rotate(0deg)';
     };
 
-    window.closeProfilePanel = () => { document.getElementById("profileSidePanel").style.width = "0"; };
+    // --- SEPET SİSTEMİ ---
+    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+
+    window.toggleCart = () => {
+        const p = getEl("cartPanel");
+        const isOpen = p.style.width === "300px";
+        closeAllPanels();
+        if (!isOpen) {
+            p.style.width = "300px";
+            if(overlay) overlay.classList.remove("hidden");
+            renderCart();
+        }
+    };
+
+    window.updateCart = () => {
+        localStorage.setItem('quaora_cart', JSON.stringify(cart));
+        getEl('cartCount').innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    };
+
+    const renderCart = () => {
+        const items = getEl('cartItems');
+        if (cart.length === 0) { 
+            items.innerHTML = '<div class="flex flex-col items-center justify-center h-40 text-gray-400 italic">Sepetiniz şu an boş.</div>'; 
+            return; 
+        }
+        items.innerHTML = cart.map(i => `
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border border-black/5 animate-fadeIn">
+                <div>
+                    <h4 class="font-bold text-[10px] uppercase tracking-widest">${i.name}</h4>
+                    <p class="text-[#964b00] font-black italic">₺${i.price.toLocaleString('tr-TR')}</p>
+                </div>
+                <button onclick="removeFromCart('${i.name}')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-red-500 transition-colors">✕</button>
+            </div>
+        `).join('');
+        getEl('cartTotal').innerText = '₺' + cart.reduce((s, i) => s + (i.price * (i.qty || 1)), 0).toLocaleString('tr-TR');
+    };
+
+    window.removeFromCart = (name) => { 
+        cart = cart.filter(i => i.name !== name); 
+        window.updateCart(); 
+        renderCart(); 
+    };
+
+    window.siparisVer = () => { 
+        if (cart.length > 0) window.location.href = "https://www.shopier.com/quaora/45868772"; 
+    };
+
+    // --- PROFİL & AUTH SİSTEMİ ---
+    window.openProfilePanel = () => {
+        closeAllPanels();
+        getEl("profileSidePanel").style.width = (window.innerWidth < 768) ? "100%" : "380px";
+        if(overlay) overlay.classList.remove("hidden");
+    };
+
+    window.closeProfilePanel = () => closeAllPanels();
 
     window.openAuthModal = () => {
-        document.getElementById('authModal').style.display = 'flex';
-        toggleMenu();
+        closeAllPanels();
+        getEl('authModal').style.display = 'flex';
     };
 
-    window.closeAuthModal = () => { document.getElementById('authModal').style.display = 'none'; };
+    window.closeAuthModal = () => getEl('authModal').style.display = 'none';
 
     window.switchTab = (type) => {
         const isLogin = type === 'login';
-        document.getElementById('formLogin').classList.toggle('hidden', !isLogin);
-        document.getElementById('formRegister').classList.toggle('hidden', isLogin);
-        document.getElementById('tabLogin').className = isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
-        document.getElementById('tabRegister').className = !isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
+        getEl('formLogin').classList.toggle('hidden', !isLogin);
+        getEl('formRegister').classList.toggle('hidden', isLogin);
+        getEl('tabLogin').className = isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
+        getEl('tabRegister').className = !isLogin ? "text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1" : "text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1";
     };
 
-    // --- FIREBASE AUTH ---
+    // --- FIREBASE İŞLEMLERİ ---
     window.handleRegister = async () => {
-        const u = document.getElementById('regUser').value, e = document.getElementById('regEmail').value, p = document.getElementById('regPass').value, ph = document.getElementById('regPhone').value, pf = document.getElementById('regPhoto').files[0];
-        if(!u || !e || !p) return alert("Eksikleri doldur kanka!");
+        const fields = {
+            u: getEl('regUser').value,
+            e: getEl('regEmail').value,
+            p: getEl('regPass').value,
+            ph: getEl('regPhone').value
+        };
+        const pf = getEl('regPhoto').files[0];
+        
+        if(!fields.u || !fields.e || !fields.p) return alert("Zorunlu alanları doldur kanka!");
+        
         try {
-            const res = await createUserWithEmailAndPassword(auth, e, p);
-            let b64 = ""; if(pf) b64 = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(pf); });
-            await setDoc(doc(db, "users", res.user.uid), { username: u, email: e, phone: ph, photo: b64 });
-            alert("Kayıt ok! Giriş yapabilirsin."); window.switchTab('login');
-        } catch (err) { alert(err.message); }
+            const res = await createUserWithEmailAndPassword(auth, fields.e, fields.p);
+            let b64 = "";
+            if(pf) b64 = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(pf); });
+            
+            await setDoc(doc(db, "users", res.user.uid), { 
+                username: fields.u, 
+                email: fields.e, 
+                phone: fields.ph, 
+                photo: b64,
+                createdAt: new Date().toISOString()
+            });
+            alert("Harika! Aramıza hoş geldin.");
+            window.switchTab('login');
+        } catch (err) { alert("Hata: " + err.message); }
     };
 
     window.handleLogin = async () => {
-        const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-        try { await signInWithEmailAndPassword(auth, e, p); location.reload(); } catch (err) { alert("Hatalı giriş!"); }
+        const e = getEl('loginEmail').value, p = getEl('loginPass').value;
+        try { 
+            await signInWithEmailAndPassword(auth, e, p); 
+            window.closeAuthModal();
+        } catch (err) { alert("E-posta veya şifre hatalı!"); }
     };
 
     window.handleUpdateProfile = async () => {
         const user = auth.currentUser;
-        const data = { username: document.getElementById('updUser').value, phone: document.getElementById('updPhone').value };
-        const pf = document.getElementById('updPhoto').files[0];
+        if(!user) return;
+        const data = { 
+            username: getEl('updUser').value, 
+            phone: getEl('updPhone').value 
+        };
+        const pf = getEl('updPhoto').files[0];
         if(pf) data.photo = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(pf); });
+        
         await updateDoc(doc(db, "users", user.uid), data);
-        alert("Güncellendi!"); location.reload();
+        alert("Profilin güncellendi!");
+        location.reload();
     };
 
-    window.handleLogout = async () => { await auth.signOut(); location.reload(); };
+    window.handleLogout = async () => { 
+        if(confirm("Çıkış yapmak istediğine emin misin?")) {
+            await auth.signOut(); 
+            location.reload(); 
+        }
+    };
 
-    // --- OTURUM TAKİBİ ---
+    // --- OTURUM & GÖRÜNÜM TAKİBİ ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const snap = await getDoc(doc(db, "users", user.uid));
             if (snap.exists()) {
                 const d = snap.data();
-                document.getElementById('userStatusText').innerText = d.username.toUpperCase();
-                document.getElementById('panelUserName').innerText = d.username;
-                document.getElementById('updUser').value = d.username;
-                document.getElementById('updPhone').value = d.phone || "";
+                getEl('userStatusText').innerText = d.username.toUpperCase();
+                getEl('panelUserName').innerText = d.username;
+                getEl('updUser').value = d.username;
+                getEl('updPhone').value = d.phone || "";
                 if(d.photo) {
                     const img = `<img src="${d.photo}" class="w-full h-full object-cover">`;
-                    document.getElementById('userPhotoContainer').innerHTML = img;
-                    document.getElementById('panelUserPhoto').innerHTML = img;
+                    getEl('userPhotoContainer').innerHTML = img;
+                    getEl('panelUserPhoto').innerHTML = img;
                 }
-                document.getElementById('userActionWrapper').onclick = openProfilePanel;
+                getEl('userActionWrapper').onclick = window.openProfilePanel;
             }
+        } else {
+            getEl('userStatusText').innerText = "Sign In";
+            getEl('userActionWrapper').onclick = window.openAuthModal;
         }
     });
 
-    // --- SEPET SİSTEMİ ---
-    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
-    window.toggleCart = () => {
-        const p = document.getElementById("cartPanel");
-        p.style.width = (p.style.width === "300px") ? "0" : "300px";
-        if(p.style.width === "300px") renderCart();
-    };
-    window.updateCart = () => {
-        localStorage.setItem('quaora_cart', JSON.stringify(cart));
-        document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
-    };
-    const renderCart = () => {
-        const items = document.getElementById('cartItems');
-        if (cart.length === 0) { items.innerHTML = '<p class="text-center text-gray-500 mt-10">Sepet boş.</p>'; return; }
-        items.innerHTML = cart.map(i => `<div class="flex justify-between p-4 bg-gray-50 rounded-2xl border border-black/5"><div><h4 class="font-bold text-[10px] uppercase">${i.name}</h4><p class="text-[#964b00] font-black">₺${i.price.toLocaleString('tr-TR')}</p></div><button onclick="removeFromCart('${i.name}')" class="text-red-500 font-bold">✕</button></div>`).join('');
-        document.getElementById('cartTotal').innerText = '₺' + cart.reduce((s, i) => s + (i.price * i.qty), 0).toLocaleString('tr-TR');
-    };
-    window.removeFromCart = (name) => { cart = cart.filter(i => i.name !== name); window.updateCart(); renderCart(); };
-    window.siparisVer = () => { if (cart.length > 0) window.location.href = "https://www.shopier.com/quaora/45868772"; };
+    window.showPhotoSelected = () => getEl('photoStatus').innerText = "✅ FOTOĞRAF SEÇİLDİ";
+    window.showUpdPhotoSelected = () => getEl('updPhotoStatus').innerText = "✅ YENİ FOTOĞRAF HAZIR";
 
-    window.showPhotoSelected = () => { document.getElementById('photoStatus').innerText = "✅ SEÇİLDİ"; };
-    window.showUpdPhotoSelected = () => { document.getElementById('updPhotoStatus').innerText = "✅ SEÇİLDİ"; };
+    // Başlangıç Ayarları
     window.updateCart();
 </script>
 </body>

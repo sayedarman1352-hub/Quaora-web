@@ -18,97 +18,88 @@
         .serif { font-family: 'Playfair Display', serif; }
         
         .glass-card {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(250, 226, 156, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
         }
 
         #sideMenu, #cartPanel {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* dq-[#] sınıfları için örnek kullanım. Buradaki renkleri istediğinle değiştir kanka */
-        .dq-\[\#1\] { color: #1a1a1a; }
-        .dq-\[\#2\] { color: #2a2a2a; }
-        .dq-\[\#5\] { color: #003366; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
+
+<div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
 
 <div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl flex flex-col">
-    <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform">✕</button>
+    <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
     
-    <div class="mt-12 px-10 flex flex-col h-full items-start text-left"> 
-        <div class="relative mb-10 flex flex-col items-start">
+    <div class="mt-12 px-8 flex flex-col h-full items-start text-left"> 
+        <div class="relative mb-8">
             <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
-            <div class="w-10 h-1 bg-[#964b00]/30 mt-1"></div>
+            <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
         </div>
         
-        <nav class="flex flex-col space-y-4 w-full"> 
-            <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center">
+        <nav class="flex flex-col space-y-4 w-full h-full text-gray-800"> 
+            <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
                 <span class="text-xs mr-2">←</span> MAIN MENU
             </a>
             
-            <div class="flex flex-col space-y-3 pt-2">
-                <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
-                
-                <div class="flex flex-col">
-                    <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
-                        Collections
-                        <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
-                        <a href="#" class="dq-[#1] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Noir Edit</a>
-                        <a href="#" class="dq-[#2] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Sun-Kissed</a>
-                        <a href="#" class="dq-[#3] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Velvet Series</a>
-                        <a href="#" class="dq-[#4] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Essentials</a>
-                    </div>
+            <a href="yeni-gelenler.html" class="text-lg font-bold text-[#964b00] border-b border-[#964b00]/20 w-fit uppercase tracking-widest">New</a>
+            
+            <div class="flex flex-col w-full">
+                <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold hover:text-[#964b00] uppercase tracking-widest focus:outline-none w-full">
+                    Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                </button>
+                <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
+                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
+                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
+                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
                 </div>
-
-                <div class="flex flex-col">
-                    <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
-                        Swimsuits
-                        <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
-                        <a href="#" class="dq-[#5] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Classic One Piece</a>
-                        <a href="#" class="dq-[#6] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Cut-Out Design</a>
-                        <a href="#" class="dq-[#7] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Backless Style</a>
-                        <a href="#" class="dq-[#8] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Sporty Fit</a>
-                    </div>
-                </div>
-
-                <a href="plaj-aksesuarlari.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Tops</a>
-                <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
-                <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
             </div>
 
+            <div class="flex flex-col w-full">
+                <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold hover:text-[#964b00] uppercase tracking-widest focus:outline-none w-full">
+                    Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                </button>
+                <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini</a>
+                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini</a>
+                    <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
+                </div>
+            </div>
+
+            <a href="bottom.html" class="text-lg font-bold hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
+            <a href="bottom.html" class="text-lg font-bold hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
+            <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+            
             <div class="pt-2">
                 <hr class="border-[#964b00]/10 mb-4">
                 <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
             </div>
-        </nav>
 
-        <div class="mt-auto pt-10 pb-12 w-full">
-            <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
-            <div class="flex flex-col space-y-3 pl-3">
-                <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">INSTAGRAM</a>
-                <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-xs hover:text-black transition-colors w-fit">TIKTOK</a>
+            <div class="mt-auto py-8">
+                <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
+                <div class="flex flex-col space-y-3 pl-3">
+                    <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">INSTAGRAM</a>
+                    <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">TIKTOK</a>
+                </div>
             </div>
-        </div>
+        </nav>
     </div>
 </div>
 
 <div id="cartPanel" class="fixed top-0 right-0 h-full w-0 bg-white z-[101] overflow-x-hidden shadow-2xl flex flex-col">
-    <div class="p-6 flex justify-between items-center border-b">
+    <div class="p-6 flex justify-between items-center border-b bg-[#FAE29C]/10">
         <h2 class="text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
-        <button onclick="toggleCart()" class="text-xl">✕</button>
+        <button onclick="toggleCart()" class="text-xl hover:rotate-90 transition-transform">✕</button>
     </div>
     <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4"></div>
     <div class="p-6 border-t bg-gray-50">
         <div class="flex justify-between items-center mb-4">
-            <span class="font-bold uppercase text-[10px] tracking-widest text-gray-500">Toplam Tutar:</span>
+            <span class="font-bold uppercase text-[10px] tracking-widest text-gray-400">Toplam Tutar</span>
             <span id="cartTotal" class="text-xl font-black text-[#964b00]">₺0,00</span>
         </div>
         <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md uppercase text-sm">Siparişi Tamamla</button>
@@ -136,10 +127,11 @@
     </button>
 </nav>
 
-<main class="max-w-7xl mx-auto py-16 px-4">
+<main class="max-w-7xl mx-auto py-16 px-4 flex-grow">
     <header class="text-center mb-16">
         <h2 class="text-5xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">Yeni Gelenler</h2>
-        <p class="text-gray-800 mt-4 tracking-[0.3em] uppercase text-[10px] font-bold bg-white/30 inline-block px-4 py-1 rounded-full border border-white/20">Sezonun En Yeni Tasarımları</p>
+        <div class="w-20 h-1 bg-[#964b00]/20 mx-auto mt-4 mb-2"></div>
+        <p class="text-gray-800 tracking-[0.3em] uppercase text-[10px] font-bold">Sezonun En Yeni Tasarımları</p>
     </header>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -156,38 +148,59 @@
                 <button onclick="addToCart('Wild Nature Set', 1600)" class="bg-[#964b00] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-lg hover:bg-black transition-all">+</button>
             </div>
         </div>
-    </div>
+        </div>
 </main>
+
+<footer class="py-8 text-center bg-[#FAE29C]/50 mt-12">
+    <p class="text-[9px] text-[#964b00] font-bold uppercase tracking-[0.3em]">© 2026 QUAORA SWIMWEAR</p>
+</footer>
 
 <script>
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+    const overlay = document.getElementById("menuOverlay");
+
+    function closeAllPanels() {
+        document.getElementById("sideMenu").style.width = "0";
+        document.getElementById("cartPanel").style.width = "0";
+        if(overlay) overlay.classList.add("hidden");
+    }
 
     function toggleMenu() {
         const menu = document.getElementById("sideMenu");
-        menu.style.width = (menu.style.width === "300px") ? "0" : "300px";
-    }
-
-    function toggleMenuSection(sectionId, arrowId) {
-        const content = document.getElementById(sectionId);
-        const arrow = document.getElementById(arrowId);
-        
-        if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
-            content.style.maxHeight = '250px';
-            content.style.marginTop = '8px';
-            arrow.style.transform = 'rotate(180deg)';
+        const isOpen = menu.style.width === "300px";
+        if (!isOpen) {
+            closeAllPanels();
+            menu.style.width = "300px";
+            overlay.classList.remove("hidden");
         } else {
-            content.style.maxHeight = '0px';
-            content.style.marginTop = '0px';
-            arrow.style.transform = 'rotate(0deg)';
+            closeAllPanels();
         }
     }
 
     function toggleCart() {
         const panel = document.getElementById("cartPanel");
-        panel.style.width = (panel.style.width === "300px") ? "0" : "300px";
-        if(panel.style.width === "300px") renderCart();
+        const isOpen = panel.style.width === "300px";
+        if (!isOpen) {
+            closeAllPanels();
+            panel.style.width = "300px";
+            overlay.classList.remove("hidden");
+            renderCart();
+        } else {
+            closeAllPanels();
+        }
     }
 
+    function toggleMenuSection(sectionId, arrowId) {
+        const content = document.getElementById(sectionId);
+        const arrow = document.getElementById(arrowId);
+        const isClosed = content.style.maxHeight === '0px' || content.style.maxHeight === '';
+        
+        content.style.maxHeight = isClosed ? '350px' : '0px';
+        content.style.marginTop = isClosed ? '8px' : '0px';
+        arrow.style.transform = isClosed ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    // SEPET MANTIĞI
     function addToCart(name, price) {
         const index = cart.findIndex(item => item.name === name);
         if (index > -1) { cart[index].qty += 1; } else { cart.push({ name, price, qty: 1 }); }
@@ -211,19 +224,20 @@
         const items = document.getElementById('cartItems');
         const totalDisp = document.getElementById('cartTotal');
         if (cart.length === 0) {
-            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm italic">Sepetiniz henüz boş.</p>';
+            items.innerHTML = '<div class="flex flex-col items-center mt-20 text-gray-400"><span class="text-4xl mb-2">🛍️</span><p class="text-xs font-bold uppercase tracking-widest italic">Sepetin Boş</p></div>';
             totalDisp.innerText = '₺0,00';
             return;
         }
         let total = 0;
         items.innerHTML = cart.map(item => {
             total += (item.price * item.qty);
-            return `<div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-black/5">
+            return `<div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-black/5 shadow-sm">
                 <div>
-                    <h4 class="font-bold uppercase text-[9px] tracking-tight text-gray-800">${item.name} (${item.qty})</h4>
-                    <p class="text-[#964b00] font-black text-sm italic">₺${(item.price * item.qty).toLocaleString('tr-TR')}</p>
+                    <h4 class="font-bold uppercase text-[10px] tracking-tight text-gray-800">${item.name}</h4>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Adet: ${item.qty}</p>
+                    <p class="text-[#964b00] font-black text-sm italic mt-1">₺${(item.price * item.qty).toLocaleString('tr-TR')}</p>
                 </div>
-                <button onclick="removeFromCart('${item.name}')" class="text-red-500 font-bold px-2 hover:scale-120 transition">✕</button>
+                <button onclick="removeFromCart('${item.name}')" class="text-red-400 hover:text-red-600 transition-colors p-2 text-lg">✕</button>
             </div>`;
         }).join('');
         totalDisp.innerText = '₺' + total.toLocaleString('tr-TR');

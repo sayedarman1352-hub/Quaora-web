@@ -31,6 +31,8 @@
 </head>
 <body>
 
+<div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[90] hidden"></div>
+
 <div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl">
     <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform">✕</button>
     
@@ -54,10 +56,10 @@
                 <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
             </button>
             <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
-                <a href="#" class="dq-[#1] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Noir Edit</a>
-                <a href="#" class="dq-[#2] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Sun-Kissed</a>
-                <a href="#" class="dq-[#3] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Velvet Series</a>
-                <a href="#" class="dq-[#4] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Essentials</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Noir Edit</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Sun-Kissed</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Velvet Series</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Essentials</a>
             </div>
         </div>
 
@@ -67,10 +69,10 @@
                 <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
             </button>
             <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 mt-0 border-l border-[#964b00]/10 ml-1">
-                <a href="#" class="dq-[#5] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Classic One Piece</a>
-                <a href="#" class="dq-[#6] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Cut-Out Design</a>
-                <a href="#" class="dq-[#7] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Backless Style</a>
-                <a href="#" class="dq-[#8] text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Sporty Fit</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3">Classic One Piece</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Cut-Out Design</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic">Backless Style</a>
+                <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1">Sporty Fit</a>
             </div>
         </div>
 
@@ -93,24 +95,6 @@
         </div>
     </div>
 </nav>
-
-<script>
-// Tek bir fonksiyonla tüm açılır menüleri yönetiyoruz
-function toggleMenuSection(sectionId, arrowId) {
-    const content = document.getElementById(sectionId);
-    const arrow = document.getElementById(arrowId);
-    
-    if (content.style.maxHeight === '0px' || content.style.maxHeight === '') {
-        content.style.maxHeight = '250px'; // İçeriğe göre yükseklik
-        content.style.marginTop = '8px';
-        arrow.style.transform = 'rotate(180deg)';
-    } else {
-        content.style.maxHeight = '0px';
-        content.style.marginTop = '0px';
-        arrow.style.transform = 'rotate(0deg)';
-    }
-}
-</script>
 </div>
 
 <div id="cartPanel" class="fixed top-0 right-0 h-full w-0 bg-white z-[101] overflow-x-hidden shadow-2xl flex flex-col">
@@ -147,8 +131,8 @@ function toggleMenuSection(sectionId, arrowId) {
 
     <div class="flex items-center space-x-10">
         <div class="hidden md:flex items-center space-x-8 text-[11px] font-black uppercase tracking-widest text-gray-800">
-            <a href="quaora.html#koleksiyon" class="hover:text-[#964b00] transition">Koleksiyon</a>
-            <a href="satin-al.html" class="hover:text-[#964b00] transition italic border-b border-[#964b00]">Satın Al</a>
+            <a href="index.html#koleksiyon" class="hover:text-[#964b00] transition">Koleksiyon</a>
+            <a href="bottom.html" class="hover:text-[#964b00] transition italic border-b border-[#964b00]">Alt Giyim</a>
         </div>
         
         <button onclick="toggleCart()" class="text-2xl relative hover:scale-110 transition border-l border-black/10 pl-6 focus:outline-none">
@@ -197,16 +181,44 @@ function toggleMenuSection(sectionId, arrowId) {
 
 <script>
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+    const overlay = document.getElementById("menuOverlay");
+
+    // TÜM PANELLERİ KAPATAN FONKSİYON
+    function closeAllPanels() {
+        document.getElementById("sideMenu").style.width = "0";
+        document.getElementById("cartPanel").style.width = "0";
+        overlay.classList.add("hidden");
+    }
 
     function toggleMenu() {
         const menu = document.getElementById("sideMenu");
-        menu.style.width = (menu.style.width === "300px") ? "0" : "300px";
+        const isOpen = menu.style.width === "300px";
+        closeAllPanels();
+        if (!isOpen) {
+            menu.style.width = "300px";
+            overlay.classList.remove("hidden");
+        }
     }
 
     function toggleCart() {
         const panel = document.getElementById("cartPanel");
-        panel.style.width = (panel.style.width === "300px") ? "0" : "300px";
-        if(panel.style.width === "300px") renderCart();
+        const isOpen = panel.style.width === "300px";
+        closeAllPanels();
+        if(!isOpen) {
+            panel.style.width = "300px";
+            overlay.classList.remove("hidden");
+            renderCart();
+        }
+    }
+
+    function toggleMenuSection(sectionId, arrowId) {
+        const content = document.getElementById(sectionId);
+        const arrow = document.getElementById(arrowId);
+        const isClosed = content.style.maxHeight === '0px' || content.style.maxHeight === '';
+        
+        content.style.maxHeight = isClosed ? '350px' : '0px';
+        content.style.marginTop = isClosed ? '8px' : '0px';
+        arrow.style.transform = isClosed ? 'rotate(180deg)' : 'rotate(0deg)';
     }
 
     function addToCart(name, price) {
