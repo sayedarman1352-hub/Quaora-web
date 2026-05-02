@@ -1,48 +1,43 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panzer Koleksiyonu | QUAORA</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bikini Üstleri | QUAORA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Poppins:wght@300;400;500;600;700;900&display=swap');
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #E3B778; 
+            background: linear-gradient(135deg, #E3B778 0%, #d4a76a 100%);
+            background-attachment: fixed;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .serif { font-family: 'Playfair Display', serif; }
+        
+        .glass-card { 
+            background: rgba(250, 226, 156, 0.6); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
 
-<script src="https://cdn.tailwindcss.com"></script>
+        #sideMenu, #cartPanel {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap');
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-body{
-    font-family:'Poppins',sans-serif;
-    margin:0;
-    background:linear-gradient(135deg,#E3B778 0%,#d4a76a 100%);
-    background-attachment:fixed;
-}
-
-.serif{
-    font-family:'Playfair Display',serif;
-}
-
-.glass-card{
-    background:rgba(255,255,255,.4);
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,.2);
-    box-shadow:0 8px 32px rgba(0,0,0,.05);
-}
-
-#sideMenu,#cartPanel{
-    transition:all .5s cubic-bezier(.4,0,.2,1);
-}
-
-.no-scrollbar::-webkit-scrollbar{
-    display:none;
-}
-
-.no-scrollbar{
-    -ms-overflow-style:none;
-    scrollbar-width:none;
-}
-</style>
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d4a76a; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #964b00; }
+    </style>
 </head>
-
 <body class="min-h-screen flex flex-col relative">
 
     <div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[90] hidden transition-opacity"></div>
@@ -144,7 +139,7 @@ body{
             </button>
             <div class="flex flex-col border-l border-[#964b00]/20 pl-4 md:pl-6 cursor-pointer" onclick="window.location.href='index.html'">
                 <h1 class="text-2xl md:text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
-                <p class="text-[8px] md:text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-10 md:ml-14 font-semibold italic">PANZER</p // ________________________________-> 
+                <p class="text-[8px] md:text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-10 md:ml-14 font-semibold italic">Bikini Üstleri</p>
             </div>
         </div>
         
@@ -163,10 +158,9 @@ body{
     <main class="max-w-7xl mx-auto py-8 md:py-16 px-2 md:px-4 flex-grow w-full">
        <header class="text-center mb-10 md:mb-16">
     <div class="flex items-center justify-center gap-3">
-        <h2 id="page-title" class="text-4xl md:text-6xl font-black text-[#964b00] uppercase tracking-tighter drop-shadow-sm serif" >
-            PANZER
-        </h2 // ________________________________-> 
-        
+        <h2 id="page-title" class="text-4xl md:text-6xl font-black text-[#964b00] uppercase tracking-tighter drop-shadow-sm serif">
+            BİKİNİ ÜSTLERİ
+        </h2>
         <button id="edit-title-btn" onclick="editPageText('title')" class="hidden bg-blue-600 text-white w-8 h-8 rounded-full font-bold shadow-lg text-sm hover:bg-blue-800 transition-transform hover:scale-110 items-center justify-center">
             ✎
         </button>
@@ -189,12 +183,12 @@ body{
             <button onclick="closeProductAdmin()" class="absolute top-4 right-4 z-50 text-red-600 font-black text-2xl w-10 h-10 flex items-center justify-center hover:scale-110 transition-all">✕</button>
 
             <div class="p-6 md:p-8 overflow-y-auto no-scrollbar custom-scroll bg-white/60">
-                <h2 id="modalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">YENİ PANZER</h2> // ________________________________-
+                <h2 id="modalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">YENİ BİKİNİ ÜSTÜ</h2>
                 
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Ürün İsmi</label>
-                        <input type="text" id="pName" placeholder="Örn: Ocean Blue Alt" class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
+                        <input type="text" id="pName" placeholder="Örn: Ocean Blue Üst" class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
                     </div>
 
                     <div>
@@ -243,9 +237,8 @@ body{
             </div>
         </div>
     </div>
-    </main>
 
-<script type="module">
+    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, setDoc, onSnapshot, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -263,8 +256,8 @@ body{
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const COLLECTION_NAME = "PANZER"; // ________________________________-
-    const PAGE_SETTINGS_DOC = "PANZER_header";
+    const COLLECTION_NAME = "bikini_ustleri";
+    const PAGE_SETTINGS_DOC = "bikini_ustleri_header";
 
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
     let isAdmin = false;
@@ -289,7 +282,7 @@ body{
     };
 
     window.savePageTexts = async () => {
-        const titleText = document.getElementById("page-title")?.innerText.trim() || "PANZER"; // ________________________________-
+        const titleText = document.getElementById("page-title")?.innerText.trim() || "BİKİNİ ÜSTLERİ";
         const subtitleText = document.getElementById("page-subtitle")?.innerText.trim() || "quaora";
         
         try {
@@ -400,7 +393,7 @@ body{
         const items = document.getElementById('cartItems');
         const tDisp = document.getElementById('cartTotal');
         if (cart.length === 0) {
-            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz boş.</p>';
+            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm italic">Sepetiniz boş.</p>';
             tDisp.innerText = '₺0,00'; return;
         }
         let total = 0;
@@ -666,7 +659,7 @@ body{
 
     window.openProductAdmin = () => {
         window.currentEditId = null;
-        document.getElementById('modalTitle').innerText = "YENİ MAYOKİNİ ALTI";
+        document.getElementById('modalTitle').innerText = "YENİ BİKİNİ ÜSTÜ";
         document.getElementById('saveBtnText').innerText = "PAYLAŞ";
         
         document.getElementById('pName').value = '';
@@ -817,7 +810,5 @@ body{
     loadProducts();
     loadPageTexts(); // Sayfa açılışında metinleri veritabanından çek
 </script>
-
 </body>
 </html>
-
