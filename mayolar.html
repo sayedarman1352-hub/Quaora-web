@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mayolar Koleksiyonu | QUAORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg,#E3B778 0%,#d4a76a 100%);
+      background-attachment: fixed;
+    }
+
+    .serif { font-family:'Playfair Display', serif; }
+
+    .glass-card {
+      background: rgba(255,255,255,.4);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,.05);
+    }
+
+    #sideMenu,#cartPanel {
+      transition: all .5s cubic-bezier(.4,0,.2,1);
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col relative">
+
+    <div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[90] hidden transition-opacity"></div>
+
+    <div id="sideMenu" class="fixed top-0 left-0 h-full bg-[#FAE29C] z-[100] w-0 overflow-x-hidden shadow-2xl flex flex-col">
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
+        
+        <div class="mt-12 px-8 flex flex-col h-full items-start text-left"> 
+            <div class="relative mb-8">
+                <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
+                <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
+            </div>
+            
+            <nav class="flex flex-col space-y-3 w-full"> 
+                <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
+                    <span class="text-xs mr-2">←</span> MAIN MENU
+                </a>
+                <div class="flex flex-col space-y-4 pt-1">
+                    <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
+                    <div class="flex flex-col">
+                        <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                            Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                        </button>
+                        <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                            <a href="coquette.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
+                            <a href="panzer.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
+                            <a href="relove.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
+                            <a href="pie.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                            Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                        </button>
+                        <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                            <a href="mayokini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini üstleri</a>
+                            <a href="mayokini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> mayokini altları</a>
+                            <a href="bikini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini üstleri</a>
+                            <a href="bikini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini altları</a>
+                            <a href="mayolar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <button onclick="toggleMenuSection('topsItems', 'topsArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+                            accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                        </button>
+                        <div id="topsItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
+                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
+                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
+                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
+                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
+                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
+                        </div>
+                    </div>
+                    <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
+                    <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
+                    <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+                    <div class="pt-2">
+                        <hr class="border-[#964b00]/10 mb-4">
+                        <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
+                    </div>
+                </div>
+                <div class="py-8">
+                    <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
+                    <div class="flex flex-col space-y-3 pl-3">
+                        <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">INSTAGRAM</a>
+                        <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">TIKTOK</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div id="cartPanel" class="fixed top-0 right-0 h-full bg-white z-[101] w-0 overflow-hidden shadow-2xl flex flex-col border-l border-[#964b00]/20">
+        <div class="p-4 md:p-6 flex justify-between items-center border-b">
+            <h2 class="text-xl md:text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
+            <button onclick="toggleCart()" class="text-xl hover:scale-110 transition-transform">✕</button>
+        </div>
+        <div id="cartItems" class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4 no-scrollbar"></div>
+        <div class="p-4 md:p-6 border-t bg-gray-50">
+            <div class="flex justify-between items-center mb-4">
+                <span class="font-bold uppercase text-[10px] tracking-widest text-gray-500">Toplam Tutar:</span>
+                <span id="cartTotal" class="text-lg md:text-xl font-black text-[#964b00]">₺0,00</span>
+            </div>
+            <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-3 md:py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md uppercase text-sm active:scale-95">Siparişi Tamamla</button>
+        </div>
+    </div>
+
+    <nav class="flex justify-between items-center p-4 md:p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
+        <div class="flex items-center space-x-4 md:space-x-6">
+            <button onclick="toggleMenu()" class="flex items-center space-x-2 md:space-x-3 group focus:outline-none">
+                <div class="space-y-1 md:space-y-1.5 group-hover:scale-105 transition-transform">
+                    <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                    <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                    <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                </div>
+                <span class="hidden md:inline text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
+            </button>
+            <div class="flex flex-col border-l border-[#964b00]/20 pl-4 md:pl-6 cursor-pointer" onclick="window.location.href='index.html'">
+                <h1 class="text-2xl md:text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
+                <p class="text-[8px] md:text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-10 md:ml-14 font-semibold italic"> MAYOLAR </p --------------------------------------->
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 md:gap-6">
+            <button id="adminAddProductBtn" onclick="openProductAdmin()" class="hidden bg-black text-white text-[8px] md:text-[10px] font-black tracking-widest px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-red-600 transition-colors uppercase shadow-lg">
+                + Ürün Ekle
+            </button>
+
+            <button onclick="toggleCart()" class="text-xl md:text-2xl relative hover:scale-110 transition focus:outline-none border-l border-black/10 pl-4 md:pl-6">
+                🛒
+                <span id="cartCount" class="absolute -top-1 -right-1 md:-right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-8 md:py-16 px-2 md:px-4 flex-grow w-full">
+       <header class="text-center mb-10 md:mb-16">
+    <div class="flex items-center justify-center gap-3">
+        <h2 id="page-title" class="text-4xl md:text-6xl font-black text-[#964b00] uppercase tracking-tighter drop-shadow-sm serif" >
+            MAYOLAR
+        </h2 ------------------------------> 
+        
+        
+        <button id="edit-title-btn" onclick="editPageText('title')" class="hidden bg-blue-600 text-white w-8 h-8 rounded-full font-bold shadow-lg text-sm hover:bg-blue-800 transition-transform hover:scale-110 items-center justify-center">
+            ✎
+        </button>
+    </div>
+    
+    <div class="mt-2 md:mt-4 flex items-center justify-center gap-2">
+        <p id="page-subtitle" class="text-gray-900 tracking-[0.2em] md:tracking-[0.3em] uppercase text-[8px] md:text-[10px] font-bold bg-white/30 inline-block px-3 py-1 rounded-full border border-white/20">
+            quaora
+        </p>
+        <button id="edit-subtitle-btn" onclick="editPageText('subtitle')" class="hidden bg-blue-600 text-white w-6 h-6 rounded-full font-bold shadow-lg text-xs hover:bg-blue-800 transition-transform hover:scale-110 items-center justify-center">
+            ✎
+        </button>
+    </div>
+</header>
+
+        <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8"></div>
+
+    <div id="productAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#FAE29C] w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] relative border-2 border-white/40">
+            <button onclick="closeProductAdmin()" class="absolute top-4 right-4 z-50 text-red-600 font-black text-2xl w-10 h-10 flex items-center justify-center hover:scale-110 transition-all">✕</button>
+
+            <div class="p-6 md:p-8 overflow-y-auto no-scrollbar custom-scroll bg-white/60">
+                <h2 id="modalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">YENİ MAYOLAR</h2> // ________________________________-
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Ürün İsmi</label>
+                        <input type="text" id="pName" placeholder="Örn: Ocean Blue Alt" class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1 mt-2">Ürün Açıklaması</label>
+                        <textarea id="pDesc" rows="3" placeholder="Kumaş, kesim veya özellikleri buraya yazabilirsiniz..." class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-[#964b00] resize-none"></textarea>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="w-1/2">
+                            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Eski (₺)</label>
+                            <input type="number" id="pOldPrice" placeholder="1400" oninput="calculateDiscount()" class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
+                        </div>
+                        <div class="w-1/2 relative">
+                            <label class="block text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Satış (₺)</label>
+                            <input type="number" id="pNewPrice" placeholder="980" oninput="calculateDiscount()" class="w-full bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm font-black focus:outline-none focus:border-red-500">
+                            <div id="discountBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-md hidden">-%0</div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-[#964b00]/20 pt-4 mt-4">
+                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Beden ve Stok Ekle (Manuel)</label>
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="adminSizeInput" placeholder="Beden (Örn: S, 34, 75B)" class="w-1/2 bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00] uppercase">
+                            <input type="number" id="adminStockInput" placeholder="Stok Adedi" class="w-1/4 bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+                            <button onclick="addAdminSize()" class="w-1/4 bg-[#964b00] text-white rounded-xl font-bold text-xs hover:bg-black transition-colors shadow-md">EKLE</button>
+                        </div>
+                        
+                        <div id="adminSizesContainer" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div class="border-t border-[#964b00]/20 pt-4 mt-2">
+                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Fotoğraflar</label>
+                        <input type="file" id="newProductPhoto" accept="image/*" multiple class="hidden" onchange="previewProductImage(this)">
+                        <button onclick="document.getElementById('newProductPhoto').click()" class="w-full bg-white text-[#964b00] border-2 border-dashed border-[#964b00]/30 rounded-xl py-6 flex flex-col items-center justify-center hover:bg-[#964b00]/10 transition-all shadow-sm">
+                            <span class="text-3xl mb-1">+</span>
+                            <span class="text-xs font-black uppercase tracking-widest px-4">Fotoğraf Ekle</span>
+                            <span class="text-[9px] text-gray-500 mt-1">(Otomatik Sıkıştırılır)</span>
+                        </button>
+                        <div id="imagePreviewContainer" class="grid grid-cols-3 md:grid-cols-4 gap-3 mt-4"></div>
+                    </div>
+
+                    <button id="saveBtnText" onclick="saveProduct()" class="w-full bg-[#964b00] text-white font-black tracking-widest text-sm py-4 rounded-xl hover:bg-black transition-all active:scale-95 mt-6 shadow-xl">
+                        PAYLAŞ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, updateDoc, setDoc, onSnapshot, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
+        authDomain: "quaora-web.firebaseapp.com",
+        projectId: "quaora-web",
+        storageBucket: "quaora-web.firebasestorage.app",
+        messagingSenderId: "69244174750",
+        appId: "1:69244174750:web:5c9e82172704bb39a2568f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const COLLECTION_NAME = "mayolar"; // ________________________________-
+    const PAGE_SETTINGS_DOC = "mayolar_header";
+
+    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+    let isAdmin = false;
+    window.allProducts = []; 
+    window.currentEditId = null;
+    let currentImagesBase64 = [];
+    window.selectedSizes = {};
+    window.currentAdminSizes = {}; 
+
+    // --- SAYFA METİNLERİNİ YÜKLEME VE KAYDETME ---
+    const loadPageTexts = () => {
+        onSnapshot(doc(db, "page_settings", PAGE_SETTINGS_DOC), (docSnap) => {
+            const titleEl = document.getElementById("page-title");
+            const subtitleEl = document.getElementById("page-subtitle");
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if(titleEl && data.title) titleEl.innerText = data.title;
+                if(subtitleEl && data.subtitle) subtitleEl.innerText = data.subtitle;
+            }
+        });
+    };
+
+    window.savePageTexts = async () => {
+        const titleText = document.getElementById("page-title")?.innerText.trim() || "mayolar"; // ________________________________-
+        const subtitleText = document.getElementById("page-subtitle")?.innerText.trim() || "quaora";
+        
+        try {
+            await setDoc(doc(db, "page_settings", PAGE_SETTINGS_DOC), {
+                title: titleText,
+                subtitle: subtitleText
+            }, { merge: true });
+            console.log("Metinler başarıyla kaydedildi.");
+        } catch (error) {
+            console.error("Yazı güncellenirken hata:", error);
+        }
+    };
+
+    // Butona tıklayınca açılacak güvenli düzenleme penceresi
+    window.editPageText = async (type) => {
+        const targetElement = document.getElementById(type === 'title' ? 'page-title' : 'page-subtitle');
+        const currentText = targetElement.innerText;
+        
+        // Ekrana giriş penceresi çıkar
+        const newText = prompt("Yeni metni girin:", currentText);
+        
+        // Eğer iptale basılmadıysa ve boş bırakılmadıysa kaydet
+        if (newText !== null && newText.trim() !== "") {
+            targetElement.innerText = newText.trim();
+            await window.savePageTexts(); // Firebase'e kaydet
+            alert("Yazı başarıyla güncellendi!");
+        }
+    };
+
+    // --- ARAYÜZ ---
+    window.closeAllPanels = () => {
+        document.getElementById("sideMenu").style.width = "0";
+        document.getElementById("cartPanel").style.width = "0";
+        document.getElementById("menuOverlay").classList.add("hidden");
+    };
+
+    window.toggleMenu = () => {
+        const m = document.getElementById("sideMenu");
+        const w = window.innerWidth < 768 ? "100%" : "300px";
+        if (m.style.width === w) { closeAllPanels(); } 
+        else { closeAllPanels(); m.style.width = w; document.getElementById("menuOverlay").classList.remove("hidden"); }
+    };
+
+    window.toggleCart = () => {
+        const p = document.getElementById("cartPanel");
+        const w = window.innerWidth < 768 ? "100%" : "350px"; 
+        if (p.style.width === w) { closeAllPanels(); } 
+        else { closeAllPanels(); p.style.width = w; document.getElementById("menuOverlay").classList.remove("hidden"); window.renderCart(); }
+    };
+
+    window.toggleMenuSection = (sectionId, arrowId) => {
+        const section = document.getElementById(sectionId);
+        const arrow = document.getElementById(arrowId);
+        if (section.style.maxHeight && section.style.maxHeight !== "0px") {
+            section.style.maxHeight = "0px";
+            arrow.style.transform = "rotate(0deg)";
+        } else {
+            section.style.maxHeight = section.scrollHeight + "px";
+            arrow.style.transform = "rotate(180deg)";
+        }
+    };
+
+    // --- BİLGİ / AÇIKLAMA MODALI ---
+    window.showDescription = (id) => {
+        const product = window.allProducts.find(p => p.id === id);
+        if(!product) return;
+        
+        let descModal = document.getElementById('descModal');
+        if(!descModal) {
+            descModal = document.createElement('div');
+            descModal.id = 'descModal';
+            descModal.className = 'fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300';
+            descModal.innerHTML = `
+                <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-6 relative transform scale-95 transition-transform duration-300 border border-[#964b00]/20" id="descModalContent">
+                    <button onclick="closeDescription()" class="absolute top-4 right-4 bg-gray-100 text-black rounded-full w-8 h-8 flex items-center justify-center font-bold hover:bg-red-500 hover:text-white transition-colors">✕</button>
+                    <h3 id="descModalTitle" class="text-xl font-black text-[#964b00] uppercase tracking-widest mb-4 pr-8 serif border-b border-[#964b00]/20 pb-2"></h3>
+                    <div id="descModalText" class="text-sm text-gray-700 font-medium leading-relaxed max-h-[50vh] overflow-y-auto custom-scroll pr-2 whitespace-pre-wrap"></div>
+                </div>
+            `;
+            document.body.appendChild(descModal);
+        }
+        
+        document.getElementById('descModalTitle').innerText = product.name;
+        document.getElementById('descModalText').innerText = product.description || "Bu ürün için detaylı bir açıklama eklenmemiştir.";
+        
+        descModal.classList.remove('opacity-0', 'pointer-events-none');
+        document.getElementById('descModalContent').classList.remove('scale-95');
+        document.getElementById('descModalContent').classList.add('scale-100');
+    };
+
+    window.closeDescription = () => {
+        const descModal = document.getElementById('descModal');
+        if(descModal) {
+            descModal.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('descModalContent').classList.remove('scale-100');
+            document.getElementById('descModalContent').classList.add('scale-95');
+        }
+    };
+
+    // --- SEPET İŞLEMLERİ ---
+    window.updateCart = () => {
+        localStorage.setItem('quaora_cart', JSON.stringify(cart));
+        const c = document.getElementById('cartCount');
+        if(c) c.innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    };
+    
+    window.renderCart = () => {
+        const items = document.getElementById('cartItems');
+        const tDisp = document.getElementById('cartTotal');
+        if (cart.length === 0) {
+            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz boş.</p>';
+            tDisp.innerText = '₺0,00'; return;
+        }
+        let total = 0;
+        items.innerHTML = cart.map(i => {
+            total += (i.price * i.qty);
+            return `
+                <div class="flex justify-between items-center bg-gray-50 p-3 md:p-4 rounded-xl border border-black/5">
+                    <div>
+                        <h4 class="font-bold uppercase text-[10px] md:text-[11px] tracking-tight text-gray-800">${i.name}</h4>
+                        <p class="text-[9px] md:text-[10px] font-bold text-gray-500 mb-1">Beden: <span class="text-[#964b00]">${i.size}</span> | Adet: ${i.qty}</p>
+                        <p class="text-[#964b00] font-black text-xs md:text-sm italic">₺${(i.price * i.qty).toLocaleString('tr-TR')}</p>
+                    </div>
+                    <button onclick="removeFromCart('${i.cartItemId}')" class="text-red-500 font-bold px-2 hover:scale-110">✕</button>
+                </div>
+            `;
+        }).join('');
+        tDisp.innerText = '₺' + total.toLocaleString('tr-TR');
+    };
+
+    window.addToCart = (id, name, price) => {
+        const product = window.allProducts.find(p => p.id === id);
+        const size = window.selectedSizes[id];
+        
+        if (!size) return alert("Lütfen sepete eklemeden önce bir beden seçin!");
+        
+        const pSizeStocks = product.sizeStocks || {};
+        const stockForSize = pSizeStocks[size] || 0;
+        const cartItemId = id + "_" + size; 
+        const index = cart.findIndex(i => i.cartItemId === cartItemId);
+        
+        let currentQty = index > -1 ? cart[index].qty : 0;
+        if (currentQty >= stockForSize) {
+            return alert(`Maalesef bu bedende daha fazla ürün ekleyemezsiniz! (Kalan Stok: ${stockForSize})`);
+        }
+
+        if (index > -1) { cart[index].qty += 1; } 
+        else { cart.push({ cartItemId, id, name, price, size, qty: 1 }); }
+        window.updateCart(); window.toggleCart();
+    };
+
+    window.removeFromCart = (cartItemId) => {
+        cart = cart.filter(i => i.cartItemId !== cartItemId);
+        window.updateCart(); window.renderCart();
+    };
+    
+    window.siparisVer = () => {
+        if(cart.length > 0) window.location.href = "https://www.shopier.com/quaora/45868772";
+    };
+
+    window.selectSize = (productId, size) => {
+        window.selectedSizes[productId] = size;
+        document.querySelectorAll(`.size-btn-${productId}`).forEach(btn => {
+            if(!btn.disabled) {
+                btn.classList.remove('bg-[#964b00]', 'text-white', 'border-[#964b00]');
+                btn.classList.add('bg-white/50', 'text-gray-800', 'border-black/10');
+            }
+        });
+        const selectedBtn = document.getElementById(`size-btn-${productId}-${size}`);
+        if (selectedBtn && !selectedBtn.disabled) {
+            selectedBtn.classList.remove('bg-white/50', 'text-gray-800', 'border-black/10');
+            selectedBtn.classList.add('bg-[#964b00]', 'text-white', 'border-[#964b00]');
+        }
+    };
+
+    // --- ÜRÜN LİSTELEME ---
+    const renderProducts = (products) => {
+        const grid = document.getElementById('productGrid');
+        if(!grid) return;
+        
+        if(products.length === 0) {
+            grid.innerHTML = '<p class="text-center col-span-2 md:col-span-3 lg:col-span-4 text-[#964b00] font-bold italic mt-10">Şu an ürün bulunmamaktadır.</p>';
+            return;
+        }
+
+        grid.innerHTML = products.map(p => {
+            const images = p.images && p.images.length > 0 ? p.images : [];
+            const mainImg = images.length > 0 ? images[0] : '';
+            const pSizeStocks = p.sizeStocks || {};
+            const totalStock = Object.values(pSizeStocks).reduce((sum, val) => sum + val, 0);
+
+            let sliderHtml = images.length > 1 ? `
+                <div id="slider-${p.id}" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar w-full h-full">
+                    ${images.map(img => `<img src="${img}" class="snap-center shrink-0 w-full h-full object-cover">`).join('')}
+                </div>
+                <button onclick="scrollSlider('${p.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow hover:bg-white z-10 text-[10px] md:text-sm flex items-center justify-center">❮</button>
+                <button onclick="scrollSlider('${p.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow hover:bg-white z-10 text-[10px] md:text-sm flex items-center justify-center">❯</button>
+            ` : `<img src="${mainImg}" class="w-full h-full object-cover">`;
+
+            const adminButtons = isAdmin ? `
+                <div class="absolute top-2 right-2 z-20 flex flex-col gap-1.5 md:gap-2">
+                    <button onclick="editProduct('${p.id}')" class="bg-blue-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-blue-800 transition-colors">✎</button>
+                    <button onclick="deleteProduct('${p.id}')" class="bg-red-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-red-800 transition-colors">✕</button>
+                </div>
+            ` : '';
+
+            return `
+            <article class="glass-card rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col group relative shadow-xl">
+                ${adminButtons}
+                <div class="relative h-56 md:h-[26rem] overflow-hidden bg-white/50">
+                    ${sliderHtml}
+                    <div class="absolute top-2 left-2 md:top-4 md:left-4 discount-tag shadow-lg text-[10px] md:text-xs px-2 py-1 md:px-3 md:py-1.5 bg-white text-black rounded font-bold z-10">
+                        -%${p.discount || Math.round(((p.originalPrice - p.salePrice) / p.originalPrice) * 100)}
+                    </div>
+                    ${totalStock < 5 && totalStock > 0 ? `<div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 bg-black text-white text-[8px] md:text-[9px] px-2 py-1 md:px-3 md:py-1.5 rounded-full font-black tracking-[0.2em] uppercase shadow-lg z-10">SON ${totalStock}</div>` : ''}
+                    ${totalStock === 0 ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-10"><span class="bg-black text-white px-3 py-1.5 md:px-6 md:py-2 rounded-lg md:rounded-xl font-black tracking-widest text-[10px] md:text-sm uppercase rotate-[-10deg]">Tükendi</span></div>` : ''}
+                </div>
+                
+                <div class="p-3 md:p-6 flex flex-col flex-grow bg-white/40">
+                    <h3 class="text-xs md:text-xl font-black text-gray-900 uppercase tracking-widest mb-1.5 md:mb-2 line-clamp-2">${p.name}</h3>
+                    
+                    <div class="flex items-center gap-2 mb-3 md:mb-4 flex-wrap">
+                        <span class="text-sm md:text-2xl font-black text-red-600 italic">₺${p.salePrice}</span>
+                        <span class="text-[10px] md:text-sm font-bold text-gray-500 line-through">₺${p.originalPrice}</span>
+                    </div>
+
+                    <div class="mb-3 md:mb-6 mt-auto">
+                        <p class="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-gray-500 mb-1.5 md:mb-2">Beden</p>
+                        <div class="flex flex-wrap gap-1.5 md:gap-2 mt-1">
+                            ${Object.keys(pSizeStocks).map(s => {
+                                const stockOfSize = pSizeStocks[s];
+                                const isOutOfStock = stockOfSize <= 0;
+                                return `
+                                    <button id="size-btn-${p.id}-${s}" 
+                                            onclick="${isOutOfStock ? '' : `selectSize('${p.id}', '${s}')`}"
+                                            class="size-btn-${p.id} px-2 py-1.5 md:px-4 md:py-2.5 bg-white/50 border border-black/10 rounded-lg text-[10px] md:text-sm font-bold ${isOutOfStock ? 'text-gray-300 line-through opacity-50 cursor-not-allowed' : 'text-gray-800 hover:border-[#964b00] cursor-pointer'} transition-colors focus:outline-none shadow-sm min-w-[2rem] md:min-w-[3rem]"
+                                            ${isOutOfStock ? 'disabled' : ''}>
+                                        ${s}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 w-full mt-auto">
+                        <button onclick="showDescription('${p.id}')" class="w-[30%] md:w-[35%] bg-white hover:bg-gray-100 text-[#964b00] border border-[#964b00]/30 py-2.5 md:py-4 rounded-lg md:rounded-xl font-black tracking-widest uppercase text-[8px] md:text-[10px] transition-all shadow-md flex items-center justify-center">
+                            ℹ️ BİLGİ
+                        </button>
+                        <button onclick="addToCart('${p.id}', '${p.name}', ${p.salePrice})" 
+                                ${totalStock === 0 ? 'disabled' : ''}
+                                class="w-[70%] md:w-[65%] ${totalStock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#964b00] hover:bg-black active:scale-95'} text-white py-2.5 md:py-4 rounded-lg md:rounded-xl font-black tracking-[0.1em] md:tracking-[0.2em] uppercase text-[9px] md:text-[11px] transition-all shadow-lg">
+                            ${totalStock === 0 ? 'TÜKENDİ' : 'SEPETE EKLE'}
+                        </button>
+                    </div>
+                </div>
+            </article>
+            `;
+        }).join('');
+    };
+
+    window.scrollSlider = (id, direction) => {
+        const slider = document.getElementById(`slider-${id}`);
+        if(slider) {
+            const scrollAmount = slider.clientWidth;
+            slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+    };
+
+    // --- ADMİN İŞLEMLERİ ---
+    window.addAdminSize = () => {
+        const sizeInput = document.getElementById('adminSizeInput');
+        const stockInput = document.getElementById('adminStockInput');
+        const size = sizeInput.value.trim().toUpperCase();
+        const stock = parseInt(stockInput.value);
+
+        if(size && stock >= 0) {
+            window.currentAdminSizes[size] = stock;
+            sizeInput.value = '';
+            stockInput.value = '';
+            window.renderAdminSizes();
+        } else {
+            alert("Lütfen geçerli bir beden adı ve stok miktarı giriniz.");
+        }
+    };
+
+    window.removeAdminSize = (size) => {
+        delete window.currentAdminSizes[size];
+        window.renderAdminSizes();
+    };
+
+    window.renderAdminSizes = () => {
+        const container = document.getElementById('adminSizesContainer');
+        const sizes = Object.keys(window.currentAdminSizes);
+        
+        if(sizes.length === 0) {
+            container.innerHTML = '<span class="text-[10px] text-gray-500 font-bold">Henüz beden eklenmedi.</span>';
+            return;
+        }
+
+        container.innerHTML = sizes.map(s => `
+            <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-[#964b00]/20 shadow-sm">
+                <span class="text-xs font-black text-[#964b00]">${s}</span>
+                <span class="text-[10px] font-bold text-gray-600">(${window.currentAdminSizes[s]} adet)</span>
+                <button onclick="removeAdminSize('${s}')" class="text-red-500 font-bold ml-2 hover:scale-110">✕</button>
+            </div>
+        `).join('');
+    };
+
+    window.previewProductImage = async (input) => {
+        if (input.files && input.files.length > 0) {
+            for (let i = 0; i < input.files.length; i++) {
+                const file = input.files[i];
+                let base64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 800; 
+                            let w = img.width; 
+                            let h = img.height;
+                            
+                            if (w > MAX_WIDTH) {
+                                h = Math.round((h * MAX_WIDTH) / w);
+                                w = MAX_WIDTH;
+                            }
+                            canvas.width = w; 
+                            canvas.height = h;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+                            
+                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                currentImagesBase64.push(base64); 
+            }
+            window.renderAdminImagePreviews(); 
+            input.value = ""; 
+        }
+    };
+
+    window.renderAdminImagePreviews = () => {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = currentImagesBase64.map((img, index) => `
+            <div class="relative rounded-xl overflow-hidden h-24 md:h-32 border-2 border-white shadow-md">
+                <img src="${img}" class="w-full h-full object-cover">
+                <button onclick="removeAdminImage(${index})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full font-black text-xs shadow-lg hover:bg-red-800">✕</button>
+            </div>
+        `).join('');
+    };
+
+    window.removeAdminImage = (index) => {
+        currentImagesBase64.splice(index, 1);
+        window.renderAdminImagePreviews();
+    };
+
+    window.calculateDiscount = () => {
+        const oldP = parseFloat(document.getElementById('pOldPrice').value);
+        const newP = parseFloat(document.getElementById('pNewPrice').value);
+        const badge = document.getElementById('discountBadge');
+
+        if (oldP && newP && oldP > newP) {
+            const percent = Math.round(((oldP - newP) / oldP) * 100);
+            badge.innerText = `-%${percent}`;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    };
+
+    window.openProductAdmin = () => {
+        window.currentEditId = null;
+        document.getElementById('modalTitle').innerText = "YENİ MAYOKİNİ ALTI";
+        document.getElementById('saveBtnText').innerText = "PAYLAŞ";
+        
+        document.getElementById('pName').value = '';
+        document.getElementById('pDesc').value = '';
+        document.getElementById('pOldPrice').value = '';
+        document.getElementById('pNewPrice').value = '';
+        document.getElementById('discountBadge').classList.add('hidden');
+        
+        currentImagesBase64 = []; 
+        window.currentAdminSizes = {}; 
+        
+        window.renderAdminImagePreviews(); 
+        window.renderAdminSizes();
+
+        document.getElementById('productAdminModal').classList.remove('hidden');
+        document.getElementById('productAdminModal').classList.add('flex');
+    };
+
+    window.closeProductAdmin = () => {
+        document.getElementById('productAdminModal').classList.add('hidden');
+        document.getElementById('productAdminModal').classList.remove('flex');
+    };
+
+    window.saveProduct = async () => {
+        const name = document.getElementById('pName').value.trim();
+        const desc = document.getElementById('pDesc').value.trim();
+        const oldP = parseFloat(document.getElementById('pOldPrice').value);
+        const newP = parseFloat(document.getElementById('pNewPrice').value);
+        
+        if (currentImagesBase64.length === 0 || !name || !oldP || !newP || Object.keys(window.currentAdminSizes).length === 0) {
+            return alert("Lütfen fotoğraf, isim, fiyatlar ve en az bir bedenin stok miktarını girin!");
+        }
+
+        const totalStock = Object.values(window.currentAdminSizes).reduce((sum, val) => sum + val, 0);
+        const discountPercent = Math.round(((oldP - newP) / oldP) * 100);
+
+        try {
+            document.getElementById('saveBtnText').innerText = "YÜKLENİYOR...";
+            const productData = {
+                name: name,
+                description: desc,
+                originalPrice: oldP,
+                salePrice: newP,
+                discount: discountPercent,
+                sizeStocks: window.currentAdminSizes, 
+                sizes: Object.keys(window.currentAdminSizes),
+                stock: totalStock, 
+                images: currentImagesBase64
+            };
+
+            if(window.currentEditId) {
+                await updateDoc(doc(db, COLLECTION_NAME, window.currentEditId), productData);
+                alert("Ürün başarıyla güncellendi!");
+            } else {
+                productData.createdAt = Date.now();
+                await addDoc(collection(db, COLLECTION_NAME), productData);
+                alert("Ürün başarıyla eklendi!");
+            }
+            
+            window.closeProductAdmin();
+
+        } catch (error) {
+            console.error(error);
+            alert("İşlem sırasında hata oluştu! Detay: " + error.message);
+        } finally {
+            document.getElementById('saveBtnText').innerText = window.currentEditId ? "GÜNCELLE" : "PAYLAŞ";
+        }
+    };
+
+    window.editProduct = (id) => {
+        const p = window.allProducts.find(item => item.id === id);
+        if (!p) return;
+        
+        window.currentEditId = id; 
+        document.getElementById('modalTitle').innerText = "ÜRÜNÜ DÜZENLE";
+        document.getElementById('saveBtnText').innerText = "GÜNCELLE";
+
+        document.getElementById('pName').value = p.name;
+        document.getElementById('pDesc').value = p.description || '';
+        document.getElementById('pOldPrice').value = p.originalPrice;
+        document.getElementById('pNewPrice').value = p.salePrice;
+        calculateDiscount();
+        
+        window.currentAdminSizes = { ...(p.sizeStocks || {}) };
+        currentImagesBase64 = [...(p.images || [])];
+        
+        window.renderAdminImagePreviews(); 
+        window.renderAdminSizes();
+        
+        document.getElementById('productAdminModal').classList.remove('hidden');
+        document.getElementById('productAdminModal').classList.add('flex');
+    };
+
+    window.deleteProduct = async (id) => {
+        if(confirm("Bu ürünü silmek istediğinize emin misiniz?")) {
+            try {
+                await deleteDoc(doc(db, COLLECTION_NAME, id));
+            } catch (error) {
+                console.error("Hata:", error);
+                alert("Ürün silinirken bir hata oluştu.");
+            }
+        }
+    };
+
+    const loadProducts = () => {
+        const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            window.allProducts = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            renderProducts(window.allProducts);
+        }, (error) => {
+            console.error("Ürünler yüklenirken hata:", error);
+        });
+    };
+
+    // --- ADMİN GİRİŞ KONTROLÜ VE YAZI EDİTLEME YETKİSİ ---
+    onAuthStateChanged(auth, (user) => {
+        const editTitleBtn = document.getElementById("edit-title-btn");
+        const editSubtitleBtn = document.getElementById("edit-subtitle-btn");
+
+        if (user) {
+            isAdmin = true;
+            const btn = document.getElementById('adminAddProductBtn');
+            if(btn) btn.classList.remove('hidden');
+            
+            // Adminse düzenleme butonlarını göster
+            if(editTitleBtn) { editTitleBtn.classList.remove("hidden"); editTitleBtn.classList.add("flex"); }
+            if(editSubtitleBtn) { editSubtitleBtn.classList.remove("hidden"); editSubtitleBtn.classList.add("flex"); }
+
+        } else {
+            isAdmin = false;
+            const btn = document.getElementById('adminAddProductBtn');
+            if(btn) btn.classList.add('hidden');
+            
+            // Kullanıcıysa düzenleme butonlarını gizle
+            if(editTitleBtn) { editTitleBtn.classList.add("hidden"); editTitleBtn.classList.remove("flex"); }
+            if(editSubtitleBtn) { editSubtitleBtn.classList.add("hidden"); editSubtitleBtn.classList.remove("flex"); }
+        }
+        
+        if(window.allProducts && window.allProducts.length > 0) {
+            renderProducts(window.allProducts);
+        }
+    });
+
+    updateCart();
+    loadProducts();
+    loadPageTexts(); // Sayfa açılışında metinleri veritabanından çek
+</script>
+</body>
+</html>
