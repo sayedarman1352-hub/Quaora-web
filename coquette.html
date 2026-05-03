@@ -135,7 +135,7 @@
             </button>
             <div class="flex flex-col border-l border-[#964b00]/20 pl-4 md:pl-6 cursor-pointer" onclick="window.location.href='index.html'">
                 <h1 class="text-2xl md:text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
-                <p class="text-[8px] md:text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-10 md:ml-14 font-semibold italic">COQUETTE</p // ________________________________-> 
+                <p class="text-[8px] md:text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-10 md:ml-14 font-semibold italic">COQUETTE</p>
             </div>
         </div>
         
@@ -154,10 +154,9 @@
     <main class="max-w-7xl mx-auto py-8 md:py-16 px-2 md:px-4 flex-grow w-full">
        <header class="text-center mb-10 md:mb-16">
     <div class="flex items-center justify-center gap-3">
-        <h2 id="page-title" class="text-4xl md:text-6xl font-black text-[#964b00] uppercase tracking-tighter drop-shadow-sm serif" >
-            COQUETTE
-        </h2 // ________________________________-> 
-        
+        <h2 id="page-title" class="text-4xl md:text-6xl font-black text-[#964b00] uppercase tracking-tighter drop-shadow-sm serif">
+            Coquette
+        </h2>
         <button id="edit-title-btn" onclick="editPageText('title')" class="hidden bg-blue-600 text-white w-8 h-8 rounded-full font-bold shadow-lg text-sm hover:bg-blue-800 transition-transform hover:scale-110 items-center justify-center">
             ✎
         </button>
@@ -180,7 +179,8 @@
             <button onclick="closeProductAdmin()" class="absolute top-4 right-4 z-50 text-red-600 font-black text-2xl w-10 h-10 flex items-center justify-center hover:scale-110 transition-all">✕</button>
 
             <div class="p-6 md:p-8 overflow-y-auto no-scrollbar custom-scroll bg-white/60">
-                <h2 id="modalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">
+                <h2 id="modalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">YENİ COQUETTE</h2>
+                
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Ürün İsmi</label>
@@ -235,7 +235,7 @@
     </div>
     </main>
 
-<script type="module">
+ <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, updateDoc, setDoc, onSnapshot, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -253,8 +253,8 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const COLLECTION_NAME = "COQUETTE"; // ________________________________-
-    const PAGE_SETTINGS_DOC = "COQUETTE_header";
+    const COLLECTION_NAME = "conquette";
+    const PAGE_SETTINGS_DOC = "conquette_header";
 
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
     let isAdmin = false;
@@ -279,7 +279,7 @@
     };
 
     window.savePageTexts = async () => {
-        const titleText = document.getElementById("page-title")?.innerText.trim() || "COQUETTE"; // ________________________________-
+        const titleText = document.getElementById("page-title")?.innerText.trim() || "coquette";
         const subtitleText = document.getElementById("page-subtitle")?.innerText.trim() || "quaora";
         
         try {
@@ -390,7 +390,7 @@
         const items = document.getElementById('cartItems');
         const tDisp = document.getElementById('cartTotal');
         if (cart.length === 0) {
-            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz boş.</p>';
+            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm italic">Sepetiniz boş.</p>';
             tDisp.innerText = '₺0,00'; return;
         }
         let total = 0;
