@@ -605,16 +605,10 @@
 
    window.uploadBgImages = async (input) => {
         if (input.files && input.files.length > 0) {
-            // Eğer bgImages tanımlı değilse boş dizi varsay (hata vermemesi için güvenlik)
             let newImages = typeof bgImages !== 'undefined' ? [...bgImages] : [];
             
             for (let i = 0; i < input.files.length; i++) {
                 const file = input.files[i];
-                
-                // 1 MB kontrolü
-                const isLargeFile = file.size > 1024 * 1024;
-                // Firestore şişmesin diye kaliteyi biraz daha kıstık (Base64 çok yer kaplar)
-                const exportQuality = isLargeFile ? 0.5 : 0.8; 
                 
                 let base64 = await new Promise((resolve) => {
                     const reader = new FileReader();
@@ -622,15 +616,15 @@
                         const img = new Image();
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
                             
-                            // Firebase Document 1MB sınırına takılmamak için 1920 yerine 1280 kullanıyoruz. 
-                            // Web arka planı için kalitesi gayet yeterlidir.
-                            const MAX_WIDTH = 1280;
-                            const MAX_HEIGHT = 1280;
-                            
+                            // Başlangıç için maksimum sınır (Gerekirse döngüde ufalacak)
+                            let MAX_WIDTH = 1920;
+                            let MAX_HEIGHT = 1920;
                             let width = img.width;
                             let height = img.height;
                             
+                            // İlk orantısal boyutlandırma
                             if (width > height) {
                                 if (width > MAX_WIDTH) {
                                     height = Math.round(height *= MAX_WIDTH / width);
@@ -643,15 +637,44 @@
                                 }
                             }
                             
-                            canvas.width = width;
-                            canvas.height = height;
+                            let quality = 0.9; // Başlangıç kalitesi
+                            let currentBase64 = "";
                             
-                            const ctx = canvas.getContext('2d');
-                            ctx.imageSmoothingEnabled = true;
-                            ctx.imageSmoothingQuality = 'high';
-                            ctx.drawImage(img, 0, 0, width, height);
+                            // 1 MB Sınırı (Base64 karakter uzunluğu olarak yaklaşık 1 milyon karakter güvenlidir)
+                            const MAX_BASE64_LENGTH = 1000000; 
+
+                            // Fotoğrafı 1 MB altına inene kadar ezen fonksiyon
+                            const resizeAndCompress = () => {
+                                canvas.width = width;
+                                canvas.height = height;
+                                
+                                ctx.imageSmoothingEnabled = true;
+                                ctx.imageSmoothingQuality = 'high';
+                                ctx.drawImage(img, 0, 0, width, height);
+                                
+                                currentBase64 = canvas.toDataURL('image/jpeg', quality);
+                                
+                                // Eğer hala 1 MB'tan büyükse eziyoruz
+                                if (currentBase64.length > MAX_BASE64_LENGTH) {
+                                    if (quality > 0.4) {
+                                        // Önce kaliteyi düşür
+                                        quality -= 0.1;
+                                        resizeAndCompress(); // Tekrar dene
+                                    } else {
+                                        // Kalite çok düştüyse pikselleşmemesi için çözünürlüğü %20 küçült, kaliteyi toparla
+                                        width = Math.round(width * 0.8);
+                                        height = Math.round(height * 0.8);
+                                        quality = 0.7;
+                                        resizeAndCompress(); // Tekrar dene
+                                    }
+                                } else {
+                                    // 1 MB'ın altına indi, dışarı aktar!
+                                    resolve(currentBase64); 
+                                }
+                            };
                             
-                            resolve(canvas.toDataURL('image/jpeg', exportQuality)); 
+                            // İşlemi başlat
+                            resizeAndCompress();
                         };
                         img.src = e.target.result;
                     };
@@ -664,24 +687,17 @@
             try {
                 await setDoc(doc(db, "page_settings", BG_SETTINGS_DOC), { images: newImages }, { merge: true });
                 
-                // ÖNEMLİ: Başarılı yüklemeden sonra local diziyi de güncelle ki 
-                // sayfayı yenilemeden tekrar yükleme yaparsan eskisini silmesin/hata vermesin.
                 if (typeof bgImages !== 'undefined') {
                     bgImages = newImages;
                 }
                 
-                alert("Fotoğraflar sayfaya uygun şekilde optimize edilip eklendi!");
-                
-                // Admin panelindeki fotoğrafları güncelleyen bir fonksiyonun varsa burada çağırabilirsin
-                // Örnek: renderAdminImages(); veya loadBgImages();
+                alert("Fotoğraflar başarıyla sıkıştırılıp eklendi!");
                 
             } catch (error) {
                 console.error("Yükleme Hatası: ", error);
-                // Eğer hata verirse tam olarak ne hatası verdiğini ekrana yazdırıyoruz
                 alert("Hata oluştu: " + error.message); 
             }
             
-            // İnputu temizle ki aynı dosyayı bir daha seçebil
             input.value = "";
         }
     };
