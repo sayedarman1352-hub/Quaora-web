@@ -14,20 +14,32 @@
             margin: 0;
         }
 
+       /* Arka Plan Slider Kapsayıcısı */
+        #bg-slider-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden; /* Dışarı taşan resimleri gizle */
+        }
+
         #bg-slideshow {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; 
-    background-image: url("image/seniseviom.jpeg"); /* url() eklendi */
-    background-size: cover; /* Resmin ekrana tam oturması için eklendi */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    transition: background-image 1.5s ease-in-out; 
-}
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); /* Kayma animasyonu hızı */
+        }
+
+        .bg-slide-item {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
 
         .serif { font-family: 'Playfair Display', serif; }
         
@@ -71,6 +83,32 @@
     </style>
 </head>
 <body>
+    <div id="bg-slider-wrap">
+    <div id="bg-slideshow">
+        </div>
+    
+    <button onclick="changeBgSlide(-1)" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-0 text-white bg-black/20 hover:bg-black/50 p-2 md:p-4 rounded-full backdrop-blur-sm transition-all hidden md:block">❮</button>
+    <button onclick="changeBgSlide(1)" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-0 text-white bg-black/20 hover:bg-black/50 p-2 md:p-4 rounded-full backdrop-blur-sm transition-all hidden md:block">❯</button>
+</div>
+
+<button id="admin-bg-btn" onclick="openBgAdmin()" class="hidden fixed bottom-4 right-4 z-50 bg-[#964b00] text-white px-4 py-2 rounded-full shadow-xl font-bold text-xs hover:bg-black transition-colors">
+    📸 Arka Planı Düzenle
+</button>
+
+<div id="bgAdminModal" class="hidden fixed inset-0 z-[3000] bg-black/80 backdrop-blur-md items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl p-6 relative">
+        <button onclick="closeBgAdmin()" class="absolute top-4 right-4 text-red-500 font-bold hover:scale-110">✕</button>
+        <h2 class="text-xl font-black text-[#964b00] mb-4">ARKA PLAN FOTOĞRAFLARI</h2>
+        
+        <div id="adminBgPreview" class="grid grid-cols-3 gap-2 mb-4 max-h-64 overflow-y-auto custom-scroll">
+            </div>
+
+        <input type="file" id="bgFileInput" accept="image/*" multiple onchange="uploadBgImages(this)" class="hidden">
+        <button onclick="document.getElementById('bgFileInput').click()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition-colors">
+            + YENİ FOTOĞRAF EKLE
+        </button>
+    </div>
+</div>
 <div id="bg-slideshow"></div>   
 <div id="menuOverlay" onclick="toggleMenu(); closeCart(); closeProfilePanel();" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
 
@@ -467,19 +505,203 @@
         }
     };
 
+    // --- ARKA PLAN (BACKGROUND) SLIDER SİSTEMİ (YENİ EKLENEN KISIM) ---
+    let bgImages = ["image/seniseviom.jpeg"]; 
+    let currentBgIndex = 0;
+    let bgAutoPlayInterval;
+    const BG_SETTINGS_DOC = "background_slider"; 
+
+    window.renderBgSlider = () => {
+        const slider = getEl('bg-slideshow');
+        if(!slider) return;
+        if (bgImages.length === 0) {
+            slider.innerHTML = `<div class="bg-slide-item" style="background-image: url('image/seniseviom.jpeg'); width: 100vw; height: 100vh; flex-shrink: 0; background-size: cover; background-position: center; background-repeat: no-repeat;"></div>`;
+            return;
+        }
+        
+        slider.innerHTML = bgImages.map(img => `
+            <div class="bg-slide-item" style="background-image: url('${img}'); width: 100vw; height: 100vh; flex-shrink: 0; background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+        `).join('');
+        
+        window.updateBgSlidePosition();
+    };
+
+    window.updateBgSlidePosition = () => {
+        const slider = getEl('bg-slideshow');
+        if(slider) slider.style.transform = `translateX(-${currentBgIndex * 100}%)`;
+    };
+
+    window.changeBgSlide = (direction) => {
+        if (bgImages.length <= 1) return;
+        
+        currentBgIndex += direction;
+        
+        if (currentBgIndex >= bgImages.length) {
+            currentBgIndex = 0;
+        } else if (currentBgIndex < 0) {
+            currentBgIndex = bgImages.length - 1;
+        }
+        
+        window.updateBgSlidePosition();
+        window.resetBgAutoPlay();
+    };
+
+    window.startBgAutoPlay = () => {
+        clearInterval(bgAutoPlayInterval);
+        bgAutoPlayInterval = setInterval(() => {
+            window.changeBgSlide(1);
+        }, 5000); 
+    };
+
+    window.resetBgAutoPlay = () => {
+        window.startBgAutoPlay();
+    };
+
+    const loadBgImages = () => {
+        onSnapshot(doc(db, "page_settings", BG_SETTINGS_DOC), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if (data.images && data.images.length > 0) {
+                    bgImages = data.images;
+                }
+            }
+            window.renderBgSlider();
+            window.renderAdminBgImages();
+            
+            if(bgImages.length > 1) {
+                window.startBgAutoPlay();
+            }
+        });
+    };
+
+    window.openBgAdmin = () => {
+        const modal = getEl("bgAdminModal");
+        if(modal) {
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            window.renderAdminBgImages();
+        }
+    };
+
+    window.closeBgAdmin = () => {
+        const modal = getEl("bgAdminModal");
+        if(modal) {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+    };
+
+    window.renderAdminBgImages = () => {
+        const container = getEl("adminBgPreview");
+        if(!container) return;
+        
+        container.innerHTML = bgImages.map((img, index) => `
+            <div class="relative h-24 rounded-lg overflow-hidden border border-gray-300">
+                <img src="${img}" class="w-full h-full object-cover">
+                <button onclick="deleteBgImage(${index})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full font-bold text-xs hover:bg-red-800">✕</button>
+            </div>
+        `).join('');
+    };
+
+    window.uploadBgImages = async (input) => {
+        if (input.files && input.files.length > 0) {
+            let newImages = [...bgImages];
+            
+            for (let i = 0; i < input.files.length; i++) {
+                const file = input.files[i];
+                let base64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            
+                            // Sayfada bozulmamaları için maksimum güvenli sınırlar (Full HD)
+                            const MAX_WIDTH = 1920;
+                            const MAX_HEIGHT = 1920;
+                            
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            // Fotoğrafın kendi ORİJİNAL en/boy oranını koruyarak hesapla (sünme olmasın)
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height = Math.round(height *= MAX_WIDTH / width);
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width = Math.round(width *= MAX_HEIGHT / height);
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            
+                            const ctx = canvas.getContext('2d');
+                            
+                            // Piksellenmeyi engellemek için tarayıcı yumuşatmasını aç
+                            ctx.imageSmoothingEnabled = true;
+                            ctx.imageSmoothingQuality = 'high';
+                            
+                            // Resmi canvas'a orantılı bir şekilde çiz
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // Kaliteyi %90'a çıkarttık, çamur gibi durmasını engeller
+                            resolve(canvas.toDataURL('image/jpeg', 0.9)); 
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                newImages.push(base64);
+            }
+            
+            // Firebase'e kaydet
+            try {
+                await setDoc(doc(db, "page_settings", BG_SETTINGS_DOC), { images: newImages }, { merge: true });
+                alert("Fotoğraflar sayfaya uygun şekilde optimize edilip eklendi!");
+            } catch (error) {
+                console.error(error);
+                alert("Yüklenirken hata oluştu.");
+            }
+            input.value = "";
+        }
+    };
+
+    window.deleteBgImage = async (index) => {
+        if(confirm("Bu arka plan resmini silmek istiyor musunuz?")) {
+            let newImages = [...bgImages];
+            newImages.splice(index, 1);
+            
+            try {
+                await setDoc(doc(db, "page_settings", BG_SETTINGS_DOC), { images: newImages }, { merge: true });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+
+    // Uygulama başladığında arka plan resimlerini çek
+    loadBgImages();
+
     // --- DURUM TAKİBİ ---
     onAuthStateChanged(auth, async (user) => {
         const adminSec = getEl('adminAccess');
         const quickAdd = getEl('adminQuickAdd');
+        const bgAdminBtn = getEl('admin-bg-btn'); // ARKA PLAN ADMİN BUTONU İÇİN KONTROL
         
         if (user) {
             const isAdmin = user.email === "quaoratr@gmail.com";
             if(isAdmin) {
                 if(adminSec) adminSec.classList.remove("hidden");
                 if(quickAdd) quickAdd.classList.remove("hidden");
+                if(bgAdminBtn) bgAdminBtn.classList.remove("hidden");
             } else {
                 if(adminSec) adminSec.classList.add("hidden");
                 if(quickAdd) quickAdd.classList.add("hidden");
+                if(bgAdminBtn) bgAdminBtn.classList.add("hidden");
             }
 
             const snap = await getDoc(doc(db, "users", user.uid));
@@ -496,6 +718,7 @@
         } else {
             if(adminSec) adminSec.classList.add("hidden");
             if(quickAdd) quickAdd.classList.add("hidden");
+            if(bgAdminBtn) bgAdminBtn.classList.add("hidden");
             getEl('userStatusText').innerText = "Sign In";
             getEl('userActionWrapper').onclick = window.openAuthModal;
         }
