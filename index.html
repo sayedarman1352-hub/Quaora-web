@@ -609,6 +609,13 @@
             
             for (let i = 0; i < input.files.length; i++) {
                 const file = input.files[i];
+                
+                // 1 MB = 1024 * 1024 bytes. Dosya 1 MB'tan büyük mü diye kontrol ediyoruz.
+                const isLargeFile = file.size > 1024 * 1024;
+                
+                // Eğer 1 MB'tan büyükse kaliteyi düşür (0.6), küçükse yüksek kalitede bırak (0.9)
+                const exportQuality = isLargeFile ? 0.6 : 0.9;
+                
                 let base64 = await new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onload = async (e) => {
@@ -648,8 +655,8 @@
                             // Resmi canvas'a orantılı bir şekilde çiz
                             ctx.drawImage(img, 0, 0, width, height);
                             
-                            // Kaliteyi %90'a çıkarttık, çamur gibi durmasını engeller
-                            resolve(canvas.toDataURL('image/jpeg', 0.9)); 
+                            // Boyuta göre belirlediğimiz kalite ayarı ile base64'e çevir
+                            resolve(canvas.toDataURL('image/jpeg', exportQuality)); 
                         };
                         img.src = e.target.result;
                     };
