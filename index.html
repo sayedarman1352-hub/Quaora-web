@@ -603,18 +603,18 @@
         `).join('');
     };
 
-    window.uploadBgImages = async (input) => {
+   window.uploadBgImages = async (input) => {
         if (input.files && input.files.length > 0) {
-            let newImages = [...bgImages];
+            // Eğer bgImages tanımlı değilse boş dizi varsay (hata vermemesi için güvenlik)
+            let newImages = typeof bgImages !== 'undefined' ? [...bgImages] : [];
             
             for (let i = 0; i < input.files.length; i++) {
                 const file = input.files[i];
                 
-                // 1 MB = 1024 * 1024 bytes. Dosya 1 MB'tan büyük mü diye kontrol ediyoruz.
+                // 1 MB kontrolü
                 const isLargeFile = file.size > 1024 * 1024;
-                
-                // Eğer 1 MB'tan büyükse kaliteyi düşür (0.6), küçükse yüksek kalitede bırak (0.9)
-                const exportQuality = isLargeFile ? 0.6 : 0.9;
+                // Firestore şişmesin diye kaliteyi biraz daha kıstık (Base64 çok yer kaplar)
+                const exportQuality = isLargeFile ? 0.5 : 0.8; 
                 
                 let base64 = await new Promise((resolve) => {
                     const reader = new FileReader();
@@ -623,14 +623,14 @@
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
                             
-                            // Sayfada bozulmamaları için maksimum güvenli sınırlar (Full HD)
-                            const MAX_WIDTH = 1920;
-                            const MAX_HEIGHT = 1920;
+                            // Firebase Document 1MB sınırına takılmamak için 1920 yerine 1280 kullanıyoruz. 
+                            // Web arka planı için kalitesi gayet yeterlidir.
+                            const MAX_WIDTH = 1280;
+                            const MAX_HEIGHT = 1280;
                             
                             let width = img.width;
                             let height = img.height;
                             
-                            // Fotoğrafın kendi ORİJİNAL en/boy oranını koruyarak hesapla (sünme olmasın)
                             if (width > height) {
                                 if (width > MAX_WIDTH) {
                                     height = Math.round(height *= MAX_WIDTH / width);
@@ -647,15 +647,10 @@
                             canvas.height = height;
                             
                             const ctx = canvas.getContext('2d');
-                            
-                            // Piksellenmeyi engellemek için tarayıcı yumuşatmasını aç
                             ctx.imageSmoothingEnabled = true;
                             ctx.imageSmoothingQuality = 'high';
-                            
-                            // Resmi canvas'a orantılı bir şekilde çiz
                             ctx.drawImage(img, 0, 0, width, height);
                             
-                            // Boyuta göre belirlediğimiz kalite ayarı ile base64'e çevir
                             resolve(canvas.toDataURL('image/jpeg', exportQuality)); 
                         };
                         img.src = e.target.result;
@@ -668,15 +663,28 @@
             // Firebase'e kaydet
             try {
                 await setDoc(doc(db, "page_settings", BG_SETTINGS_DOC), { images: newImages }, { merge: true });
+                
+                // ÖNEMLİ: Başarılı yüklemeden sonra local diziyi de güncelle ki 
+                // sayfayı yenilemeden tekrar yükleme yaparsan eskisini silmesin/hata vermesin.
+                if (typeof bgImages !== 'undefined') {
+                    bgImages = newImages;
+                }
+                
                 alert("Fotoğraflar sayfaya uygun şekilde optimize edilip eklendi!");
+                
+                // Admin panelindeki fotoğrafları güncelleyen bir fonksiyonun varsa burada çağırabilirsin
+                // Örnek: renderAdminImages(); veya loadBgImages();
+                
             } catch (error) {
-                console.error(error);
-                alert("Yüklenirken hata oluştu.");
+                console.error("Yükleme Hatası: ", error);
+                // Eğer hata verirse tam olarak ne hatası verdiğini ekrana yazdırıyoruz
+                alert("Hata oluştu: " + error.message); 
             }
+            
+            // İnputu temizle ki aynı dosyayı bir daha seçebil
             input.value = "";
         }
     };
-
     window.deleteBgImage = async (index) => {
         if(confirm("Bu arka plan resmini silmek istiyor musunuz?")) {
             let newImages = [...bgImages];
