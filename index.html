@@ -847,7 +847,54 @@ window.compressPhoto = async (input) => {
                 quality -= 0.05;
             }
 
-            const compressedUrl = URL.createObjectURL(compressedBlob);
+            const base64Reader = new FileReader();
+
+base64Reader.onload = () => {
+    const base64Data = base64Reader.result;
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compressed Image</title>
+<style>
+body{
+    margin:0;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#111;
+    min-height:100vh;
+}
+img{
+    max-width:100%;
+    max-height:100vh;
+    object-fit:contain;
+}
+</style>
+</head>
+<body>
+    <img src="${base64Data}" alt="compressed-image">
+</body>
+</html>
+    `;
+
+    const htmlBlob = new Blob(
+        [htmlContent],
+        { type: "text/html" }
+    );
+
+    const htmlUrl = URL.createObjectURL(htmlBlob);
+
+    downloadBtn.classList.remove("hidden");
+    downloadBtn.href = htmlUrl;
+    downloadBtn.download = `${crypto.randomUUID()}_f.html`;
+};
+
+base64Reader.readAsDataURL(compressedBlob);
             const compressedSizeMB = (compressedBlob.size / 1024 / 1024).toFixed(2);
 
             preview.classList.remove("hidden");
@@ -863,7 +910,7 @@ window.compressPhoto = async (input) => {
 
             downloadBtn.classList.remove("hidden");
             downloadBtn.href = compressedUrl;
-            downloadBtn.download = "compressed-image.html";
+            downloadBtn.download = "compressed-image.";
         };
 
         img.src = e.target.result;
