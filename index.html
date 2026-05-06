@@ -680,46 +680,59 @@
     // Uygulama başladığında arka plan resimlerini çek
     loadBgImages();
 
-    // --- DURUM TAKİBİ ---
-    onAuthStateChanged(auth, async (user) => {
-        const adminSec = getEl('adminAccess');
-        const quickAdd = getEl('adminQuickAdd');
-        const bgAdminBtn = getEl('admin-bg-btn'); // ARKA PLAN ADMİN BUTONU İÇİN KONTROL
-        const compressBtn = getEl('compressAdminBtn');
-        if(compressBtn) compressBtn.classList.remove("hidden");
-        
-        if (user) {
-            const isAdmin = user.email === "quaoratr@gmail.com";
-            if(isAdmin) {
-                if(adminSec) adminSec.classList.remove("hidden");
-                if(quickAdd) quickAdd.classList.remove("hidden");
-                if(bgAdminBtn) bgAdminBtn.classList.remove("hidden");
-            } else {
-                if(adminSec) adminSec.classList.add("hidden");
-                if(quickAdd) quickAdd.classList.add("hidden");
-                if(bgAdminBtn) bgAdminBtn.classList.add("hidden");
+   onAuthStateChanged(auth, async (user) => {
+    const adminSec = getEl('adminAccess');
+    const quickAdd = getEl('adminQuickAdd');
+    const bgAdminBtn = getEl('admin-bg-btn');
+    const compressBtn = getEl('compressAdminBtn');
+
+    if (user) {
+        const isAdmin = user.email === "quaoratr@gmail.com";
+
+        if (isAdmin) {
+            if (adminSec) adminSec.classList.remove("hidden");
+            if (quickAdd) quickAdd.classList.remove("hidden");
+            if (bgAdminBtn) bgAdminBtn.classList.remove("hidden");
+            if (compressBtn) compressBtn.classList.remove("hidden");
+        } else {
+            if (adminSec) adminSec.classList.add("hidden");
+            if (quickAdd) quickAdd.classList.add("hidden");
+            if (bgAdminBtn) bgAdminBtn.classList.add("hidden");
+            if (compressBtn) compressBtn.classList.add("hidden");
+        }
+
+        const snap = await getDoc(doc(db, "users", user.uid));
+
+        if (snap.exists()) {
+            const d = snap.data();
+
+            getEl('userStatusText').innerText = d.username.toUpperCase();
+            getEl('userActionWrapper').onclick = window.openProfilePanel;
+
+            if (getEl('updUser')) {
+                getEl('updUser').value = d.username || "";
             }
 
-            const snap = await getDoc(doc(db, "users", user.uid));
-            if (snap.exists()) {
-                const d = snap.data();
-                getEl('userStatusText').innerText = d.username.toUpperCase();
-                getEl('userActionWrapper').onclick = window.openProfilePanel;
-                if(getEl('updUser')) getEl('updUser').value = d.username || "";
-                if(getEl('updPhone')) getEl('updPhone').value = d.phone || "";
-                if(d.photo && getEl('panelUserPhoto')) {
-                    getEl('panelUserPhoto').innerHTML = `<img src="${d.photo}" class="w-full h-full object-cover">`;
-                }
+            if (getEl('updPhone')) {
+                getEl('updPhone').value = d.phone || "";
             }
-        } else {
-            if(adminSec) adminSec.classList.add("hidden");
-            if(quickAdd) quickAdd.classList.add("hidden");
-            if(bgAdminBtn) bgAdminBtn.classList.add("hidden");
-            getEl('userStatusText').innerText = "Sign In";
-            getEl('userActionWrapper').onclick = window.openAuthModal;
+
+            if (d.photo && getEl('panelUserPhoto')) {
+                getEl('panelUserPhoto').innerHTML =
+                    `<img src="${d.photo}" class="w-full h-full object-cover">`;
+            }
         }
-    });
-    
+
+    } else {
+        if (adminSec) adminSec.classList.add("hidden");
+        if (quickAdd) quickAdd.classList.add("hidden");
+        if (bgAdminBtn) bgAdminBtn.classList.add("hidden");
+        if (compressBtn) compressBtn.classList.add("hidden");
+
+        getEl('userStatusText').innerText = "Sign In";
+        getEl('userActionWrapper').onclick = window.openAuthModal;
+    }
+});
 
     // --- DİNAMİK SLIDER MANTIĞI ---
     let hitIndex = 0;
