@@ -820,6 +820,7 @@ window.compressPhoto = async (input) => {
 
             const MAX_WIDTH = 1600;
 
+            // Görsel boyutlandırma
             if (width > MAX_WIDTH) {
                 height = Math.round((height * MAX_WIDTH) / width);
                 width = MAX_WIDTH;
@@ -835,8 +836,9 @@ window.compressPhoto = async (input) => {
             let quality = 0.9;
             let compressedBlob;
 
+            // 9MB altına düşene kadar sıkıştır
             while (quality > 0.1) {
-                compressedBlob = await new Promise(resolve =>
+                compressedBlob = await new Promise((resolve) =>
                     canvas.toBlob(resolve, "image/jpeg", quality)
                 );
 
@@ -847,12 +849,32 @@ window.compressPhoto = async (input) => {
                 quality -= 0.05;
             }
 
+            // Preview için görsel URL
+            const compressedUrl = URL.createObjectURL(compressedBlob);
+
+            // Önizleme
+            preview.classList.remove("hidden");
+            preview.innerHTML = `
+                <img src="${compressedUrl}" class="w-full h-full object-cover">
+            `;
+
+            const compressedSizeMB =
+                (compressedBlob.size / 1024 / 1024).toFixed(2);
+
+            info.innerHTML = `
+                <div>Orijinal: ${originalSizeMB} MB</div>
+                <div>Sıkıştırılmış: ${compressedSizeMB} MB</div>
+                <div>Kalite: %${Math.round(quality * 100)}</div>
+            `;
+
+            // JPG -> Base64
             const base64Reader = new FileReader();
 
-base64Reader.onload = () => {
-    const base64Data = base64Reader.result;
+            base64Reader.onload = () => {
+                const base64Data = base64Reader.result;
 
-    const htmlContent = `
+                // HTML içine göm
+                const htmlContent = `
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -880,37 +902,38 @@ img{
     <img src="${base64Data}" alt="compressed-image">
 </body>
 </html>
-    `;
+                `;
 
-    const htmlBlob = new Blob(
-        [htmlContent],
-        { type: "text/html" }
-    );
+                const htmlBlob = new Blob(
+                    [htmlContent],
+                    { type: "text/html" }
+                );
 
-    const htmlUrl = URL.createObjectURL(htmlBlob);
+                // Mobil uyumlu dataURL
+                const htmlReader = new FileReader();
 
-    downloadBtn.classList.remove("hidden");
-    downloadBtn.href = htmlUrl;
-    downloadBtn.download = `${crypto.randomUUID()}_f.html`;
-};
+                htmlReader.onloadend = () => {
+                    const htmlDataUrl = htmlReader.result;
 
-base64Reader.readAsDataURL(compressedBlob);
-            const compressedSizeMB = (compressedBlob.size / 1024 / 1024).toFixed(2);
+                    downloadBtn.classList.remove("hidden");
 
-            preview.classList.remove("hidden");
-            preview.innerHTML = `
-                <img src="${compressedUrl}" class="w-full h-full object-cover">
-            `;
+                    downloadBtn.onclick = (ev) => {
+                        ev.preventDefault();
 
-            info.innerHTML = `
-                <div>Orijinal: ${originalSizeMB} MB</div>
-                <div>Sıkıştırılmış: ${compressedSizeMB} MB</div>
-                <div>Kalite: %${Math.round(quality * 100)}</div>
-            `;
+                        const a = document.createElement("a");
+                        a.href = htmlDataUrl;
+                        a.download = `${crypto.randomUUID()}_f.html`;
 
-            downloadBtn.classList.remove("hidden");
-            downloadBtn.href = compressedUrl;
-            downloadBtn.download = "compressed-image.";
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    };
+                };
+
+                htmlReader.readAsDataURL(htmlBlob);
+            };
+
+            base64Reader.readAsDataURL(compressedBlob);
         };
 
         img.src = e.target.result;
