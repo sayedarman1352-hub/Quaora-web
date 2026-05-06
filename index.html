@@ -791,7 +791,7 @@ window.openCompressPanel = () => {
 
 window.closeCompressPanel = () => {
     const panel = getEl("compressPanel");
-    if(panel){
+    if (panel) {
         panel.classList.add("hidden");
     }
 };
@@ -805,6 +805,12 @@ window.compressPhoto = async (input) => {
     const preview = getEl("compressPreview");
     const info = getEl("compressInfo");
     const downloadBtn = getEl("downloadCompressed");
+
+    // eski link temizle
+    if (downloadBtn.dataset.url) {
+        URL.revokeObjectURL(downloadBtn.dataset.url);
+        delete downloadBtn.dataset.url;
+    }
 
     const reader = new FileReader();
 
@@ -820,6 +826,7 @@ window.compressPhoto = async (input) => {
 
             const MAX_WIDTH = 1600;
 
+            // resize
             if (width > MAX_WIDTH) {
                 height = Math.round((height * MAX_WIDTH) / width);
                 width = MAX_WIDTH;
@@ -835,24 +842,23 @@ window.compressPhoto = async (input) => {
             let quality = 0.9;
             let compressedBlob;
 
+            // 9MB altına düşene kadar sıkıştır
             while (quality > 0.1) {
                 compressedBlob = await new Promise((resolve) =>
                     canvas.toBlob(resolve, "image/jpeg", quality)
                 );
 
-                const sizeMB = compressedBlob.size / 1024 / 1024;
-
-                if (sizeMB <= 9) break;
+                if ((compressedBlob.size / 1024 / 1024) <= 9) break;
 
                 quality -= 0.05;
             }
 
-            const compressedUrl = URL.createObjectURL(compressedBlob);
+            // preview için
+            const compressedPreviewUrl = URL.createObjectURL(compressedBlob);
 
-            // preview
             preview.classList.remove("hidden");
             preview.innerHTML = `
-                <img src="${compressedUrl}" class="w-full h-full object-cover">
+                <img src="${compressedPreviewUrl}" class="w-full h-full object-cover">
             `;
 
             const compressedSizeMB =
@@ -864,12 +870,13 @@ window.compressPhoto = async (input) => {
                 <div>Kalite: %${Math.round(quality * 100)}</div>
             `;
 
-            // html üret
+            // base64'e çevir
             const base64Reader = new FileReader();
 
             base64Reader.onload = () => {
                 const base64Data = base64Reader.result;
 
+                // html içine göm
                 const htmlContent = `
 <!DOCTYPE html>
 <html lang="tr">
@@ -907,26 +914,15 @@ img{
 
                 const htmlUrl = URL.createObjectURL(htmlBlob);
 
+                // buton aktif
                 downloadBtn.classList.remove("hidden");
 
-                downloadBtn.onclick = (ev) => {
-                    ev.preventDefault();
+                // direkt href ver (en stabil yöntem)
+                downloadBtn.href = htmlUrl;
+                downloadBtn.download = `${crypto.randomUUID()}_f.html`;
 
-                    const link = document.createElement("a");
-                    link.href = htmlUrl;
-                    link.download = `${crypto.randomUUID()}_f.html`;
-
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-
-                    // fallback (özellikle mobil için)
-                    setTimeout(() => {
-                        if (/iPhone|iPad|Android/i.test(navigator.userAgent)) {
-                            window.open(htmlUrl, "_blank");
-                        }
-                    }, 300);
-                };
+                // url sakla (sonra temizlemek için)
+                downloadBtn.dataset.url = htmlUrl;
             };
 
             base64Reader.readAsDataURL(compressedBlob);
