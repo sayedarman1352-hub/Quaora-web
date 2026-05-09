@@ -5,6 +5,12 @@ function escapeHtml(value) {
   return String(value).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 }
 
+function getEnv(key, fallback = '') {
+  const value = process.env[key];
+  if (value === undefined || value === null) return fallback;
+  return String(value).trim().replace(/^['"]|['"]$/g, '');
+}
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     if (req.body && typeof req.body === 'object') {
@@ -35,15 +41,19 @@ function htmlError(res, message, status = 400) {
 module.exports = async (req, res) => {
   if (req.method === 'GET') {
     const required = ['PAYTR_MERCHANT_ID', 'PAYTR_MERCHANT_KEY', 'PAYTR_MERCHANT_SALT'];
-    const missing = required.filter(key => !process.env[key]);
-    res.statusCode = missing.length ? 500 : 200;
+    const merchantId = getEnv('PAYTR_MERCHANT_ID');
+    const missing = required.filter(key => !getEnv(key));
+    const merchantIdFormatOk = /^\d+$/.test(merchantId);
+    res.statusCode = missing.length || !merchantIdFormatOk ? 500 : 200;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.end(JSON.stringify({
-      ok: missing.length === 0,
+      ok: missing.length === 0 && merchantIdFormatOk,
       missing,
-      siteUrl: process.env.SITE_URL || 'https://quaora-web.vercel.app',
-      testMode: process.env.PAYTR_TEST_MODE || '0',
-      debugOn: process.env.PAYTR_DEBUG_ON || '0',
+      merchantIdFormatOk,
+      merchantIdLength: merchantId.length,
+      siteUrl: getEnv('SITE_URL', 'https://quaora-web.vercel.app'),
+      testMode: getEnv('PAYTR_TEST_MODE', '0'),
+      debugOn: getEnv('PAYTR_DEBUG_ON', '0'),
     }));
     return;
   }
@@ -53,12 +63,12 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const merchantId = process.env.PAYTR_MERCHANT_ID;
-  const merchantKey = process.env.PAYTR_MERCHANT_KEY;
-  const merchantSalt = process.env.PAYTR_MERCHANT_SALT;
-  const siteUrl = (process.env.SITE_URL || 'https://quaora-web.vercel.app').replace(/\/$/, '');
-  const testMode = Number(process.env.PAYTR_TEST_MODE || '0');
-  const debugOn = Number(process.env.PAYTR_DEBUG_ON || '0');
+  const merchantId = getEnv('PAYTR_MERCHANT_ID');
+  const merchantKey = getEnv('PAYTR_MERCHANT_KEY');
+  const merchantSalt = getEnv('PAYTR_MERCHANT_SALT');
+  const siteUrl = getEnv('SITE_URL', 'https://quaora-web.vercel.app').replace(/\/$/, '');
+  const testMode = Number(getEnv('PAYTR_TEST_MODE', '0'));
+  const debugOn = Number(getEnv('PAYTR_DEBUG_ON', '0'));
 
   if (!merchantId || !merchantKey || !merchantSalt) {
     const missing = [
@@ -67,6 +77,11 @@ module.exports = async (req, res) => {
       ['PAYTR_MERCHANT_SALT', merchantSalt],
     ].filter(([, value]) => !value).map(([key]) => key).join(', ');
     htmlError(res, `PayTR ortam degiskenleri eksik: ${missing}. Vercel Environment Variables alanini kontrol edin ve redeploy yapin.`, 500);
+    return;
+  }
+
+  if (!/^\d+$/.test(merchantId)) {
+    htmlError(res, 'PAYTR_MERCHANT_ID sadece rakamlardan olusmali. PayTR panelindeki Magaza No degerini kontrol edin.', 500);
     return;
   }
 

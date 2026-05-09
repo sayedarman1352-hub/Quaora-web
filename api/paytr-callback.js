@@ -1,6 +1,12 @@
 const crypto = require('crypto');
 const querystring = require('querystring');
 
+function getEnv(key) {
+  const value = process.env[key];
+  if (value === undefined || value === null) return '';
+  return String(value).trim().replace(/^['"]|['"]$/g, '');
+}
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     if (req.body && typeof req.body === 'object') {
@@ -29,8 +35,8 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const merchantKey = process.env.PAYTR_MERCHANT_KEY;
-  const merchantSalt = process.env.PAYTR_MERCHANT_SALT;
+  const merchantKey = getEnv('PAYTR_MERCHANT_KEY');
+  const merchantSalt = getEnv('PAYTR_MERCHANT_SALT');
 
   if (!merchantKey || !merchantSalt) {
     res.statusCode = 500;
