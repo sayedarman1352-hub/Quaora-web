@@ -8,6 +8,11 @@ function readBody(req) {
       return;
     }
 
+    if (typeof req.body === 'string') {
+      resolve(querystring.parse(req.body));
+      return;
+    }
+
     let body = '';
     req.on('data', chunk => {
       body += chunk.toString();

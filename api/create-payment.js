@@ -12,6 +12,11 @@ function readBody(req) {
       return;
     }
 
+    if (typeof req.body === 'string') {
+      resolve(querystring.parse(req.body));
+      return;
+    }
+
     let body = '';
     req.on('data', chunk => {
       body += chunk.toString();
@@ -28,6 +33,21 @@ function htmlError(res, message, status = 400) {
 }
 
 module.exports = async (req, res) => {
+  if (req.method === 'GET') {
+    const required = ['PAYTR_MERCHANT_ID', 'PAYTR_MERCHANT_KEY', 'PAYTR_MERCHANT_SALT'];
+    const missing = required.filter(key => !process.env[key]);
+    res.statusCode = missing.length ? 500 : 200;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.end(JSON.stringify({
+      ok: missing.length === 0,
+      missing,
+      siteUrl: process.env.SITE_URL || 'https://quaora-web.vercel.app',
+      testMode: process.env.PAYTR_TEST_MODE || '0',
+      debugOn: process.env.PAYTR_DEBUG_ON || '0',
+    }));
+    return;
+  }
+
   if (req.method !== 'POST') {
     htmlError(res, 'Gecersiz istek.', 405);
     return;
@@ -41,7 +61,12 @@ module.exports = async (req, res) => {
   const debugOn = Number(process.env.PAYTR_DEBUG_ON || '0');
 
   if (!merchantId || !merchantKey || !merchantSalt) {
-    htmlError(res, 'PayTR ortam degiskenleri eksik. Vercel Environment Variables alanini kontrol edin.', 500);
+    const missing = [
+      ['PAYTR_MERCHANT_ID', merchantId],
+      ['PAYTR_MERCHANT_KEY', merchantKey],
+      ['PAYTR_MERCHANT_SALT', merchantSalt],
+    ].filter(([, value]) => !value).map(([key]) => key).join(', ');
+    htmlError(res, `PayTR ortam degiskenleri eksik: ${missing}. Vercel Environment Variables alanini kontrol edin ve redeploy yapin.`, 500);
     return;
   }
 
