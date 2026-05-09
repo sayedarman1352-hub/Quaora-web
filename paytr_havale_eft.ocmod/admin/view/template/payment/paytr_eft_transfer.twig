@@ -1,0 +1,113 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="float-end">
+                <button type="submit" form="form-payment" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-save"></i></button>
+                <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+            <h1>{{ heading_title }}</h1>
+            <ol class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_settings }}</div>
+            <div class="card-body">
+                <form id="form-payment" action="{{ save }}" method="post" data-oc-toggle="ajax">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a href="#tab-general" data-bs-toggle="tab" class="nav-link active">{{ text_general }}</a></li>
+                        <li class="nav-item"><a href="#tab-order-status" data-bs-toggle="tab" class="nav-link">{{ text_order_status }}</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-general" class="tab-pane active">
+                            <div class="row mb-3 required">
+                                <label for="input-merchant-id" class="col-sm-2 col-form-label">{{ entry_merchant_id }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="payment_paytr_eft_transfer_merchant_id" value="{{ payment_paytr_eft_transfer_merchant_id }}" placeholder="{{ entry_merchant_id }}" id="input-merchant-id" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row mb-3 required">
+                                <label for="input-merchant-key" class="col-sm-2 col-form-label">{{ entry_merchant_key }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="payment_paytr_eft_transfer_merchant_key" value="{{ payment_paytr_eft_transfer_merchant_key }}" placeholder="{{ entry_merchant_key }}" id="input-merchant-key" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row mb-3 required">
+                                <label for="input-merchant-salt" class="col-sm-2 col-form-label">{{ entry_merchant_salt }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="payment_paytr_eft_transfer_merchant_salt" value="{{ payment_paytr_eft_transfer_merchant_salt }}" placeholder="{{ entry_merchant_salt }}" id="input-merchant-salt" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="input-test-mode" class="col-sm-2 col-form-label">{{ entry_test_mode }}</label>
+                                <div class="col-sm-10">
+                                    <select name="payment_paytr_eft_transfer_test_mode" id="input-test-mode" class="form-select">
+                                        <option value="1" {% if payment_paytr_eft_transfer_test_mode == 1 %}selected{% endif %}>{{ entry_test_mode_on }}</option>
+                                        <option value="0" {% if payment_paytr_eft_transfer_test_mode == 0 %}selected{% endif %}>{{ entry_test_mode_off }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="input-total" class="col-sm-2 col-form-label"><span data-bs-toggle="tooltip" title="{{ help_total }}">{{ entry_total }}</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="payment_paytr_eft_transfer_total" value="{{ payment_paytr_eft_transfer_total }}" placeholder="{{ entry_total }}" id="input-total" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="input-status" class="col-sm-2 col-form-label">{{ entry_status }}</label>
+                                <div class="col-sm-10">
+                                    <select name="payment_paytr_eft_transfer_status" id="input-status" class="form-select">
+                                        <option value="1" {% if payment_paytr_eft_transfer_status == 1 %}selected{% endif %}>{{ text_enabled }}</option>
+                                        <option value="0" {% if payment_paytr_eft_transfer_status == 0 %}selected{% endif %}>{{ text_disabled }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="input-sort-order" class="col-sm-2 col-form-label">{{ entry_sort_order }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="payment_paytr_eft_transfer_sort_order" value="{{ payment_paytr_eft_transfer_sort_order }}" placeholder="{{ entry_sort_order }}" id="input-sort-order" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-order-status" class="tab-pane">
+                            <div class="row mb-3">
+                                <label for="input-order-completed-id" class="col-sm-2 col-form-label">{{ entry_payment_complete }}</label>
+                                <div class="col-sm-10">
+                                    <select name="payment_paytr_eft_transfer_order_completed_id" id="input-order-completed-id" class="form-select">
+                                        {% for order_status in order_statuses %}
+                                            <option value="{{ order_status.order_status_id }}" {% if order_status.order_status_id == payment_paytr_eft_transfer_order_completed_id %}selected{% endif %}>{{ order_status.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="input-order-canceled-id" class="col-sm-2 col-form-label">{{ entry_payment_failed }}</label>
+                                <div class="col-sm-10">
+                                    <select name="payment_paytr_eft_transfer_order_canceled_id" id="input-order-canceled-id" class="form-select">
+                                        {% for order_status in order_statuses %}
+                                            <option value="{{ order_status.order_status_id }}" {% if order_status.order_status_id == payment_paytr_eft_transfer_order_canceled_id %}selected{% endif %}>{{ order_status.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="input-notify" class="col-sm-2 col-form-label"><span data-bs-toggle="tooltip" title="{{ help_notify }}">{{ entry_notify_status }}</span></label>
+                                <div class="col-sm-10">
+                                    <select name="payment_paytr_eft_transfer_notify" id="input-notify" class="form-select">
+                                        <option value="1" {% if payment_paytr_eft_transfer_notify == 1 %}selected{% endif %}>{{ text_enabled }}</option>
+                                        <option value="0" {% if payment_paytr_eft_transfer_notify == 0 %}selected{% endif %}>{{ text_disabled }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}

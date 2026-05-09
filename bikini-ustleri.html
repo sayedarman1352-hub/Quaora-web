@@ -85,12 +85,12 @@
                             accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
                         </button>
                         <div id="topsItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
-                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
-                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
-                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
-                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
-                            <a href="#" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
+                            <a href="ayakkabilar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
+                            <a href="takilar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
+                            <a href="cantalar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
+                            <a href="sapkalar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
+                            <a href="pareolar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
+                            <a href="gozlukler.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
                         </div>
                     </div>
                     <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
@@ -260,6 +260,7 @@
     const PAGE_SETTINGS_DOC = "bikini_ustleri_header";
 
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+    let favorites = JSON.parse(localStorage.getItem('quaora_favorites')) || [];
     let isAdmin = false;
     window.allProducts = []; 
     window.currentEditId = null;
@@ -440,7 +441,7 @@
     };
     
     window.siparisVer = () => {
-        if(cart.length > 0) window.location.href = "https://www.shopier.com/quaora/45868772";
+        if(cart.length > 0) window.location.href = "paytr-checkout.html";
     };
 
     window.selectSize = (productId, size) => {
@@ -483,14 +484,22 @@
             ` : `<img src="${mainImg}" class="w-full h-full object-cover">`;
 
             const adminButtons = isAdmin ? `
-                <div class="absolute top-2 right-2 z-20 flex flex-col gap-1.5 md:gap-2">
+                <div class="absolute top-14 right-2 md:top-16 md:right-4 z-20 flex flex-col gap-1.5 md:gap-2">
                     <button onclick="editProduct('${p.id}')" class="bg-blue-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-blue-800 transition-colors">✎</button>
                     <button onclick="deleteProduct('${p.id}')" class="bg-red-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-red-800 transition-colors">✕</button>
                 </div>
             ` : '';
 
+            const isFav = favorites.includes(p.id);
+
             return `
-            <article class="glass-card rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col group relative shadow-xl">
+            <article id="product-${p.id}" class="glass-card rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col group relative shadow-xl">
+                
+                <button onclick="toggleFavorite('${p.id}')" class="absolute top-2 right-2 md:top-4 md:right-4 z-20 w-8 h-8 md:w-10 md:h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+                    <svg class="w-4 h-4 md:w-5 md:h-5 transition-colors ${isFav ? 'text-red-500 fill-current' : 'text-gray-400 fill-none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+                    </svg>
+                </button>
                 ${adminButtons}
                 <div class="relative h-56 md:h-[26rem] overflow-hidden bg-white/50">
                     ${sliderHtml}
@@ -772,6 +781,12 @@
                 ...doc.data()
             }));
             renderProducts(window.allProducts);
+            if (window.location.hash) {
+                const target = document.querySelector(window.location.hash);
+                if (target) {
+                    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                }
+            }
         }, (error) => {
             console.error("Ürünler yüklenirken hata:", error);
         });
@@ -805,6 +820,18 @@
             renderProducts(window.allProducts);
         }
     });
+
+    // --- FAVOR? ??LEMLER? ---
+    window.toggleFavorite = (id) => {
+        const index = favorites.indexOf(id);
+        if (index > -1) {
+            favorites.splice(index, 1);
+        } else {
+            favorites.push(id);
+        }
+        localStorage.setItem('quaora_favorites', JSON.stringify(favorites));
+        renderProducts(window.allProducts);
+    };
 
     updateCart();
     loadProducts();
