@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Odeme | QUAORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#FAE29C] text-[#964b00] p-4 md:p-8">
+  <main class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
+    <a href="index.html" class="text-xs font-black tracking-widest uppercase">&larr; QUAORA</a>
+    <h1 class="text-3xl md:text-4xl font-black mt-4 mb-6">Odeme</h1>
+
+    <section id="checkoutContent" class="space-y-4"></section>
+  </main>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]');
+    const normalizedCart = Array.isArray(cart) ? cart.slice(0, 1).map(item => ({ ...item, qty: 1 })) : [];
+    localStorage.setItem('quaora_cart', JSON.stringify(normalizedCart));
+    const content = document.getElementById('checkoutContent');
+    const item = normalizedCart[0];
+
+    if (!item) {
+      content.innerHTML = `
+        <div class="p-4 rounded-xl bg-red-50 text-red-600 font-bold">Sepet bos. Odeme baslatmak icin once urun ekleyin.</div>
+        <a href="index.html" class="inline-flex items-center justify-center bg-[#964b00] text-white rounded-xl px-5 py-3 font-black uppercase text-xs tracking-widest">Alisverise Don</a>
+      `;
+    } else if (item.paymentLink) {
+      window.location.replace(item.paymentLink);
+    } else {
+      const total = Number(item.price || 0).toLocaleString('tr-TR');
+      content.innerHTML = `
+        <div class="rounded-xl border border-[#964b00]/20 bg-[#FAE29C]/40 p-4">
+          <h2 class="font-black uppercase text-sm tracking-widest">${item.name || 'Urun'}</h2>
+          <p class="text-xs font-bold text-gray-500 mt-1">${item.size ? `Beden: ${item.size}` : 'Tek urun'}</p>
+          <p class="text-2xl font-black mt-3">${total} TL</p>
+        </div>
+        <div class="p-4 rounded-xl bg-yellow-50 text-yellow-800 font-bold text-sm">
+          Bu urun icin odeme linki henuz eklenmedi. Linkleri gonderdiginde her urune baglayacagim.
+        </div>
+        <a href="index.html" class="inline-flex items-center justify-center bg-[#964b00] text-white rounded-xl px-5 py-3 font-black uppercase text-xs tracking-widest">Geri Don</a>
+      `;
+    }
+  </script>
+</body>
+</html>

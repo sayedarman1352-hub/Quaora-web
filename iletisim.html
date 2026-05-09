@@ -127,24 +127,28 @@
                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Sorularınız için yanınızdayız</p>
             </header>
             
-            <form onsubmit="manuelMail(event)" class="space-y-5">
+            <form action="https://formsubmit.co/quaoratr@gmail.com" method="POST" onsubmit="return prepareContactForm()" class="space-y-5">
+                <input type="hidden" name="_subject" value="Quaora Iletisim Formu">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_next" value="https://quaoratr.com/iletisim.html?sent=1">
                 <div class="space-y-2">
                     <label class="text-[9px] font-black uppercase tracking-[0.2em] ml-4 text-[#964b00]/70">Ad Soyad</label>
-                    <input type="text" id="ad" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium" placeholder="İsminizi yazın">
+                    <input type="text" id="ad" name="ad_soyad" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium" placeholder="İsminizi yazın">
                 </div>
                 
                 <div class="space-y-2">
                     <label class="text-[9px] font-black uppercase tracking-[0.2em] ml-4 text-[#964b00]/70">Telefon</label>
-                    <input type="tel" id="tel" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium" placeholder="05XX XXX XX XX">
+                    <input type="tel" id="tel" name="telefon" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium" placeholder="05XX XXX XX XX">
                 </div>
 
                 <div class="space-y-2">
                     <label class="text-[9px] font-black uppercase tracking-[0.2em] ml-4 text-[#964b00]/70">Mesajınız</label>
-                    <textarea id="msg" rows="4" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium resize-none" placeholder="Size nasıl yardımcı olabiliriz?"></textarea>
+                    <textarea id="msg" name="mesaj" rows="4" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium resize-none" placeholder="Size nasıl yardımcı olabiliriz?"></textarea>
                 </div>
 
                 <button type="submit" class="w-full bg-[#964b00] text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95 text-xs mt-2">
-                    MAİL TASLAĞI OLUŞTUR
+                    MESAJI GÖNDER
                 </button>
             </form>
         </div>
@@ -177,25 +181,21 @@
             }
         }
 
-        function manuelMail(e) {
-            e.preventDefault(); // Sayfanın yenilenmesini engeller
-
+        function prepareContactForm() {
             const ad = document.getElementById('ad').value.trim();
             const tel = document.getElementById('tel').value.trim();
             const msg = document.getElementById('msg').value.trim();
 
             if(!ad || !tel || !msg) {
                 alert("Lütfen tüm alanları doldurun.");
-                return;
+                return false;
             }
 
-            const body = `Müşteri Bilgileri:\n------------------\nAd: ${ad}\nTel: ${tel}\n\nMesaj:\n${msg}`;
-            
-            // Kullanıcıya ne olacağını haber veriyoruz
-            alert("Şimdi varsayılan e-posta uygulamanız açılacak. Lütfen açılan ekrandan 'Gönder' butonuna basmayı unutmayın.");
+            return true;
+        }
 
-            // Mail adresini quaoratr@gmail.com olarak ayarladık
-            window.location.href = `mailto:quaoratr@gmail.com?subject=Quaora İletişim Formu&body=${encodeURIComponent(body)}`;
+        if (new URLSearchParams(window.location.search).get('sent') === '1') {
+            alert("Mesajınız bize ulaştı, en kısa sürede döneceğiz.");
         }
     </script>
 </body>

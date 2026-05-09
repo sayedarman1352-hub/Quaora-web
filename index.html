@@ -409,6 +409,7 @@
     // --- SEPET SİSTEMİ ---
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('quaora_cart')) || []; } catch (e) { cart = []; }
+    cart = Array.isArray(cart) ? cart.slice(0, 1).map(item => ({ ...item, qty: 1 })) : [];
     let favoriteIds = [];
     let favoriteProducts = [];
     const FAVORITE_COLLECTIONS = [
@@ -517,7 +518,7 @@
     window.updateCart = () => {
         try { localStorage.setItem('quaora_cart', JSON.stringify(cart)); } catch (e) { console.warn("Sepet kaydedilemedi."); }
         const countEl = getEl('cartCount');
-        if (countEl) countEl.innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
+        if (countEl) countEl.innerText = cart.length;
     };
 
     const renderCart = () => {
@@ -548,7 +549,7 @@
     };
 
     window.siparisVer = () => {
-        if (cart.length > 0) window.location.href = "paytr-checkout.html";
+        if (cart.length > 0) window.location.href = "checkout.html";
     };
 
     // --- PROFİL VE AUTH ---
