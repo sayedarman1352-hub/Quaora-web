@@ -153,18 +153,14 @@
         <p class="text-gray-800 tracking-[0.3em] uppercase text-[10px] font-bold">Sezonun En Yeni Tasarımları</p>
     </header>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div class="group glass-card p-4 rounded-[2.5rem] shadow-2xl transition-all hover:-translate-y-2">
+    <div id="newProductsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div id="defaultNewProduct" class="group glass-card p-4 rounded-[2.5rem] shadow-2xl transition-all hover:-translate-y-2">
             <div class="overflow-hidden bg-gray-200 relative rounded-[2rem] h-[400px]">
-                <div class="absolute top-4 right-4 bg-black text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-widest">YENİ</div>
+                <div class="absolute top-4 right-4 bg-black text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-widest">VİTRİN</div>
                 <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
             </div>
-            <div class="mt-6 flex justify-between items-center px-4 pb-2">
-                <div>
-                    <h4 class="font-bold text-gray-900 uppercase text-xs italic tracking-tighter">Wild Nature Set</h4>
-                    <p class="text-[#964b00] font-black text-lg italic">₺1.600,00</p>
-                </div>
-                <button onclick="addToCart('Wild Nature Set', 1600)" class="bg-[#964b00] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-lg hover:bg-black transition-all">+</button>
+            <div class="mt-6 px-4 pb-2">
+                <h4 class="font-bold text-gray-900 uppercase text-xs italic tracking-tighter">Wild Nature Set</h4>
             </div>
         </div>
         </div>
@@ -174,15 +170,10 @@
     <div class="bg-[#FAE29C] w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] relative border-2 border-white/40">
         <button onclick="closeNewProductAdmin()" class="absolute top-4 right-4 z-50 text-red-600 font-black text-2xl w-10 h-10 flex items-center justify-center hover:scale-110 transition-all">×</button>
         <div class="p-6 md:p-8 overflow-y-auto bg-white/60">
-            <h2 id="newProductModalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">Yeni Ürün</h2>
+            <h2 id="newProductModalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">Yeni Vitrin Ürünü</h2>
             <div class="space-y-4">
                 <input type="text" id="newName" placeholder="Ürün ismi" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none">
                 <textarea id="newDesc" rows="3" placeholder="Ürün açıklaması" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-medium outline-none resize-none"></textarea>
-                <input type="url" id="newPaymentLink" placeholder="PayTR ödeme linki" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none">
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="number" id="newOldPrice" placeholder="Eski fiyat" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none">
-                    <input type="number" id="newSalePrice" placeholder="Satış fiyatı" class="w-full bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm font-black outline-none">
-                </div>
                 <input type="file" id="newImagesInput" accept="image/*" multiple class="hidden" onchange="previewNewImages(this)">
                 <button onclick="document.getElementById('newImagesInput').click()" class="w-full bg-white text-[#964b00] border-2 border-dashed border-[#964b00]/30 rounded-xl py-6 font-black uppercase tracking-widest">+ Fotoğraf Ekle</button>
                 <div id="newImagePreview" class="grid grid-cols-3 gap-3"></div>
@@ -306,7 +297,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, updateDoc, setDoc, onSnapshot, deleteDoc, doc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, updateDoc, setDoc, onSnapshot, deleteDoc, doc, deleteField, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -351,48 +342,43 @@
         reader.readAsDataURL(file);
     });
 
-    window.addNewProductToCart = (id) => {
-        const product = loadedProducts.find(item => item.id === id);
-        if (!product) return;
-        window.addToCart(product.name, Number(product.salePrice || 0), product.paymentLink || "");
+    const clearIfExists = (id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
     };
 
     const renderNewProducts = () => {
         const grid = document.getElementById('newProductsGrid');
         if (!grid) return;
         const defaultCard = document.getElementById('defaultNewProduct');
+
         if (loadedProducts.length === 0) {
             if (defaultCard) defaultCard.classList.remove('hidden');
             return;
         }
+
+        if (defaultCard) defaultCard.classList.add('hidden');
+
         grid.innerHTML = loadedProducts.map(product => {
             const images = Array.isArray(product.images) ? product.images : [];
             const img = images[0] || "";
-            const oldPrice = Number(product.originalPrice || 0);
-            const salePrice = Number(product.salePrice || 0);
             const adminControls = isAdmin ? `
                 <div class="absolute top-4 left-4 z-20 flex gap-2">
                     <button onclick="editNewProduct('${product.id}')" class="bg-blue-600 text-white w-8 h-8 rounded-full font-bold shadow-lg">✎</button>
                     <button onclick="deleteNewProduct('${product.id}')" class="bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow-lg">×</button>
                 </div>
             ` : "";
+
             return `
                 <div class="group glass-card p-4 rounded-[2.5rem] shadow-2xl transition-all hover:-translate-y-2 relative">
                     ${adminControls}
                     <div class="overflow-hidden bg-gray-200 relative rounded-[2rem] h-[400px]">
-                        <div class="absolute top-4 right-4 bg-black text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-widest">YENİ</div>
+                        <div class="absolute top-4 right-4 bg-black text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-widest">VİTRİN</div>
                         ${img ? `<img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">` : ""}
                     </div>
-                    <div class="mt-6 flex justify-between items-center px-4 pb-2">
-                        <div>
-                            <h4 class="font-bold text-gray-900 uppercase text-xs italic tracking-tighter">${product.name || "Yeni Ürün"}</h4>
-                            ${product.description ? `<p class="text-[10px] text-gray-600 mt-1 max-w-[180px]">${product.description}</p>` : ""}
-                            <div class="flex items-center gap-2 mt-1">
-                                <p class="text-[#964b00] font-black text-lg italic">₺${salePrice.toLocaleString('tr-TR')}</p>
-                                ${oldPrice ? `<p class="text-gray-500 font-bold text-xs line-through">₺${oldPrice.toLocaleString('tr-TR')}</p>` : ""}
-                            </div>
-                        </div>
-                        <button onclick="addNewProductToCart('${product.id}')" class="bg-[#964b00] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-lg hover:bg-black transition-all">+</button>
+                    <div class="mt-6 px-4 pb-2">
+                        <h4 class="font-bold text-gray-900 uppercase text-xs italic tracking-tighter">${product.name || "Yeni Ürün"}</h4>
+                        ${product.description ? `<p class="text-[10px] text-gray-600 mt-1 max-w-[220px]">${product.description}</p>` : ""}
                     </div>
                 </div>
             `;
@@ -403,12 +389,15 @@
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         currentEditId = null;
         newImages = [];
-        document.getElementById('newProductModalTitle').innerText = 'Yeni Ürün';
+        document.getElementById('newProductModalTitle').innerText = 'Yeni Vitrin Ürünü';
         document.getElementById('newName').value = '';
         document.getElementById('newDesc').value = '';
-        document.getElementById('newPaymentLink').value = '';
-        document.getElementById('newOldPrice').value = '';
-        document.getElementById('newSalePrice').value = '';
+
+        // Eski HTML'de bu alanlar duruyorsa değerlerini temizle. Artık kullanılmıyorlar.
+        clearIfExists('newPaymentLink');
+        clearIfExists('newOldPrice');
+        clearIfExists('newSalePrice');
+
         renderNewImagePreview();
         document.getElementById('newProductAdminModal').classList.remove('hidden');
         document.getElementById('newProductAdminModal').classList.add('flex');
@@ -444,56 +433,47 @@
 
     window.saveNewProduct = async () => {
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
+
         const name = document.getElementById('newName').value.trim();
-        const salePrice = Number(document.getElementById('newSalePrice').value);
-        if (!name || !salePrice || newImages.length === 0) return alert('Ürün adı, satış fiyatı ve fotoğraf zorunlu.');
-        const oldProduct = currentEditId ? loadedProducts.find(item => item.id === currentEditId) : null;
+        if (!name || newImages.length === 0) return alert('Ürün adı ve fotoğraf zorunlu.');
+
         const data = {
             name,
             description: document.getElementById('newDesc').value.trim(),
-            paymentLink: document.getElementById('newPaymentLink').value.trim(),
-            originalPrice: Number(document.getElementById('newOldPrice').value || 0),
-            salePrice,
             images: newImages
         };
-        if (currentEditId) await updateDoc(doc(db, PRODUCTS, currentEditId), data);
-        else await addDoc(collection(db, PRODUCTS), { ...data, createdAt: Date.now() });
-        if (oldProduct && Number(oldProduct.salePrice || 0) > salePrice) await queueNewDiscountEmails(name, oldProduct.salePrice, salePrice);
-        closeNewProductAdmin();
-    };
 
-    const queueNewDiscountEmails = async (productName, oldPrice, newPrice) => {
-        try {
-            const usersSnap = await getDocs(collection(db, "users"));
-            const subject = "Quaora'da yeni ürün indirimi";
-            const text = `${productName} ürününde fiyat ${oldPrice} TL'den ${newPrice} TL'ye düştü.`;
-            await Promise.all(usersSnap.docs.map(userDoc => {
-                const email = userDoc.data().email;
-                if (!email) return Promise.resolve();
-                return addDoc(collection(db, "mail"), {
-                    to: [email],
-                    message: { subject, text, html: `<p>${text}</p>` },
-                    createdAt: Date.now(),
-                    type: "price_drop"
-                });
-            }));
-        } catch (error) {
-            console.warn("İndirim e-postası kuyruğa alınamadı:", error);
+        if (currentEditId) {
+            await updateDoc(doc(db, PRODUCTS, currentEditId), {
+                ...data,
+                // Eski satış alanlarını Firestore dokümanından temizler.
+                paymentLink: deleteField(),
+                originalPrice: deleteField(),
+                salePrice: deleteField()
+            });
+        } else {
+            await addDoc(collection(db, PRODUCTS), { ...data, createdAt: Date.now() });
         }
+
+        closeNewProductAdmin();
     };
 
     window.editNewProduct = (id) => {
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         const product = loadedProducts.find(item => item.id === id);
         if (!product) return;
+
         currentEditId = id;
         newImages = Array.isArray(product.images) ? [...product.images] : [];
-        document.getElementById('newProductModalTitle').innerText = 'Ürünü Düzenle';
+        document.getElementById('newProductModalTitle').innerText = 'Vitrin Ürününü Düzenle';
         document.getElementById('newName').value = product.name || '';
         document.getElementById('newDesc').value = product.description || '';
-        document.getElementById('newPaymentLink').value = product.paymentLink || '';
-        document.getElementById('newOldPrice').value = product.originalPrice || '';
-        document.getElementById('newSalePrice').value = product.salePrice || '';
+
+        // Eski HTML'de bu alanlar duruyorsa değerlerini temizle. Artık kullanılmıyorlar.
+        clearIfExists('newPaymentLink');
+        clearIfExists('newOldPrice');
+        clearIfExists('newSalePrice');
+
         renderNewImagePreview();
         document.getElementById('newProductAdminModal').classList.remove('hidden');
         document.getElementById('newProductAdminModal').classList.add('flex');
