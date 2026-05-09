@@ -38,6 +38,31 @@ function htmlError(res, message, status = 400) {
   res.end(`<!doctype html><meta charset="utf-8"><body style="font-family:Arial;padding:32px"><h2>Odeme baslatilamadi</h2><p>${escapeHtml(message)}</p><p><a href="/paytr-checkout.html">Geri don</a></p></body>`);
 }
 
+function createToken({ merchantId, merchantKey, merchantSalt, userIp, merchantOid, email, paymentAmount, userBasket, noInstallment, maxInstallment, currency, testMode }) {
+  const hashStr = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${currency}${testMode}`;
+  return crypto.createHmac('sha256', merchantKey).update(hashStr + merchantSalt).digest('base64');
+}
+
+async function requestToken(postValues) {
+  const response = await fetch('https://www.paytr.com/odeme/api/get-token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: postValues,
+  });
+
+  const resultText = await response.text();
+
+  try {
+    return JSON.parse(resultText);
+  } catch (error) {
+    throw new Error(`PayTR cevabi okunamadi: ${resultText}`);
+  }
+}
+
+function isTokenError(result) {
+  return String(result?.reason || '').toLowerCase().includes('paytr_token');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'GET') {
     const required = ['PAYTR_MERCHANT_ID', 'PAYTR_MERCHANT_KEY', 'PAYTR_MERCHANT_SALT'];
@@ -138,16 +163,12 @@ module.exports = async (req, res) => {
   const noInstallment = 0;
   const maxInstallment = 0;
 
-  const hashStr = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${currency}${testMode}`;
-  const paytrToken = crypto.createHmac('sha256', merchantKey).update(hashStr + merchantSalt).digest('base64');
-
-  const postValues = new URLSearchParams({
+  const basePostValues = {
     merchant_id: merchantId,
     user_ip: userIp,
     merchant_oid: merchantOid,
     email,
     payment_amount: String(paymentAmount),
-    paytr_token: paytrToken,
     user_basket: userBasket,
     debug_on: String(debugOn),
     no_installment: String(noInstallment),
@@ -161,34 +182,55 @@ module.exports = async (req, res) => {
     currency,
     test_mode: String(testMode),
     lang: 'tr',
-  });
+  };
 
-  let response;
+  const tokenInput = {
+    merchantId,
+    merchantKey,
+    merchantSalt,
+    userIp,
+    merchantOid,
+    email,
+    paymentAmount,
+    userBasket,
+    noInstallment,
+    maxInstallment,
+    currency,
+    testMode,
+  };
+
+  let result;
+  let usedFallbackCredentials = false;
 
   try {
-    response = await fetch('https://www.paytr.com/odeme/api/get-token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: postValues,
-    });
+    const paytrToken = createToken(tokenInput);
+    result = await requestToken(new URLSearchParams({ ...basePostValues, paytr_token: paytrToken }));
+
+    if (result.status !== 'success' && isTokenError(result)) {
+      const fallbackToken = createToken({
+        ...tokenInput,
+        merchantKey: merchantSalt,
+        merchantSalt: merchantKey,
+      });
+      const fallbackResult = await requestToken(new URLSearchParams({ ...basePostValues, paytr_token: fallbackToken }));
+
+      if (fallbackResult.status === 'success') {
+        result = fallbackResult;
+        usedFallbackCredentials = true;
+      }
+    }
   } catch (error) {
     htmlError(res, `PayTR baglanti hatasi: ${error.message}`, 502);
     return;
   }
 
-  const resultText = await response.text();
-  let result;
-
-  try {
-    result = JSON.parse(resultText);
-  } catch (error) {
-    htmlError(res, `PayTR cevabi okunamadi: ${resultText}`, 502);
+  if (result.status !== 'success') {
+    htmlError(res, `PayTR token hatasi: ${result.reason || JSON.stringify(result)}. PAYTR_MERCHANT_KEY ve PAYTR_MERCHANT_SALT degerlerini PayTR panelinden tekrar kontrol edin.`, 502);
     return;
   }
 
-  if (result.status !== 'success') {
-    htmlError(res, `PayTR token hatasi: ${result.reason || resultText}`, 502);
-    return;
+  if (usedFallbackCredentials) {
+    console.warn('PAYTR_ENV_WARNING', 'PAYTR_MERCHANT_KEY and PAYTR_MERCHANT_SALT appear to be swapped in Vercel.');
   }
 
   res.writeHead(302, { Location: `https://www.paytr.com/odeme/guvenli/${result.token}` });

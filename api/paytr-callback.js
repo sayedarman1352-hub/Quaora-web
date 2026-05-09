@@ -28,6 +28,13 @@ function readBody(req) {
   });
 }
 
+function createCallbackHash({ merchantKey, merchantSalt, post }) {
+  return crypto
+    .createHmac('sha256', merchantKey)
+    .update(`${post.merchant_oid || ''}${merchantSalt}${post.status || ''}${post.total_amount || ''}`)
+    .digest('base64');
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.statusCode = 405;
@@ -45,12 +52,14 @@ module.exports = async (req, res) => {
   }
 
   const post = await readBody(req);
-  const expectedHash = crypto
-    .createHmac('sha256', merchantKey)
-    .update(`${post.merchant_oid || ''}${merchantSalt}${post.status || ''}${post.total_amount || ''}`)
-    .digest('base64');
+  const expectedHash = createCallbackHash({ merchantKey, merchantSalt, post });
+  const fallbackHash = createCallbackHash({
+    merchantKey: merchantSalt,
+    merchantSalt: merchantKey,
+    post,
+  });
 
-  if (expectedHash !== post.hash) {
+  if (expectedHash !== post.hash && fallbackHash !== post.hash) {
     res.statusCode = 403;
     res.end('PAYTR notification failed: bad hash');
     return;

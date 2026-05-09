@@ -37,6 +37,7 @@ Beklenen cevap:
 ## PayTR Token Hatasi
 
 `PayTR token hatasi: Gecersiz istek veya magaza aktif degil` cevabi PayTR tarafindan doner. PayTR hata kodu aciklamasina gore bu cevap genelde `merchant_id` bilgisinin hatali/eksik olmasi veya magaza hesabinin aktif olmamasi anlamina gelir.
+`PayTR token hatasi: paytr_token gonderilmedi veya gecersiz (get-token)` cevabi genelde `PAYTR_MERCHANT_KEY` veya `PAYTR_MERCHANT_SALT` degerinin hatali ya da birbiriyle karismis olmasi anlamina gelir.
 
 Kontrol listesi:
 
