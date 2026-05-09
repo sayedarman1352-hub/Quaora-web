@@ -11,6 +11,23 @@ function getEnv(key, fallback = '') {
   return String(value).trim().replace(/^['"]|['"]$/g, '');
 }
 
+function getEnvRaw(key) {
+  const value = process.env[key];
+  if (value === undefined || value === null) return '';
+  return String(value);
+}
+
+function inspectSecretEnv(key) {
+  const raw = getEnvRaw(key);
+  const clean = getEnv(key);
+  return {
+    length: clean.length,
+    changedByCleanup: raw !== clean,
+    hasInternalWhitespace: /\s/.test(clean),
+    looksLikePlaceholder: /magaza|merchant|parola|gizli|anahtar|key|salt/i.test(clean),
+  };
+}
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     if (req.body && typeof req.body === 'object') {
@@ -67,15 +84,29 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') {
     const required = ['PAYTR_MERCHANT_ID', 'PAYTR_MERCHANT_KEY', 'PAYTR_MERCHANT_SALT'];
     const merchantId = getEnv('PAYTR_MERCHANT_ID');
+    const merchantKey = getEnv('PAYTR_MERCHANT_KEY');
+    const merchantSalt = getEnv('PAYTR_MERCHANT_SALT');
     const missing = required.filter(key => !getEnv(key));
     const merchantIdFormatOk = /^\d+$/.test(merchantId);
-    res.statusCode = missing.length || !merchantIdFormatOk ? 500 : 200;
+    const merchantKeyInfo = inspectSecretEnv('PAYTR_MERCHANT_KEY');
+    const merchantSaltInfo = inspectSecretEnv('PAYTR_MERCHANT_SALT');
+    const secretShapeOk = merchantKeyInfo.length > 0
+      && merchantSaltInfo.length > 0
+      && merchantKey !== merchantSalt
+      && !merchantKeyInfo.hasInternalWhitespace
+      && !merchantSaltInfo.hasInternalWhitespace
+      && !merchantKeyInfo.looksLikePlaceholder
+      && !merchantSaltInfo.looksLikePlaceholder;
+    res.statusCode = missing.length || !merchantIdFormatOk || !secretShapeOk ? 500 : 200;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.end(JSON.stringify({
-      ok: missing.length === 0 && merchantIdFormatOk,
+      ok: missing.length === 0 && merchantIdFormatOk && secretShapeOk,
       missing,
       merchantIdFormatOk,
       merchantIdLength: merchantId.length,
+      merchantKeyInfo,
+      merchantSaltInfo,
+      merchantKeySaltSame: merchantKey !== '' && merchantKey === merchantSalt,
       siteUrl: getEnv('SITE_URL', 'https://quaora-web.vercel.app'),
       testMode: getEnv('PAYTR_TEST_MODE', '0'),
       debugOn: getEnv('PAYTR_DEBUG_ON', '0'),

@@ -28,11 +28,12 @@ https://quaora-web.vercel.app/api/create-payment
 Beklenen cevap:
 
 ```json
-{"ok":true,"missing":[]}
+{"ok":true,"missing":[],"merchantIdFormatOk":true}
 ```
 
 `missing` dolu gelirse Vercel env eksiktir veya redeploy yapilmamistir.
 `merchantIdFormatOk` false gelirse `PAYTR_MERCHANT_ID` alanina PayTR panelindeki sadece rakamlardan olusan Magaza No girilmelidir. Magaza Parola veya Gizli Anahtar bu alana girilmemelidir.
+`merchantKeyInfo` veya `merchantSaltInfo` icinde `changedByCleanup`, `hasInternalWhitespace` ya da `looksLikePlaceholder` true gelirse Vercel'deki ilgili env degeri PayTR panelinden temiz sekilde tekrar kopyalanmalidir.
 
 ## PayTR Token Hatasi
 
