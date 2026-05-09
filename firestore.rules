@@ -1,0 +1,78 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email != null
+        && request.auth.token.email == "quaoratr@gmail.com";
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isProductCollection(collectionName) {
+      return collectionName in [
+        "ayakkabilar",
+        "bikini-altlari",
+        "bikini_ustleri",
+        "cantalar",
+        "conquette",
+        "gozlukler",
+        "mayokini_altlari",
+        "mayokini_ustleri",
+        "mayolar",
+        "OUTLET",
+        "PANZER",
+        "pareolar",
+        "PIE",
+        "RELOVE",
+        "sapkalar",
+        "takilar",
+        "yeni_gelenler"
+      ];
+    }
+
+    match /users/{userId} {
+      allow create, update: if isOwner(userId) || isAdmin();
+      allow read: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || isOwner(resource.data.userId);
+      allow update, delete: if isAdmin();
+    }
+
+    match /refund_requests/{requestId} {
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || isOwner(resource.data.userId);
+      allow update, delete: if isAdmin();
+    }
+
+    match /page_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /mail/{mailId} {
+      allow create: if isAdmin();
+      allow read, update, delete: if false;
+    }
+
+    match /{collectionName}/{docId} {
+      allow read: if isProductCollection(collectionName);
+      allow write: if isAdmin() && isProductCollection(collectionName);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

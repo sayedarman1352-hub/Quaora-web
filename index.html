@@ -159,6 +159,18 @@
         </div>
     </div>
 </div>
+<div id="adminPanel" class="fixed top-0 left-0 h-full w-0 bg-white z-[130] overflow-x-hidden shadow-2xl flex flex-col border-r border-black/5 transition-all duration-500">
+    <div class="p-8 flex justify-between items-center border-b border-gray-50">
+        <div>
+            <h2 class="text-xl font-black serif text-[#964b00] tracking-widest uppercase">ADMİN BİLDİRİM</h2>
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">İade talepleri</p>
+        </div>
+        <button onclick="closeAllPanels()" class="text-xl hover:rotate-90 transition-transform">✕</button>
+    </div>
+    <div id="adminNotificationsList" class="p-6 space-y-4 overflow-y-auto flex-grow">
+        <div class="text-center py-20 text-gray-400 italic text-sm">Bildirim bulunmuyor.</div>
+    </div>
+</div>
         <nav class="flex flex-col space-y-3 w-full"> 
             <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
                 <span class="text-xs mr-2">←</span> MAIN MENU
@@ -332,7 +344,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, onSnapshot, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -350,6 +362,8 @@
 
     const getEl = (id) => document.getElementById(id);
     const overlay = getEl("menuOverlay");
+    let activeUser = null;
+    let activeIsAdmin = false;
 
     // --- TEMEL PANEL KONTROLLERİ (Önce tanımlanmalı) ---
     window.closeAllPanels = () => {
@@ -409,7 +423,6 @@
     // --- SEPET SİSTEMİ ---
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('quaora_cart')) || []; } catch (e) { cart = []; }
-    cart = Array.isArray(cart) ? cart.slice(0, 1).map(item => ({ ...item, qty: 1 })) : [];
     let favoriteIds = [];
     let favoriteProducts = [];
     const FAVORITE_COLLECTIONS = [
@@ -486,10 +499,13 @@
         }).join('');
     };
 
-    window.removeFavorite = (id) => {
+    window.removeFavorite = async (id) => {
         readFavoriteIds();
         favoriteIds = favoriteIds.filter(favId => favId !== id);
         localStorage.setItem('quaora_favorites', JSON.stringify(favoriteIds));
+        if (activeUser) {
+            await setDoc(doc(db, "users", activeUser.uid), { favorites: favoriteIds, email: activeUser.email }, { merge: true });
+        }
         window.renderFavoritesList();
     };
 
@@ -518,7 +534,7 @@
     window.updateCart = () => {
         try { localStorage.setItem('quaora_cart', JSON.stringify(cart)); } catch (e) { console.warn("Sepet kaydedilemedi."); }
         const countEl = getEl('cartCount');
-        if (countEl) countEl.innerText = cart.length;
+        if (countEl) countEl.innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
     };
 
     const renderCart = () => {
@@ -550,6 +566,96 @@
 
     window.siparisVer = () => {
         if (cart.length > 0) window.location.href = "checkout.html";
+    };
+
+    window.loadUserOrders = () => {
+        const user = auth.currentUser;
+        const list = getEl('ordersList');
+        if (!user || !list) return;
+        const q = query(collection(db, "orders"), where("userId", "==", user.uid), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            if (snapshot.empty) {
+                list.innerHTML = '<div class="text-center py-20 text-gray-400 italic text-sm">Henüz bir siparişiniz bulunmuyor.</div>';
+                return;
+            }
+            list.innerHTML = snapshot.docs.map(orderDoc => {
+                const order = orderDoc.data();
+                const created = order.createdAt ? new Date(order.createdAt).toLocaleString('tr-TR') : '';
+                return `
+                    <div class="bg-gray-50 border border-black/5 rounded-2xl p-4 shadow-sm">
+                        <div class="flex justify-between gap-3">
+                            <div>
+                                <h4 class="font-black text-xs uppercase tracking-widest text-gray-800">${order.productName || 'Ürün'}</h4>
+                                <p class="text-[10px] font-bold text-gray-400 mt-1">${created}</p>
+                            </div>
+                            <span class="text-[10px] font-black text-[#964b00] uppercase">${order.status || 'Alındı'}</span>
+                        </div>
+                        <button onclick="requestRefund('${orderDoc.id}', '${(order.productName || 'Ürün').replace(/'/g, "\\'")}')" class="mt-4 w-full bg-white border border-[#964b00]/20 text-[#964b00] py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all">
+                            İade Talebi
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        });
+    };
+
+    window.requestRefund = async (orderId, productName) => {
+        const user = auth.currentUser;
+        if (!user) return alert("İade talebi için giriş yapmanız gerekiyor.");
+        const reason = prompt("İade talebiniz için kısa bir açıklama yazın:");
+        if (!reason || !reason.trim()) return;
+        await addDoc(collection(db, "refund_requests"), {
+            orderId,
+            productName,
+            reason: reason.trim(),
+            userId: user.uid,
+            userEmail: user.email,
+            status: "Yeni talep",
+            createdAt: Date.now()
+        });
+        alert("İade talebiniz alındı.");
+    };
+
+    window.openAdminPanel = () => {
+        if (!activeIsAdmin) return alert("Bu panel sadece admin tarafından görülebilir.");
+        window.closeAllPanels();
+        const panel = getEl('adminPanel');
+        if (panel) {
+            panel.style.width = (window.innerWidth < 768) ? "100%" : "420px";
+            if (overlay) overlay.classList.remove("hidden");
+            window.loadAdminNotifications();
+        }
+    };
+
+    window.loadAdminNotifications = () => {
+        if (!activeIsAdmin) return;
+        const list = getEl('adminNotificationsList');
+        if (!list) return;
+        const q = query(collection(db, "refund_requests"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            if (snapshot.empty) {
+                list.innerHTML = '<div class="text-center py-20 text-gray-400 italic text-sm">Bildirim bulunmuyor.</div>';
+                return;
+            }
+            list.innerHTML = snapshot.docs.map(reqDoc => {
+                const req = reqDoc.data();
+                return `
+                    <div class="bg-gray-50 border border-black/5 rounded-2xl p-4 shadow-sm">
+                        <h4 class="font-black text-xs uppercase tracking-widest text-gray-800">${req.productName || 'Ürün'}</h4>
+                        <p class="text-[10px] font-bold text-gray-500 mt-2">${req.userEmail || ''}</p>
+                        <p class="text-sm text-gray-700 mt-3">${req.reason || ''}</p>
+                        <input id="refund-status-${reqDoc.id}" value="${req.status || ''}" class="mt-4 w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-xs font-bold outline-none">
+                        <button onclick="updateRefundStatus('${reqDoc.id}')" class="mt-2 w-full bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all">Güncelle</button>
+                    </div>
+                `;
+            }).join('');
+        });
+    };
+
+    window.updateRefundStatus = async (id) => {
+        if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
+        const value = getEl(`refund-status-${id}`)?.value || "";
+        await updateDoc(doc(db, "refund_requests", id), { status: value, updatedAt: Date.now() });
     };
 
     // --- PROFİL VE AUTH ---
@@ -617,6 +723,7 @@
 
     // --- SLIDER YÖNETİM PANELİ ---
     window.openSliderAdmin = () => {
+        if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
         const modal = getEl('sliderAdminModal');
         if (modal) {
             modal.classList.remove('hidden');
@@ -634,6 +741,7 @@
     };
 
     window.handleSliderPhotoUpload = async () => {
+        if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
         const fileInput = getEl('newSliderPhoto');
         if (!fileInput || !fileInput.files || !fileInput.files[0]) {
             return alert("Lütfen önce bir fotoğraf seçin!");
@@ -681,6 +789,7 @@
     };
 
     window.deleteSliderImg = async (id) => {
+        if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
         if (confirm("Bu fotoğrafı silmek istediğinize emin misiniz?")) {
             await deleteDoc(doc(db, "slider_images", id));
         }
@@ -748,6 +857,7 @@
     };
 
     window.openBgAdmin = () => {
+        if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
         const modal = getEl("bgAdminModal");
         if (modal) {
             modal.classList.remove("hidden");
@@ -776,6 +886,7 @@
     };
 
     window.uploadBgImages = async (input) => {
+        if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
         if (input.files && input.files.length > 0) {
             let newImages = [...bgImages];
             for (let i = 0; i < input.files.length; i++) {
@@ -819,6 +930,7 @@
     };
 
     window.deleteBgImage = async (index) => {
+        if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
         if (confirm("Bu arka plan resmini silmek istiyor musunuz?")) {
             let newImages = [...bgImages];
             newImages.splice(index, 1);
@@ -847,14 +959,20 @@
         const adminElements = [getEl('adminAccess'), getEl('adminQuickAdd'), getEl('admin-bg-btn'), getEl('compressAdminBtn')];
         const statusText = getEl('userStatusText');
         const actionWrapper = getEl('userActionWrapper');
+        activeUser = user || null;
 
         if (user) {
-            const isAdmin = user.email === "quaoratr@gmail.com";
-            adminElements.forEach(el => { if (el) el.classList.toggle("hidden", !isAdmin); });
+            activeIsAdmin = user.email?.toLowerCase() === "quaoratr@gmail.com";
+            adminElements.forEach(el => { if (el) el.classList.toggle("hidden", !activeIsAdmin); });
 
             const snap = await getDoc(doc(db, "users", user.uid));
             if (snap.exists()) {
                 const d = snap.data();
+                if (Array.isArray(d.favorites)) {
+                    favoriteIds = d.favorites;
+                    localStorage.setItem('quaora_favorites', JSON.stringify(favoriteIds));
+                    window.renderFavoritesList();
+                }
                 if (statusText) statusText.innerText = d.username.toUpperCase();
                 if (actionWrapper) actionWrapper.onclick = window.openProfilePanel;
                 if (getEl('updUser')) getEl('updUser').value = d.username || "";
@@ -864,6 +982,7 @@
                 }
             }
         } else {
+            activeIsAdmin = false;
             adminElements.forEach(el => { if (el) el.classList.add("hidden"); });
             if (statusText) statusText.innerText = "Sign In";
             if (actionWrapper) actionWrapper.onclick = window.openAuthModal;

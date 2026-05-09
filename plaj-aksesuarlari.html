@@ -226,7 +226,6 @@ function toggleCollections() {
 
 <script>
     let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
-    cart = Array.isArray(cart) ? cart.slice(0, 1).map(item => ({ ...item, qty: 1 })) : [];
 
     function toggleMenu() {
         const menu = document.getElementById("sideMenu");
@@ -239,8 +238,13 @@ function toggleCollections() {
         if(panel.style.width === "300px") renderCart();
     }
 
-    function addToCart(name, price, paymentLink = '') {
-        cart = [{ name, price, qty: 1, paymentLink }];
+    function addToCart(name, price) {
+        const index = cart.findIndex(item => item.name === name);
+        if (index > -1) { 
+            cart[index].qty += 1; 
+        } else { 
+            cart.push({ name, price, qty: 1 }); 
+        }
         updateCart();
         toggleCart();
     }
@@ -255,7 +259,7 @@ function toggleCollections() {
         localStorage.setItem('quaora_cart', JSON.stringify(cart));
         const countElement = document.getElementById('cartCount');
         if (countElement) {
-            countElement.innerText = cart.length;
+            countElement.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
         }
     }
 
