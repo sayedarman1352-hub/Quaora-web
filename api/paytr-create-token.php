@@ -18,7 +18,7 @@ if (!is_array($payload)) {
     exit;
 }
 
-function paytr_clean_text(mixed $value, int $maxLength): string
+function paytr_clean_text($value, int $maxLength): string
 {
     $text = trim((string) $value);
     $text = preg_replace('/\s+/', ' ', $text) ?? '';

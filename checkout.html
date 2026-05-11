@@ -40,6 +40,7 @@
     const content = document.getElementById('checkoutContent');
     const frameWrap = document.getElementById('paytrFrameWrap');
     const paytrFrame = document.getElementById('paytriframe');
+    let isPaytrStarting = false;
 
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]'); } catch (e) { cart = []; }
@@ -102,9 +103,25 @@
           ${message ? `<div class="text-xs font-bold text-red-600">${message}</div>` : ''}
           <div class="flex justify-between border-t pt-3 text-xl font-black"><span>Toplam</span><span>${money(total)}</span></div>
         </div>
-        <button id="startPaytrBtn" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all uppercase text-sm">PayTR ile ode</button>
+        <div id="checkoutStatus" class="hidden rounded-xl p-3 text-sm font-bold"></div>
+        <button id="startPaytrBtn" type="button" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all uppercase text-sm disabled:opacity-60 disabled:cursor-not-allowed">PayTR ile ode</button>
       `;
       document.getElementById('startPaytrBtn')?.addEventListener('click', () => startPaytr(discount, promo));
+    };
+
+    const setCheckoutStatus = (message, type = "info") => {
+      const status = document.getElementById('checkoutStatus');
+      if (!status) return;
+      status.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-[#FAE29C]/50', 'text-[#964b00]');
+      status.classList.add(type === "error" ? 'bg-red-50' : 'bg-[#FAE29C]/50', type === "error" ? 'text-red-700' : 'text-[#964b00]');
+      status.innerText = message;
+    };
+
+    const setPaytrButtonLoading = (loading) => {
+      const button = document.getElementById('startPaytrBtn');
+      if (!button) return;
+      button.disabled = loading;
+      button.innerText = loading ? 'PayTR aciliyor...' : 'PayTR ile ode';
     };
 
     const renderEmpty = () => {
@@ -123,44 +140,85 @@
       }).catch(() => {});
     };
 
+    const requestPaytrToken = async (payload) => {
+      const endpoints = ["api/paytr-create-token", "api/paytr-create-token.php"];
+      let lastError = null;
+
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const rawResponse = await response.text();
+          let data = null;
+          try {
+            data = JSON.parse(rawResponse);
+          } catch (parseError) {
+            throw new Error(`${endpoint} JSON donmedi. Backend endpoint calismiyor olabilir.`);
+          }
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.reason || "PayTR odeme formu acilamadi.");
+          }
+          return data;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      throw lastError || new Error("PayTR odeme formu acilamadi.");
+    };
+
     const startPaytr = async (discount, promo) => {
-      const user = auth.currentUser;
-      if (!user) return alert("Odeme icin lutfen giris yapin.");
-      const sub = subtotal();
-      const total = Math.max(0, sub - discount);
-      if (total <= 0) return alert("Odeme tutari gecersiz.");
+      if (isPaytrStarting) return;
+      isPaytrStarting = true;
+      setPaytrButtonLoading(true);
+      setCheckoutStatus('Siparis olusturuluyor, lutfen bekle...');
 
-      const orderRef = await addDoc(collection(db, "orders"), {
-        userId: user.uid,
-        userEmail: user.email,
-        items: cart.map(item => ({
-          productId: item.id || "",
-          productName: item.name || "Urun",
-          size: item.size || "",
-          qty: Number(item.qty || 1),
-          price: Number(item.price || 0)
-        })),
-        subtotal: sub,
-        discount,
-        promoCode: promo?.code || "",
-        total,
-        status: "PayTR odeme baslatildi",
-        createdAt: Date.now()
-      });
+      let orderRef = null;
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          setCheckoutStatus('Odeme icin once giris yapmalisin.', 'error');
+          return;
+        }
 
-      const profileSnap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
-      const profile = profileSnap?.exists() ? profileSnap.data() : {};
-      const basket = cart.map(item => ({
-        name: item.name || "Quaora urun",
-        price: Number(item.price || 0),
-        qty: Number(item.qty || 1)
-      }));
-      if (discount > 0) basket.push({ name: `Indirim ${promo.code}`, price: -discount, qty: 1 });
+        const sub = subtotal();
+        const total = Math.max(0, sub - discount);
+        if (total <= 0) {
+          setCheckoutStatus('Odeme tutari gecersiz.', 'error');
+          return;
+        }
 
-      const response = await fetch("api/paytr-create-token.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        orderRef = await addDoc(collection(db, "orders"), {
+          userId: user.uid,
+          userEmail: user.email,
+          items: cart.map(item => ({
+            productId: item.id || "",
+            productName: item.name || "Urun",
+            size: item.size || "",
+            qty: Number(item.qty || 1),
+            price: Number(item.price || 0)
+          })),
+          subtotal: sub,
+          discount,
+          promoCode: promo?.code || "",
+          total,
+          status: "PayTR odeme baslatildi",
+          createdAt: Date.now()
+        });
+
+        const profileSnap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
+        const profile = profileSnap?.exists() ? profileSnap.data() : {};
+        const basket = cart.map(item => ({
+          name: item.name || "Quaora urun",
+          price: Number(item.price || 0),
+          qty: Number(item.qty || 1)
+        }));
+
+        setCheckoutStatus('PayTR guvenli odeme formu hazirlaniyor...');
+        const data = await requestPaytrToken({
           merchant_oid: orderRef.id,
           email: user.email,
           user_name: profile.username || user.email || "Quaora Musterisi",
@@ -168,24 +226,25 @@
           user_address: profile.address || "Quaora online siparis",
           payment_amount: Math.round(total * 100),
           basket
-        })
-      });
+        });
 
-      const data = await response.json();
-      if (data.status !== "success") {
-        await updateDoc(orderRef, { status: "PayTR token hatasi", paytrError: data.reason || "" }).catch(() => {});
-        alert(data.reason || "PayTR odeme formu acilamadi.");
-        return;
+        await markPromoUsed(promo, user);
+        await updateDoc(orderRef, { paytrTokenCreated: true, updatedAt: Date.now() }).catch(() => {});
+        localStorage.removeItem('quaora_cart');
+        localStorage.removeItem('quaora_promo');
+        paytrFrame.src = `https://www.paytr.com/odeme/guvenli/${data.token}`;
+        frameWrap.classList.remove('hidden');
+        setCheckoutStatus('PayTR formu acildi. Odemenizi asagidan tamamlayabilirsiniz.');
+        window.iFrameResize?.({}, '#paytriframe');
+        frameWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        console.error(error);
+        if (orderRef) await updateDoc(orderRef, { status: "PayTR baslatma hatasi", paytrError: error.message || String(error), updatedAt: Date.now() }).catch(() => {});
+        setCheckoutStatus(error.message || "PayTR odeme formu acilamadi.", 'error');
+      } finally {
+        isPaytrStarting = false;
+        setPaytrButtonLoading(false);
       }
-
-      await markPromoUsed(promo, user);
-      await updateDoc(orderRef, { paytrTokenCreated: true, updatedAt: Date.now() }).catch(() => {});
-      localStorage.removeItem('quaora_cart');
-      localStorage.removeItem('quaora_promo');
-      paytrFrame.src = `https://www.paytr.com/odeme/guvenli/${data.token}`;
-      frameWrap.classList.remove('hidden');
-      window.iFrameResize?.({}, '#paytriframe');
-      frameWrap.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     onAuthStateChanged(auth, async (user) => {
