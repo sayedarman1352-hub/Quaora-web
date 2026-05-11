@@ -81,6 +81,7 @@
         }
         
     </style>
+    <link rel="stylesheet" href="quaora-responsive.css">
 </head>
 <body>
     <div id="bg-slider-wrap">
@@ -429,10 +430,11 @@
     window.toggleMenu = () => {
         const menu = getEl("sideMenu");
         if (!menu) return;
-        const isOpen = menu.style.width === "300px";
+        const panelWidth = window.innerWidth < 768 ? "100%" : "300px";
+        const isOpen = menu.style.width === panelWidth;
         window.closeAllPanels();
         if (!isOpen) {
-            menu.style.width = "300px";
+            menu.style.width = panelWidth;
             if (overlay) overlay.classList.remove("hidden");
         }
     };
@@ -482,10 +484,11 @@
     window.toggleCart = () => {
         const p = getEl("cartPanel");
         if (!p) return;
-        const isOpen = p.style.width === "300px";
+        const panelWidth = window.innerWidth < 768 ? "100%" : "380px";
+        const isOpen = p.style.width === panelWidth;
         window.closeAllPanels();
         if (!isOpen) {
-            p.style.width = "300px";
+            p.style.width = panelWidth;
             if (overlay) overlay.classList.remove("hidden");
             renderCart();
         }
