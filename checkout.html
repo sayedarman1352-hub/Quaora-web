@@ -152,7 +152,7 @@
       try {
         data = JSON.parse(rawResponse);
       } catch (parseError) {
-        throw new Error("PayTR backend deploy edilmemis veya /api/paytr-create-token rewrite'i calismiyor. Firebase Functions + Hosting tekrar deploy edilmeli.");
+        throw new Error("PayTR backend Vercel'de deploy edilmemis veya /api/paytr-create-token route'u calismiyor.");
       }
 
       if (!response.ok || data.status !== "success") {

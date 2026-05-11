@@ -1,5 +1,10 @@
 tools/
-functions/node_modules/
-functions/package-lock.json
+node_modules/
+package-lock.json
 firebase-debug.log
 firebase-debug.*.log
+.vercel/
+.env.local
+
+.vercel
+.env*.local

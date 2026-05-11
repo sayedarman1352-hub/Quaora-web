@@ -1,0 +1,14 @@
+{
+  "name": "quaora-paytr-vercel",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  },
+  "devDependencies": {
+    "vercel": "^48.12.0"
+  }
+}
