@@ -141,33 +141,24 @@
     };
 
     const requestPaytrToken = async (payload) => {
-      const endpoints = ["api/paytr-create-token", "api/paytr-create-token.php"];
-      let lastError = null;
-
-      for (const endpoint of endpoints) {
-        try {
-          const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const rawResponse = await response.text();
-          let data = null;
-          try {
-            data = JSON.parse(rawResponse);
-          } catch (parseError) {
-            throw new Error(`${endpoint} JSON donmedi. Backend endpoint calismiyor olabilir.`);
-          }
-          if (!response.ok || data.status !== "success") {
-            throw new Error(data.reason || "PayTR odeme formu acilamadi.");
-          }
-          return data;
-        } catch (error) {
-          lastError = error;
-        }
+      const endpoint = "api/paytr-create-token";
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const rawResponse = await response.text();
+      let data = null;
+      try {
+        data = JSON.parse(rawResponse);
+      } catch (parseError) {
+        throw new Error("PayTR backend deploy edilmemis veya /api/paytr-create-token rewrite'i calismiyor. Firebase Functions + Hosting tekrar deploy edilmeli.");
       }
 
-      throw lastError || new Error("PayTR odeme formu acilamadi.");
+      if (!response.ok || data.status !== "success") {
+        throw new Error(data.reason || "PayTR odeme formu acilamadi.");
+      }
+      return data;
     };
 
     const startPaytr = async (discount, promo) => {
