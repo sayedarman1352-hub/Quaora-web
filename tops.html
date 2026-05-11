@@ -629,7 +629,8 @@
                 price: Number(price),
                 size,
                 qty: 1,
-                paymentLink: product.paymentLink || product.paymentUrl || product.payLink || ''
+                paymentLink: product.paymentLink || product.paymentUrl || product.payLink || '',
+                image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''
             });
         }
 

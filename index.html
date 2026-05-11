@@ -111,7 +111,7 @@
     </div>
 </div>
 <div id="bg-slideshow"></div>   
-<div id="menuOverlay" onclick="toggleMenu(); closeCart(); closeProfilePanel();" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
+<div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
 
 <div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl transition-all duration-500">
     <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
@@ -393,6 +393,11 @@
     let activeUser = null;
     let activeIsAdmin = false;
 
+    ["favoritesSidePanel", "ordersSidePanel", "adminPanel"].forEach((id) => {
+        const panel = getEl(id);
+        if (panel && panel.parentElement !== document.body) document.body.appendChild(panel);
+    });
+
     // --- TEMEL PANEL KONTROLLERİ (Önce tanımlanmalı) ---
     window.closeAllPanels = () => {
         const panels = ["sideMenu", "cartPanel", "profileSidePanel", "adminPanel", "favoritesSidePanel", "ordersSidePanel"];
@@ -479,6 +484,31 @@
         } catch (e) {
             favoriteIds = [];
         }
+    };
+
+    const escapeHtml = (value) => String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    const getOrderItems = (order) => {
+        if (Array.isArray(order.items) && order.items.length > 0) return order.items;
+        return [{
+            productId: order.productId || "",
+            productName: order.productName || "Ürün",
+            image: order.image || "",
+            size: order.size || "",
+            qty: order.qty || 1,
+            price: order.price || order.total || 0
+        }];
+    };
+
+    const getOrderItemImage = (item) => {
+        if (item.image || item.imageUrl) return item.image || item.imageUrl;
+        const product = favoriteProducts.find(p => p.id === item.productId || p.name === item.productName);
+        return Array.isArray(product?.images) && product.images.length > 0 ? product.images[0] : 'image/placeholder.jpeg';
     };
 
     window.toggleCart = () => {
@@ -611,39 +641,58 @@
             list.innerHTML = snapshot.docs.map(orderDoc => {
                 const order = orderDoc.data();
                 const created = order.createdAt ? new Date(order.createdAt).toLocaleString('tr-TR') : '';
+                const orderItems = getOrderItems(order);
+                const total = Number(order.total || orderItems.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0));
                 return `
                     <div class="bg-gray-50 border border-black/5 rounded-2xl p-4 shadow-sm">
-                        <div class="flex justify-between gap-3">
+                        <div class="flex justify-between gap-3 mb-4">
                             <div>
-                                <h4 class="font-black text-xs uppercase tracking-widest text-gray-800">${order.productName || 'Ürün'}</h4>
+                                <h4 class="font-black text-xs uppercase tracking-widest text-gray-800">Sipariş</h4>
                                 <p class="text-[10px] font-bold text-gray-400 mt-1">${created}</p>
                             </div>
-                            <span class="text-[10px] font-black text-[#964b00] uppercase">${order.status || 'Alındı'}</span>
+                            <div class="text-right">
+                                <span class="text-[10px] font-black text-[#964b00] uppercase">${escapeHtml(order.status || 'Alındı')}</span>
+                                <p class="text-xs font-black text-gray-800 mt-1">₺${total.toLocaleString('tr-TR')}</p>
+                            </div>
                         </div>
-                        <button onclick="requestRefund('${orderDoc.id}', '${(order.productName || 'Ürün').replace(/'/g, "\\'")}')" class="mt-4 w-full bg-white border border-[#964b00]/20 text-[#964b00] py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all">
-                            İade Talebi
-                        </button>
+                        <div class="space-y-3">
+                            ${orderItems.map((item, itemIndex) => {
+                                const itemName = item.productName || item.name || 'Ürün';
+                                const itemImage = getOrderItemImage(item);
+                                const infoId = `refund-info-${orderDoc.id}-${itemIndex}`;
+                                return `
+                                    <div class="bg-white rounded-xl border border-[#964b00]/10 p-3">
+                                        <div class="flex gap-3">
+                                            <img src="${escapeHtml(itemImage)}" class="w-16 h-16 rounded-lg object-cover border border-black/5 bg-gray-100" alt="${escapeHtml(itemName)}">
+                                            <div class="flex-1 min-w-0">
+                                                <h5 class="font-black text-[11px] uppercase tracking-widest text-gray-800 line-clamp-2">${escapeHtml(itemName)}</h5>
+                                                <p class="text-[10px] font-bold text-gray-500 mt-1">${item.size ? `Beden: ${escapeHtml(item.size)} | ` : ''}Adet: ${Number(item.qty || 1)}</p>
+                                                <p class="text-xs font-black text-[#964b00] mt-1">₺${Number(item.price || 0).toLocaleString('tr-TR')}</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="showRefundInfo('${infoId}')" class="mt-3 w-full bg-white border border-[#964b00]/20 text-[#964b00] py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all">
+                                            İade İşlemi
+                                        </button>
+                                        <p id="${infoId}" class="hidden mt-3 rounded-xl bg-[#FAE29C]/50 border border-[#964b00]/10 p-3 text-[11px] font-bold text-gray-700 leading-relaxed">
+                                            İadeler sadece sosyal medya hesaplarımızdan gerçekleşiyor.
+                                        </p>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
                 `;
             }).join('');
         });
     };
 
-    window.requestRefund = async (orderId, productName) => {
-        const user = auth.currentUser;
-        if (!user) return alert("İade talebi için giriş yapmanız gerekiyor.");
-        const reason = prompt("İade talebiniz için kısa bir açıklama yazın:");
-        if (!reason || !reason.trim()) return;
-        await addDoc(collection(db, "refund_requests"), {
-            orderId,
-            productName,
-            reason: reason.trim(),
-            userId: user.uid,
-            userEmail: user.email,
-            status: "Yeni talep",
-            createdAt: Date.now()
-        });
-        alert("İade talebiniz alındı.");
+    window.showRefundInfo = (infoId) => {
+        const info = getEl(infoId);
+        if (info) info.classList.toggle('hidden');
+    };
+
+    window.requestRefund = async () => {
+        alert("İadeler sadece sosyal medya hesaplarımızdan gerçekleşiyor.");
     };
 
     window.openAdminPanel = () => {

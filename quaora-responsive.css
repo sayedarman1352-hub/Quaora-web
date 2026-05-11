@@ -200,4 +200,51 @@ li {
     iframe {
         max-width: 100%;
     }
+
+    #adminPanel {
+        right: 0 !important;
+        border-right: 0 !important;
+    }
+
+    #adminPanel > div:first-child {
+        padding: 1rem !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+
+    #adminPanel > div:first-child h2 {
+        font-size: 1.25rem !important;
+        letter-spacing: 0.12em !important;
+    }
+
+    #adminPanel > div:first-child p,
+    #adminPanel h3,
+    #adminPanel label,
+    #adminPanel [class*="tracking-["],
+    #adminPanel .tracking-widest {
+        letter-spacing: 0.1em !important;
+    }
+
+    #adminPanel > div:last-child {
+        padding: 1rem !important;
+    }
+
+    #adminPanel .grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    #adminPanel .col-span-2 {
+        grid-column: auto !important;
+    }
+
+    #adminPanel input,
+    #adminPanel select,
+    #adminPanel button {
+        min-height: 44px;
+        font-size: 0.82rem !important;
+    }
+
+    #adminPanel section {
+        border-radius: 1rem !important;
+    }
 }

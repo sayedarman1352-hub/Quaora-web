@@ -240,11 +240,14 @@ function toggleCollections() {
     }
 
     function addToCart(name, price) {
+        const image = price === 850
+            ? "https://images.unsplash.com/photo-1598452100020-f58696ec6f37?auto=format&fit=crop&q=80&w=800"
+            : "https://images.unsplash.com/photo-1520981825232-ece5fae45120?auto=format&fit=crop&q=80&w=800";
         const index = cart.findIndex(item => item.name === name);
         if (index > -1) { 
             cart[index].qty += 1; 
         } else { 
-            cart.push({ name, price, qty: 1 }); 
+            cart.push({ name, price, qty: 1, image });
         }
         updateCart();
         toggleCart();
@@ -301,7 +304,6 @@ function toggleCollections() {
     updateCart();
 </script>
 
-</bo
 <script type="module" src="quaora-discounts.js"></script>
-dy>
+</body>
 </html>

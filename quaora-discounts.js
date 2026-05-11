@@ -100,12 +100,16 @@ const updateTotals = () => {
   const discountAmount = document.getElementById('quaoraDiscountAmount') || document.getElementById('cartDiscount');
   const totalEl = document.getElementById('cartTotal');
 
-  if (input) input.value = promoCode || '';
+  const inputHasFocus = input && document.activeElement === input;
+  if (input && !inputHasFocus) input.value = promoCode || '';
   if (subtotalEl) subtotalEl.innerText = money(subtotal);
   if (totalEl && readCart().length > 0) totalEl.innerText = money(total);
 
   if (!promoCode || !promo) {
-    if (msg) msg.innerText = promoCode ? 'Gecersiz indirim kodu.' : '';
+    if (msg) {
+      msg.innerText = promoCode ? 'Gecersiz indirim kodu.' : '';
+      msg.className = promoCode ? 'text-[10px] font-bold text-red-600' : 'text-[10px] font-bold text-gray-500';
+    }
     if (removeBtn) removeBtn.classList.toggle('hidden', !promoCode);
     if (discountRow) {
       discountRow.classList.add('hidden');
