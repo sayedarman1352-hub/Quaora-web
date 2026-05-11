@@ -21,6 +21,7 @@ service cloud.firestore {
         "ayakkabilar",
         "bikini-altlari",
         "bikini_ustleri",
+        "bottom_products",
         "cantalar",
         "conquette",
         "gozlukler",
@@ -34,6 +35,7 @@ service cloud.firestore {
         "RELOVE",
         "sapkalar",
         "takilar",
+        "tops_products",
         "yeni_gelenler"
       ];
     }
@@ -64,6 +66,40 @@ service cloud.firestore {
     match /mail/{mailId} {
       allow create: if isAdmin();
       allow read, update, delete: if false;
+    }
+
+    match /discount_codes/{codeId} {
+      allow read: if true;
+      allow create: if isAdmin()
+        || (
+          signedIn()
+          && codeId.matches('^[0-9]{6}$')
+          && request.resource.data.ownerUid == request.auth.uid
+          && request.resource.data.source == "welcome"
+          && request.resource.data.type == "percent"
+          && request.resource.data.value > 0
+          && request.resource.data.value <= 100
+          && request.resource.data.active == true
+          && request.resource.data.maxUses == 1
+          && request.resource.data.usedCount == 0
+        );
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.active == true
+          && (!resource.data.keys().hasAny(['ownerUid']) || resource.data.ownerUid == request.auth.uid)
+          && resource.data.usedBy[request.auth.uid] != true
+          && (resource.data.maxUses == 0 || resource.data.usedCount < resource.data.maxUses)
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly(['usedBy', 'usedCount', 'updatedAt'])
+          && request.resource.data.usedBy[request.auth.uid] == true
+          && request.resource.data.usedCount == resource.data.usedCount + 1
+        );
+      allow delete: if isAdmin();
+    }
+
+    match /slider_images/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     match /{collectionName}/{docId} {

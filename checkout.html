@@ -3,20 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ödeme | QUAORA</title>
+  <title>Odeme | QUAORA</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-[#FAE29C] text-[#964b00] p-4 md:p-8">
-  <main class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
+  <main class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
     <a href="index.html" class="text-xs font-black tracking-widest uppercase">&larr; QUAORA</a>
-    <h1 class="text-3xl md:text-4xl font-black mt-4 mb-6">Ödeme</h1>
+    <h1 class="text-3xl md:text-4xl font-black mt-4 mb-6">Odeme</h1>
     <section id="checkoutContent" class="space-y-4"></section>
+    <section id="paytrFrameWrap" class="hidden mt-8">
+      <div class="mb-3 rounded-xl bg-[#FAE29C]/50 border border-[#964b00]/15 p-3 text-xs font-bold text-gray-600">
+        Odeme formu PayTR guvenli altyapisi ile aciliyor.
+      </div>
+      <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
+      <iframe id="paytriframe" frameborder="0" scrolling="no" style="width: 100%; min-height: 640px;"></iframe>
+    </section>
   </main>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -30,57 +37,161 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]');
-    const normalizedCart = Array.isArray(cart) ? cart.slice(0, 1).map(item => ({ ...item, qty: 1 })) : [];
-    localStorage.setItem('quaora_cart', JSON.stringify(normalizedCart));
     const content = document.getElementById('checkoutContent');
-    const item = normalizedCart[0];
+    const frameWrap = document.getElementById('paytrFrameWrap');
+    const paytrFrame = document.getElementById('paytriframe');
+
+    let cart = [];
+    try { cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]'); } catch (e) { cart = []; }
+    cart = Array.isArray(cart) ? cart.filter(item => Number(item.price || 0) > 0) : [];
+
+    const money = (value) => '₺' + Number(value || 0).toLocaleString('tr-TR');
+    const subtotal = () => cart.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0);
+
+    const readAppliedPromo = () => {
+      try { return JSON.parse(localStorage.getItem('quaora_promo') || 'null'); } catch (e) { return null; }
+    };
+
+    const getDiscount = async (user) => {
+      const promo = readAppliedPromo();
+      const code = (promo?.code || promo?.promoCode || '').trim().toUpperCase();
+      if (!code) return { discount: 0, promo: null };
+
+      const snap = await getDoc(doc(db, "discount_codes", code));
+      if (!snap.exists()) return { discount: 0, promo: null, message: "Kod bulunamadi." };
+
+      const data = snap.data();
+      const sub = subtotal();
+      const usedBy = data.usedBy || {};
+      const isOwnerCode = data.ownerUid && (!user || data.ownerUid !== user.uid);
+      const alreadyUsed = user && usedBy[user.uid];
+      const inactive = data.active === false;
+      const maxed = Number(data.maxUses || 0) > 0 && Number(data.usedCount || 0) >= Number(data.maxUses || 0);
+      const belowMin = sub < Number(data.minSubtotal || 0);
+
+      if (inactive || isOwnerCode || alreadyUsed || maxed || belowMin) {
+        return { discount: 0, promo: null, message: "Kod bu siparis icin kullanilamaz." };
+      }
+
+      let discount = 0;
+      if (data.type === "percent") discount = Math.round(sub * Number(data.value || 0) / 100);
+      if (data.type === "fixed") discount = Math.min(Number(data.value || 0), sub);
+      return { discount: Math.max(0, discount), promo: { code, ...data } };
+    };
+
+    const renderSummary = (discount, promo, message) => {
+      const sub = subtotal();
+      const total = Math.max(0, sub - discount);
+      content.innerHTML = `
+        <div class="space-y-3">
+          ${cart.map(item => `
+            <div class="rounded-xl border border-[#964b00]/20 bg-[#FAE29C]/30 p-4">
+              <div class="flex justify-between gap-4">
+                <div>
+                  <h2 class="font-black uppercase text-sm tracking-widest">${item.name || 'Urun'}</h2>
+                  <p class="text-xs font-bold text-gray-500 mt-1">${item.size ? `Beden: ${item.size}` : 'Tek urun'} | Adet: ${item.qty || 1}</p>
+                </div>
+                <p class="font-black">${money(Number(item.price || 0) * Number(item.qty || 1))}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="rounded-xl border border-[#964b00]/20 p-4 space-y-2">
+          <div class="flex justify-between text-sm font-bold text-gray-600"><span>Ara toplam</span><span>${money(sub)}</span></div>
+          ${discount > 0 ? `<div class="flex justify-between text-sm font-black text-green-700"><span>Indirim (${promo.code})</span><span>-${money(discount)}</span></div>` : ''}
+          ${message ? `<div class="text-xs font-bold text-red-600">${message}</div>` : ''}
+          <div class="flex justify-between border-t pt-3 text-xl font-black"><span>Toplam</span><span>${money(total)}</span></div>
+        </div>
+        <button id="startPaytrBtn" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all uppercase text-sm">PayTR ile ode</button>
+      `;
+      document.getElementById('startPaytrBtn')?.addEventListener('click', () => startPaytr(discount, promo));
+    };
 
     const renderEmpty = () => {
       content.innerHTML = `
-        <div class="p-4 rounded-xl bg-red-50 text-red-600 font-bold">Sepet boş. Ödeme başlatmak için önce ürün ekleyin.</div>
-        <a href="index.html" class="inline-flex items-center justify-center bg-[#964b00] text-white rounded-xl px-5 py-3 font-black uppercase text-xs tracking-widest">Alışverişe Dön</a>
+        <div class="p-4 rounded-xl bg-red-50 text-red-600 font-bold">Sepet bos. Odeme baslatmak icin once urun ekleyin.</div>
+        <a href="index.html" class="inline-flex items-center justify-center bg-[#964b00] text-white rounded-xl px-5 py-3 font-black uppercase text-xs tracking-widest">Alisverise Don</a>
       `;
     };
 
-    const renderMissingLink = () => {
-      const total = Number(item.price || 0).toLocaleString('tr-TR');
-      content.innerHTML = `
-        <div class="rounded-xl border border-[#964b00]/20 bg-[#FAE29C]/40 p-4">
-          <h2 class="font-black uppercase text-sm tracking-widest">${item.name || 'Ürün'}</h2>
-          <p class="text-xs font-bold text-gray-500 mt-1">${item.size ? `Beden: ${item.size}` : 'Tek ürün'}</p>
-          <p class="text-2xl font-black mt-3">${total} TL</p>
-        </div>
-        <div class="p-4 rounded-xl bg-yellow-50 text-yellow-800 font-bold text-sm">Bu ürün için ödeme linki henüz eklenmedi.</div>
-        <a href="index.html" class="inline-flex items-center justify-center bg-[#964b00] text-white rounded-xl px-5 py-3 font-black uppercase text-xs tracking-widest">Geri Dön</a>
-      `;
+    const markPromoUsed = async (promo, user) => {
+      if (!promo?.code || !user) return;
+      await updateDoc(doc(db, "discount_codes", promo.code), {
+        [`usedBy.${user.uid}`]: true,
+        usedCount: increment(1),
+        updatedAt: Date.now()
+      }).catch(() => {});
     };
 
-    const createOrderAndRedirect = async (user) => {
-      if (!item) return renderEmpty();
-      if (!item.paymentLink) return renderMissingLink();
-      if (user) {
-        await addDoc(collection(db, "orders"), {
-          userId: user.uid,
-          userEmail: user.email,
+    const startPaytr = async (discount, promo) => {
+      const user = auth.currentUser;
+      if (!user) return alert("Odeme icin lutfen giris yapin.");
+      const sub = subtotal();
+      const total = Math.max(0, sub - discount);
+      if (total <= 0) return alert("Odeme tutari gecersiz.");
+
+      const orderRef = await addDoc(collection(db, "orders"), {
+        userId: user.uid,
+        userEmail: user.email,
+        items: cart.map(item => ({
           productId: item.id || "",
-          productName: item.name || "Ürün",
+          productName: item.name || "Urun",
           size: item.size || "",
-          qty: item.qty || 1,
-          total: Number(item.price || 0) * Number(item.qty || 1),
-          paymentLink: item.paymentLink,
-          status: "Ödeme linkine yönlendirildi",
-          createdAt: Date.now()
-        });
+          qty: Number(item.qty || 1),
+          price: Number(item.price || 0)
+        })),
+        subtotal: sub,
+        discount,
+        promoCode: promo?.code || "",
+        total,
+        status: "PayTR odeme baslatildi",
+        createdAt: Date.now()
+      });
+
+      const profileSnap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
+      const profile = profileSnap?.exists() ? profileSnap.data() : {};
+      const basket = cart.map(item => ({
+        name: item.name || "Quaora urun",
+        price: Number(item.price || 0),
+        qty: Number(item.qty || 1)
+      }));
+      if (discount > 0) basket.push({ name: `Indirim ${promo.code}`, price: -discount, qty: 1 });
+
+      const response = await fetch("api/paytr-create-token.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          merchant_oid: orderRef.id,
+          email: user.email,
+          user_name: profile.username || user.email || "Quaora Musterisi",
+          user_phone: profile.phone || "0000000000",
+          user_address: profile.address || "Quaora online siparis",
+          payment_amount: Math.round(total * 100),
+          basket
+        })
+      });
+
+      const data = await response.json();
+      if (data.status !== "success") {
+        await updateDoc(orderRef, { status: "PayTR token hatasi", paytrError: data.reason || "" }).catch(() => {});
+        alert(data.reason || "PayTR odeme formu acilamadi.");
+        return;
       }
-      window.location.replace(item.paymentLink);
+
+      await markPromoUsed(promo, user);
+      await updateDoc(orderRef, { paytrTokenCreated: true, updatedAt: Date.now() }).catch(() => {});
+      localStorage.removeItem('quaora_cart');
+      localStorage.removeItem('quaora_promo');
+      paytrFrame.src = `https://www.paytr.com/odeme/guvenli/${data.token}`;
+      frameWrap.classList.remove('hidden');
+      window.iFrameResize?.({}, '#paytriframe');
+      frameWrap.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
-    onAuthStateChanged(auth, (user) => {
-      createOrderAndRedirect(user).catch((error) => {
-        console.error(error);
-        renderMissingLink();
-      });
+    onAuthStateChanged(auth, async (user) => {
+      if (cart.length === 0) return renderEmpty();
+      const result = await getDiscount(user).catch(() => ({ discount: 0, promo: null, message: "Indirim kontrol edilemedi." }));
+      renderSummary(result.discount, result.promo, result.message);
     });
   </script>
 </body>
