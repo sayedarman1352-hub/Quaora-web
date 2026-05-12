@@ -1,38 +1,26 @@
-# Quaora PayTR Vercel Deploy
+# QUAORA Vercel + PayTR Notu
 
-PayTR backend artik Firebase Functions degil, Vercel `/api` serverless route'lari ile calisir.
+Bu pakette Vercel API endpointleri hazırdır:
 
-## Vercel API adresleri
+- Token: `https://www.quaora.com.tr/api/paytr-create-token`
+- PayTR Bildirim URL: `https://www.quaora.com.tr/api/paytr-callback`
 
-- Token: `https://quaora.com.tr/api/paytr-create-token`
-- PayTR Bildirim URL: `https://quaora.com.tr/api/paytr-callback`
+Vercel Environment Variables içinde Production için şu 3 değer olmalı:
 
-## Vercel ortam degiskenleri
+- `PAYTR_MERCHANT_ID`
+- `PAYTR_MERCHANT_KEY`
+- `PAYTR_MERCHANT_SALT`
 
-Vercel Dashboard > Project > Settings > Environment Variables alanina eklenebilir:
+İsteğe bağlı:
 
-```text
-PAYTR_MERCHANT_ID=700559
-PAYTR_MERCHANT_KEY=...
-PAYTR_MERCHANT_SALT=...
-SITE_URL=https://quaora.com.tr
-```
+- `PAYTR_TEST_MODE=1` test için, canlı için `0`
+- `PAYTR_DEBUG_ON=1`
+- `PAYTR_OK_URL=https://www.quaora.com.tr/odeme-basarili.html`
+- `PAYTR_FAIL_URL=https://www.quaora.com.tr/odeme-hata.html`
 
-Siparis durumunu PayTR callback ile Firestore'da guncellemek istersen:
-
-```text
-FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
-```
-
-`FIREBASE_SERVICE_ACCOUNT` yoksa callback hash kontrolunu yapip PayTR'a `OK` doner, ama Firestore siparis durumunu sunucudan guncellemez.
-
-## Deploy
-
-Vercel'e GitHub repo import ederek deploy edebilirsin. Framework preset olarak `Other` secilebilir.
-
-CLI ile deploy icin:
+Deploy:
 
 ```powershell
-npm install
+cd C:\Users\Armanm\Desktop\quaoratr
 npx vercel --prod
 ```
