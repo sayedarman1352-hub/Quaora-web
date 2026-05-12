@@ -1,0 +1,11 @@
+QUAORA performans düzenlemesi
+
+Yapılanlar:
+- Tüm sayfalarda görsellere otomatik loading=lazy ve decoding=async eklendi.
+- Ana sayfadaki favoriler için 15+ Firestore koleksiyonu artık sayfa açılışında değil, Favorilerim paneli açılınca dinlenir.
+- Ana sayfadaki kullanılmayan slider_images dinleyicisi gereksiz yere başlamaz.
+- Arka plan slider yüklemesi ilk render sonrası başlatılır.
+- Vercel static dosyalar için cache header eklendi.
+
+Not:
+- En büyük kalıcı hız kazanımı için ürün fotoğraflarını Firestore içinde base64 tutmak yerine Firebase Storage / Cloudinary / Vercel public image dosyası olarak URL ile tutmak gerekir.

@@ -13,5 +13,35 @@
     <p class="text-sm font-bold text-gray-600 mb-6">Siparis durumunuz PayTR bildirimi geldikten sonra kesinlesir.</p>
     <a href="index.html" class="inline-flex bg-[#964b00] text-white px-5 py-3 rounded-xl font-black tracking-widest uppercase text-xs">Quaora'ya don</a>
   </main>
+<script id="quaora-performance-helpers">
+(() => {
+  const tuneImage = (img) => {
+    if (!img || img.dataset.quaoraPerfReady) return;
+    img.dataset.quaoraPerfReady = "1";
+    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
+    if (!img.hasAttribute("decoding")) img.setAttribute("decoding", "async");
+  };
+
+  const tuneAllImages = () => document.querySelectorAll("img").forEach(tuneImage);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", tuneAllImages, { once: true });
+  } else {
+    tuneAllImages();
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (node.tagName === "IMG") tuneImage(node);
+        node.querySelectorAll?.("img").forEach(tuneImage);
+      }
+    }
+  });
+
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 </body>
 </html>

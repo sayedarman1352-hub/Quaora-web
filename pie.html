@@ -176,6 +176,37 @@
 
 
 
+<script id="quaora-performance-helpers">
+(() => {
+  const tuneImage = (img) => {
+    if (!img || img.dataset.quaoraPerfReady) return;
+    img.dataset.quaoraPerfReady = "1";
+    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
+    if (!img.hasAttribute("decoding")) img.setAttribute("decoding", "async");
+  };
+
+  const tuneAllImages = () => document.querySelectorAll("img").forEach(tuneImage);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", tuneAllImages, { once: true });
+  } else {
+    tuneAllImages();
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (node.tagName === "IMG") tuneImage(node);
+        node.querySelectorAll?.("img").forEach(tuneImage);
+      }
+    }
+  });
+
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
