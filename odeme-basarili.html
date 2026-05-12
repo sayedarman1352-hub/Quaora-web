@@ -6,6 +6,13 @@
   <title>Odeme Basarili | QUAORA</title>
   <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="quaora-responsive.css">
+<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="//firestore.googleapis.com">
+<link rel="dns-prefetch" href="//www.paytr.com">
+<script src="quaora-performance.js" defer></script>
 </head>
 <body class="min-h-screen bg-[#FAE29C] text-[#964b00] flex items-center justify-center p-6">
   <main class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
@@ -13,35 +20,12 @@
     <p class="text-sm font-bold text-gray-600 mb-6">Siparis durumunuz PayTR bildirimi geldikten sonra kesinlesir.</p>
     <a href="index.html" class="inline-flex bg-[#964b00] text-white px-5 py-3 rounded-xl font-black tracking-widest uppercase text-xs">Quaora'ya don</a>
   </main>
-<script id="quaora-performance-helpers">
-(() => {
-  const tuneImage = (img) => {
-    if (!img || img.dataset.quaoraPerfReady) return;
-    img.dataset.quaoraPerfReady = "1";
-    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
-    if (!img.hasAttribute("decoding")) img.setAttribute("decoding", "async");
-  };
-
-  const tuneAllImages = () => document.querySelectorAll("img").forEach(tuneImage);
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", tuneAllImages, { once: true });
-  } else {
-    tuneAllImages();
-  }
-
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType !== 1) continue;
-        if (node.tagName === "IMG") tuneImage(node);
-        node.querySelectorAll?.("img").forEach(tuneImage);
-      }
-    }
-  });
-
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }, { once: true });
+}
 </script>
 </body>
 </html>

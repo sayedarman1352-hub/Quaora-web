@@ -83,6 +83,13 @@
         
     </style>
     <link rel="stylesheet" href="quaora-responsive.css">
+<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="//firestore.googleapis.com">
+<link rel="dns-prefetch" href="//www.paytr.com">
+<script src="quaora-performance.js" defer></script>
 </head>
 <body>
     <div id="bg-slider-wrap">
@@ -363,36 +370,6 @@
     </div>
 </div>
 
-<script id="quaora-performance-helpers">
-(() => {
-  const tuneImage = (img) => {
-    if (!img || img.dataset.quaoraPerfReady) return;
-    img.dataset.quaoraPerfReady = "1";
-    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
-    if (!img.hasAttribute("decoding")) img.setAttribute("decoding", "async");
-  };
-
-  const tuneAllImages = () => document.querySelectorAll("img").forEach(tuneImage);
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", tuneAllImages, { once: true });
-  } else {
-    tuneAllImages();
-  }
-
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType !== 1) continue;
-        if (node.tagName === "IMG") tuneImage(node);
-        node.querySelectorAll?.("img").forEach(tuneImage);
-      }
-    }
-  });
-
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
-</script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -1068,7 +1045,7 @@
                             ctx.imageSmoothingEnabled = true;
                             ctx.imageSmoothingQuality = 'high';
                             ctx.drawImage(img, 0, 0, w, h);
-                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                            resolve(canvas.toDataURL('image/webp', 0.58));
                         };
                         img.src = e.target.result;
                     };
@@ -1237,5 +1214,12 @@
     </div>
 </div>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }, { once: true });
+}
+</script>
 </body>
 </html>

@@ -32,6 +32,13 @@
     .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
   </style>
     <link rel="stylesheet" href="quaora-responsive.css">
+<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="//firestore.googleapis.com">
+<link rel="dns-prefetch" href="//www.paytr.com">
+<script src="quaora-performance.js" defer></script>
 </head>
 <body>
 
@@ -206,19 +213,34 @@
 
 
     const qaDecode = (value) => decodeURIComponent(Array.prototype.map.call(atob(value), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    const PRODUCT_ADMIN_BUTTON_HTML = "PGJ1dHRvbiBpZD0iYWRtaW5BZGRQcm9kdWN0QnRuIiBvbmNsaWNrPSJvcGVuUHJvZHVjdEFkbWluKCkiIGNsYXNzPSJoaWRkZW4gYmctYmxhY2sgdGV4dC13aGl0ZSB0ZXh0LVs4cHhdIG1kOnRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHB4LTMgcHktMS41IG1kOnB4LTQgbWQ6cHktMiByb3VuZGVkLWxnIGhvdmVyOmJnLXJlZC02MDAgdHJhbnNpdGlvbi1jb2xvcnMgdXBwZXJjYXNlIHNoYWRvdy1sZyI+CiAgICAgICAgICAgICAgICArIMOccsO8biBFa2xlCiAgICAgICAgICAgIDwvYnV0dG9uPg==";
-    const PRODUCT_ADMIN_MODAL_HTML = "PGRpdiBpZD0icHJvZHVjdEFkbWluTW9kYWwiIGNsYXNzPSJoaWRkZW4gZml4ZWQgaW5zZXQtMCB6LVsxMDAwXSBiZy1ibGFjay82MCBiYWNrZHJvcC1ibHVyLXNtIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHAtNCI+CiAgICAgICAgPGRpdiBjbGFzcz0iYmctWyNGQUUyOUNdIHctZnVsbCBtYXgtdy0yeGwgcm91bmRlZC1bMnJlbV0gc2hhZG93LTJ4bCBvdmVyZmxvdy1oaWRkZW4gZmxleCBmbGV4LWNvbCBtYXgtaC1bOTB2aF0gcmVsYXRpdmUgYm9yZGVyLTIgYm9yZGVyLXdoaXRlLzQwIj4KICAgICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJjbG9zZVByb2R1Y3RBZG1pbigpIiBjbGFzcz0iYWJzb2x1dGUgdG9wLTQgcmlnaHQtNCB6LTUwIHRleHQtcmVkLTYwMCBmb250LWJsYWNrIHRleHQtMnhsIHctMTAgaC0xMCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBob3ZlcjpzY2FsZS0xMTAgdHJhbnNpdGlvbi1hbGwiPuKclTwvYnV0dG9uPgoKICAgICAgICAgICAgPGRpdiBjbGFzcz0icC02IG1kOnAtOCBvdmVyZmxvdy15LWF1dG8gbm8tc2Nyb2xsYmFyIGN1c3RvbS1zY3JvbGwgYmctd2hpdGUvNjAiPgogICAgICAgICAgICAgICAgPGgyIGlkPSJtb2RhbFRpdGxlIiBjbGFzcz0iZm9udC1ibGFjayB0cmFja2luZy13aWRlc3QgdGV4dC14bCBtZDp0ZXh0LTJ4bCB0ZXh0LVsjOTY0YjAwXSBtYi02IHVwcGVyY2FzZSBzZXJpZiBib3JkZXItYiBib3JkZXItWyM5NjRiMDBdLzIwIHBiLTQiPllFTsSwIENPUVVFVFRFPC9oMj4KICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0ic3BhY2UteS00Ij4KICAgICAgICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdGV4dC1ncmF5LTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTEiPsOccsO8biDEsHNtaTwvbGFiZWw+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0icE5hbWUiIHBsYWNlaG9sZGVyPSLDlnJuOiBPY2VhbiBCbHVlIEFsdCIgY2xhc3M9InctZnVsbCBiZy13aGl0ZSBib3JkZXIgYm9yZGVyLVsjOTY0YjAwXS8yMCB0ZXh0LWdyYXktODAwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1ib2xkIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItWyM5NjRiMDBdIj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0xIG10LTIiPsOccsO8biBBw6fEsWtsYW1hc8SxPC9sYWJlbD4KICAgICAgICAgICAgICAgICAgICAgICAgPHRleHRhcmVhIGlkPSJwRGVzYyIgcm93cz0iMyIgcGxhY2Vob2xkZXI9Ikt1bWHFnywga2VzaW0gdmV5YSDDtnplbGxpa2xlcmkgYnVyYXlhIHlhemFiaWxpcnNpbml6Li4uIiBjbGFzcz0idy1mdWxsIGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHRleHQtZ3JheS04MDAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LW1lZGl1bSBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6Ym9yZGVyLVsjOTY0YjAwXSByZXNpemUtbm9uZSI+PC90ZXh0YXJlYT4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0xIG10LTIiPj9yP24gP2RlbWUgTGlua2k8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idXJsIiBpZD0icFBheW1lbnRMaW5rIiBwbGFjZWhvbGRlcj0iUGF5VFIgbGlua2luaSBidXJheWEgeWFwxLHFn3TEsXIiIGNsYXNzPSJ3LWZ1bGwgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bIzk2NGIwMF0vMjAgdGV4dC1ncmF5LTgwMCByb3VuZGVkLXhsIHB4LTQgcHktMyB0ZXh0LXNtIGZvbnQtYm9sZCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6Ym9yZGVyLVsjOTY0YjAwXSI+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggZ2FwLTQiPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ3LTEvMiI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdGV4dC1ncmF5LTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTEiPkVza2kgKOKCuik8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9Im51bWJlciIgaWQ9InBPbGRQcmljZSIgcGxhY2Vob2xkZXI9IjE0MDAiIG9uaW5wdXQ9ImNhbGN1bGF0ZURpc2NvdW50KCkiIGNsYXNzPSJ3LWZ1bGwgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bIzk2NGIwMF0vMjAgdGV4dC1ncmF5LTgwMCByb3VuZGVkLXhsIHB4LTQgcHktMyB0ZXh0LXNtIGZvbnQtYm9sZCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6Ym9yZGVyLVsjOTY0YjAwXSI+CiAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ3LTEvMiByZWxhdGl2ZSI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdGV4dC1yZWQtNTAwIHVwcGVyY2FzZSB0cmFja2luZy13aWRlc3QgbWItMSI+U2F0xLHFnyAo4oK6KTwvbGFiZWw+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0ibnVtYmVyIiBpZD0icE5ld1ByaWNlIiBwbGFjZWhvbGRlcj0iOTgwIiBvbmlucHV0PSJjYWxjdWxhdGVEaXNjb3VudCgpIiBjbGFzcz0idy1mdWxsIGJnLXJlZC01MCBib3JkZXIgYm9yZGVyLXJlZC0yMDAgdGV4dC1yZWQtNjAwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1ibGFjayBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6Ym9yZGVyLXJlZC01MDAiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iZGlzY291bnRCYWRnZSIgY2xhc3M9ImFic29sdXRlIC10b3AtMiAtcmlnaHQtMiBiZy1yZWQtNjAwIHRleHQtd2hpdGUgdGV4dC1bMTBweF0gZm9udC1ibGFjayBweC0yIHB5LTEgcm91bmRlZC1tZCBoaWRkZW4iPi0lMDwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iYm9yZGVyLXQgYm9yZGVyLVsjOTY0YjAwXS8yMCBwdC00IG10LTQiPgogICAgICAgICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdGV4dC1ncmF5LTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTIiPkJlZGVuIHZlIFN0b2sgRWtsZSAoTWFudWVsKTwvbGFiZWw+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggZ2FwLTIgbWItNCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9ImFkbWluU2l6ZUlucHV0IiBwbGFjZWhvbGRlcj0iQmVkZW4gKMOWcm46IFMsIDM0LCA3NUIpIiBjbGFzcz0idy0xLzIgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bIzk2NGIwMF0vMjAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LWJvbGQgb3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0gdXBwZXJjYXNlIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJudW1iZXIiIGlkPSJhZG1pblN0b2NrSW5wdXQiIHBsYWNlaG9sZGVyPSJTdG9rIEFkZWRpIiBjbGFzcz0idy0xLzQgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bIzk2NGIwMF0vMjAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LWJvbGQgb3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0iPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJhZGRBZG1pblNpemUoKSIgY2xhc3M9InctMS80IGJnLVsjOTY0YjAwXSB0ZXh0LXdoaXRlIHJvdW5kZWQteGwgZm9udC1ib2xkIHRleHQteHMgaG92ZXI6YmctYmxhY2sgdHJhbnNpdGlvbi1jb2xvcnMgc2hhZG93LW1kIj5FS0xFPC9idXR0b24+CiAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iYWRtaW5TaXplc0NvbnRhaW5lciIgY2xhc3M9ImZsZXggZmxleC13cmFwIGdhcC0yIj48L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iYm9yZGVyLXQgYm9yZGVyLVsjOTY0YjAwXS8yMCBwdC00IG10LTIiPgogICAgICAgICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdGV4dC1ncmF5LTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTIiPkZvdG/En3JhZmxhcjwvbGFiZWw+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJmaWxlIiBpZD0ibmV3UHJvZHVjdFBob3RvIiBhY2NlcHQ9ImltYWdlLyoiIG11bHRpcGxlIGNsYXNzPSJoaWRkZW4iIG9uY2hhbmdlPSJwcmV2aWV3UHJvZHVjdEltYWdlKHRoaXMpIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnbmV3UHJvZHVjdFBob3RvJykuY2xpY2soKSIgY2xhc3M9InctZnVsbCBiZy13aGl0ZSB0ZXh0LVsjOTY0YjAwXSBib3JkZXItMiBib3JkZXItZGFzaGVkIGJvcmRlci1bIzk2NGIwMF0vMzAgcm91bmRlZC14bCBweS02IGZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGhvdmVyOmJnLVsjOTY0YjAwXS8xMCB0cmFuc2l0aW9uLWFsbCBzaGFkb3ctc20iPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtM3hsIG1iLTEiPis8L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC14cyBmb250LWJsYWNrIHVwcGVyY2FzZSB0cmFja2luZy13aWRlc3QgcHgtNCI+Rm90b8SfcmFmIEVrbGU8L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC1bOXB4XSB0ZXh0LWdyYXktNTAwIG10LTEiPihPdG9tYXRpayBTxLFrxLHFn3TEsXLEsWzEsXIpPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iaW1hZ2VQcmV2aWV3Q29udGFpbmVyIiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMyBtZDpncmlkLWNvbHMtNCBnYXAtMyBtdC00Ij48L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgICAgICAgPGJ1dHRvbiBpZD0ic2F2ZUJ0blRleHQiIG9uY2xpY2s9InNhdmVQcm9kdWN0KCkiIGNsYXNzPSJ3LWZ1bGwgYmctWyM5NjRiMDBdIHRleHQtd2hpdGUgZm9udC1ibGFjayB0cmFja2luZy13aWRlc3QgdGV4dC1zbSBweS00IHJvdW5kZWQteGwgaG92ZXI6YmctYmxhY2sgdHJhbnNpdGlvbi1hbGwgYWN0aXZlOnNjYWxlLTk1IG10LTYgc2hhZG93LXhsIj4KICAgICAgICAgICAgICAgICAgICAgICAgUEFZTEHFngogICAgICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgPC9kaXY+";
 
-    window.ensureProductAdminButton = () => {
-        const mount = document.getElementById('adminAddProductMount');
-        if (!mount || document.getElementById('adminAddProductBtn')) return;
-        mount.innerHTML = qaDecode(PRODUCT_ADMIN_BUTTON_HTML);
+    let quaoraAdminTemplatesPromise = null;
+
+    const loadQuaoraAdminTemplates = async () => {
+        if (window.QUAORA_ADMIN_TEMPLATES) return window.QUAORA_ADMIN_TEMPLATES;
+        if (!quaoraAdminTemplatesPromise) quaoraAdminTemplatesPromise = import('./quaora-admin-templates.js');
+        await quaoraAdminTemplatesPromise;
+        return window.QUAORA_ADMIN_TEMPLATES || {};
     };
 
-    window.ensureProductAdminModal = () => {
+    const getQuaoraAdminTemplate = async () => {
+        const templates = await loadQuaoraAdminTemplates();
+        const fileName = window.location.pathname.split('/').pop() || 'index.html';
+        return templates[fileName] || templates.default || {};
+    };
+
+    window.ensureProductAdminButton = async () => {
+        const mount = document.getElementById('adminAddProductMount');
+        if (!mount || document.getElementById('adminAddProductBtn')) return;
+        const template = await getQuaoraAdminTemplate();
+        if (template.button) mount.innerHTML = qaDecode(template.button);
+    };
+
+    window.ensureProductAdminModal = async () => {
         const mount = document.getElementById('productAdminModalMount');
         if (!mount || document.getElementById('productAdminModal')) return;
-        mount.innerHTML = qaDecode(PRODUCT_ADMIN_MODAL_HTML);
+        const template = await getQuaoraAdminTemplate();
+        if (template.modal) mount.innerHTML = qaDecode(template.modal);
     };
 
     window.selectedSizes = {};
@@ -587,7 +609,7 @@
                         const img = new Image();
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 800; 
+                            const MAX_WIDTH = 640; 
                             let w = img.width; 
                             let h = img.height;
                             
@@ -601,7 +623,7 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, w, h);
                             
-                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                            resolve(canvas.toDataURL('image/webp', 0.58));
                         };
                         img.src = e.target.result;
                     };
@@ -643,8 +665,8 @@
         }
     };
 
-    window.openProductAdmin = () => {
-        window.ensureProductAdminModal?.();
+    window.openProductAdmin = async () => {
+        await window.ensureProductAdminModal?.();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         window.currentEditId = null;
         document.getElementById('modalTitle').innerText = qaDecode("WUVOxLAgTUFZT0vEsE7EsCBBTFRJ");
@@ -725,8 +747,8 @@
         }
     };
 
-    window.editProduct = (id) => {
-        window.ensureProductAdminModal?.();
+    window.editProduct = async (id) => {
+        await window.ensureProductAdminModal?.();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         const p = window.allProducts.find(item => item.id === id);
         if (!p) return;
@@ -850,37 +872,14 @@
     loadProducts();
     loadPageTexts(); // Sayfa açılışında metinleri veritabanından çek
 </script>
-<script id="quaora-performance-helpers">
-(() => {
-  const tuneImage = (img) => {
-    if (!img || img.dataset.quaoraPerfReady) return;
-    img.dataset.quaoraPerfReady = "1";
-    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
-    if (!img.hasAttribute("decoding")) img.setAttribute("decoding", "async");
-  };
-
-  const tuneAllImages = () => document.querySelectorAll("img").forEach(tuneImage);
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", tuneAllImages, { once: true });
-  } else {
-    tuneAllImages();
-  }
-
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType !== 1) continue;
-        if (node.tagName === "IMG") tuneImage(node);
-        node.querySelectorAll?.("img").forEach(tuneImage);
-      }
-    }
-  });
-
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
-</script>
 
 <script type="module" src="quaora-discounts.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }, { once: true });
+}
+</script>
 </body>
 </html>

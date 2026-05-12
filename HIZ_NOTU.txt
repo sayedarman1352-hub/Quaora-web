@@ -1,0 +1,11 @@
+QUAORA ekstra hız paketi
+
+Bu pakette tasarım değiştirilmedi. Yapılan performans düzenlemeleri:
+- Tekrarlanan inline performans kodu quaora-performance.js dosyasına taşındı ve cache'lenebilir hale getirildi.
+- Ürün sayfalarındaki büyük admin modal HTML/base64 blokları ilk yüklemeden çıkarıldı; sadece admin hesabı giriş yapınca quaora-admin-templates.js dinamik yüklenir.
+- Service Worker eklendi: ikinci ziyaretlerde statik dosyalar daha hızlı gelir.
+- Görseller için lazy loading / async decoding / düşük fetch priority uygulandı.
+- Vercel cache headerları güçlendirildi.
+- Yeni yüklenen ürün görselleri bundan sonra daha küçük WebP olarak sıkıştırılır.
+
+Not: Mevcut Firestore ürün görselleri base64 ise, asıl büyük hız sıçraması için onları URL/Storage görseline çevirmek gerekir.

@@ -46,6 +46,13 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #d4a76a; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #964b00; }
     </style>
+<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="//firestore.googleapis.com">
+<link rel="dns-prefetch" href="//www.paytr.com">
+<script src="quaora-performance.js" defer></script>
 </head>
 
 <body class="min-h-screen flex flex-col relative">
@@ -211,36 +218,6 @@
                 <div id="productAdminModalMount"></div>
     </main>
 
-<script id="quaora-performance-helpers">
-(() => {
-  const tuneImage = (img) => {
-    if (!img || img.dataset.quaoraPerfReady) return;
-    img.dataset.quaoraPerfReady = "1";
-    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
-    if (!img.hasAttribute("decoding")) img.setAttribute("decoding", "async");
-  };
-
-  const tuneAllImages = () => document.querySelectorAll("img").forEach(tuneImage);
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", tuneAllImages, { once: true });
-  } else {
-    tuneAllImages();
-  }
-
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType !== 1) continue;
-        if (node.tagName === "IMG") tuneImage(node);
-        node.querySelectorAll?.("img").forEach(tuneImage);
-      }
-    }
-  });
-
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
-</script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -284,19 +261,34 @@
 
 
     const qaDecode = (value) => decodeURIComponent(Array.prototype.map.call(atob(value), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    const PRODUCT_ADMIN_BUTTON_HTML = "PGJ1dHRvbiBpZD0iYWRtaW5BZGRQcm9kdWN0QnRuIiBvbmNsaWNrPSJvcGVuUHJvZHVjdEFkbWluKCkiIGNsYXNzPSJoaWRkZW4gYmctYmxhY2sgdGV4dC13aGl0ZSB0ZXh0LVs4cHhdIG1kOnRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHB4LTMgcHktMS41IG1kOnB4LTQgbWQ6cHktMiByb3VuZGVkLWxnIGhvdmVyOmJnLXJlZC02MDAgdHJhbnNpdGlvbi1jb2xvcnMgdXBwZXJjYXNlIHNoYWRvdy1sZyI+CiAgICAgICAgICAgICAgICArIMOccsO8biBFa2xlCiAgICAgICAgICAgIDwvYnV0dG9uPg==";
-    const PRODUCT_ADMIN_MODAL_HTML = "PGRpdiBpZD0icHJvZHVjdEFkbWluTW9kYWwiIGNsYXNzPSJoaWRkZW4gZml4ZWQgaW5zZXQtMCB6LVsxMDAwXSBiZy1ibGFjay82MCBiYWNrZHJvcC1ibHVyLXNtIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHAtNCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImJnLVsjRkFFMjlDXSB3LWZ1bGwgbWF4LXctMnhsIHJvdW5kZWQtWzJyZW1dIHNoYWRvdy0yeGwgb3ZlcmZsb3ctaGlkZGVuIGZsZXggZmxleC1jb2wgbWF4LWgtWzkwdmhdIHJlbGF0aXZlIGJvcmRlci0yIGJvcmRlci13aGl0ZS80MCI+CiAgICAgICAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImNsb3NlUHJvZHVjdEFkbWluKCkiIGNsYXNzPSJhYnNvbHV0ZSB0b3AtNCByaWdodC00IHotNTAgdGV4dC1yZWQtNjAwIGZvbnQtYmxhY2sgdGV4dC0yeGwgdy0xMCBoLTEwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGhvdmVyOnNjYWxlLTExMCB0cmFuc2l0aW9uLWFsbCI+4pyVPC9idXR0b24+CgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icC02IG1kOnAtOCBvdmVyZmxvdy15LWF1dG8gbm8tc2Nyb2xsYmFyIGN1c3RvbS1zY3JvbGwgYmctd2hpdGUvNjAiPgogICAgICAgICAgICAgICAgICAgIDxoMiBpZD0ibW9kYWxUaXRsZSIgY2xhc3M9ImZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHRleHQteGwgbWQ6dGV4dC0yeGwgdGV4dC1bIzk2NGIwMF0gbWItNiB1cHBlcmNhc2Ugc2VyaWYgYm9yZGVyLWIgYm9yZGVyLVsjOTY0YjAwXS8yMCBwYi00Ij5ZRU7EsCBUT1A8L2gyPgoKICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJzcGFjZS15LTQiPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0xIj7DnHLDvG4gxLBzbWk8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJwTmFtZSIgcGxhY2Vob2xkZXI9IsOWcm46IExpbmVuIFRvcCIgY2xhc3M9InctZnVsbCBiZy13aGl0ZSBib3JkZXIgYm9yZGVyLVsjOTY0YjAwXS8yMCB0ZXh0LWdyYXktODAwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1ib2xkIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItWyM5NjRiMDBdIj4KICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0xIG10LTIiPsOccsO8biBBw6fEsWtsYW1hc8SxPC9sYWJlbD4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDx0ZXh0YXJlYSBpZD0icERlc2MiIHJvd3M9IjMiIHBsYWNlaG9sZGVyPSJLdW1hxZ8sIGtlc2ltIHZleWEgw7Z6ZWxsaWtsZXJpIGJ1cmF5YSB5YXphYmlsaXJzaW5pei4uLiIgY2xhc3M9InctZnVsbCBiZy13aGl0ZSBib3JkZXIgYm9yZGVyLVsjOTY0YjAwXS8yMCB0ZXh0LWdyYXktODAwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1tZWRpdW0gZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0gcmVzaXplLW5vbmUiPjwvdGV4dGFyZWE+CiAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC1bMTBweF0gZm9udC1ibGFjayB0ZXh0LWdyYXktNTAwIHVwcGVyY2FzZSB0cmFja2luZy13aWRlc3QgbWItMSBtdC0yIj7DnHLDvG4gw5ZkZW1lIExpbmtpPC9sYWJlbD4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ1cmwiIGlkPSJwUGF5bWVudExpbmsiIHBsYWNlaG9sZGVyPSJQYXlUUiBsaW5raW5pIGJ1cmF5YSB5YXDEscWfdMSxciIgY2xhc3M9InctZnVsbCBiZy13aGl0ZSBib3JkZXIgYm9yZGVyLVsjOTY0YjAwXS8yMCB0ZXh0LWdyYXktODAwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1ib2xkIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItWyM5NjRiMDBdIj4KICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGdhcC00Ij4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMS8yIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdGV4dC1ncmF5LTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTEiPkVza2kgRml5YXQgKOKCuik8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJudW1iZXIiIGlkPSJwT2xkUHJpY2UiIHBsYWNlaG9sZGVyPSIxNDAwIiBvbmlucHV0PSJjYWxjdWxhdGVEaXNjb3VudCgpIiBjbGFzcz0idy1mdWxsIGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHRleHQtZ3JheS04MDAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LWJvbGQgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0iPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ3LTEvMiByZWxhdGl2ZSI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtcmVkLTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTEiPlNhdMSxxZ8gRml5YXTEsSAo4oK6KTwvbGFiZWw+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9Im51bWJlciIgaWQ9InBOZXdQcmljZSIgcGxhY2Vob2xkZXI9Ijk4MCIgb25pbnB1dD0iY2FsY3VsYXRlRGlzY291bnQoKSIgY2xhc3M9InctZnVsbCBiZy1yZWQtNTAgYm9yZGVyIGJvcmRlci1yZWQtMjAwIHRleHQtcmVkLTYwMCByb3VuZGVkLXhsIHB4LTQgcHktMyB0ZXh0LXNtIGZvbnQtYmxhY2sgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1yZWQtNTAwIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGlkPSJkaXNjb3VudEJhZGdlIiBjbGFzcz0iYWJzb2x1dGUgLXRvcC0yIC1yaWdodC0yIGJnLXJlZC02MDAgdGV4dC13aGl0ZSB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHB4LTIgcHktMSByb3VuZGVkLW1kIGhpZGRlbiI+LSUwPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJib3JkZXItdCBib3JkZXItWyM5NjRiMDBdLzIwIHB0LTQgbXQtNCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdGV4dC1ncmF5LTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTIiPkJlZGVuIHZlIFN0b2sgRWtsZTwvbGFiZWw+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGdhcC0yIG1iLTQiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iYWRtaW5TaXplSW5wdXQiIHBsYWNlaG9sZGVyPSJCZWRlbiAow5ZybjogWFMsIFMsIE0pIiBjbGFzcz0idy0xLzIgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bIzk2NGIwMF0vMjAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LWJvbGQgb3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0gdXBwZXJjYXNlIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0ibnVtYmVyIiBpZD0iYWRtaW5TdG9ja0lucHV0IiBwbGFjZWhvbGRlcj0iU3RvayIgY2xhc3M9InctMS80IGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1ib2xkIG91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItWyM5NjRiMDBdIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImFkZEFkbWluU2l6ZSgpIiBjbGFzcz0idy0xLzQgYmctWyM5NjRiMDBdIHRleHQtd2hpdGUgcm91bmRlZC14bCBmb250LWJvbGQgdGV4dC14cyBob3ZlcjpiZy1ibGFjayB0cmFuc2l0aW9uLWNvbG9ycyBzaGFkb3ctbWQiPkVLTEU8L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgaWQ9ImFkbWluU2l6ZXNDb250YWluZXIiIGNsYXNzPSJmbGV4IGZsZXgtd3JhcCBnYXAtMiI+PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iYm9yZGVyLXQgYm9yZGVyLVsjOTY0YjAwXS8yMCBwdC00IG10LTIiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0yIj5Gb3RvxJ9yYWZsYXI8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9ImZpbGUiIGlkPSJuZXdQcm9kdWN0UGhvdG8iIGFjY2VwdD0iaW1hZ2UvKiIgbXVsdGlwbGUgY2xhc3M9ImhpZGRlbiIgb25jaGFuZ2U9InByZXZpZXdQcm9kdWN0SW1hZ2UodGhpcykiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnbmV3UHJvZHVjdFBob3RvJykuY2xpY2soKSIgY2xhc3M9InctZnVsbCBiZy13aGl0ZSB0ZXh0LVsjOTY0YjAwXSBib3JkZXItMiBib3JkZXItZGFzaGVkIGJvcmRlci1bIzk2NGIwMF0vMzAgcm91bmRlZC14bCBweS02IGZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGhvdmVyOmJnLVsjOTY0YjAwXS8xMCB0cmFuc2l0aW9uLWFsbCBzaGFkb3ctc20iPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LTN4bCBtYi0xIj4rPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LXhzIGZvbnQtYmxhY2sgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBweC00Ij5Gb3RvxJ9yYWYgRWtsZTwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC1bOXB4XSB0ZXh0LWdyYXktNTAwIG10LTEiPihPdG9tYXRpayBTxLFrxLHFn3TEsXLEsWzEsXIpPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGlkPSJpbWFnZVByZXZpZXdDb250YWluZXIiIGNsYXNzPSJncmlkIGdyaWQtY29scy0zIG1kOmdyaWQtY29scy00IGdhcC0zIG10LTQiPjwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgICAgICAgICAgIDxidXR0b24gaWQ9InNhdmVCdG5UZXh0IiBvbmNsaWNrPSJzYXZlUHJvZHVjdCgpIiBjbGFzcz0idy1mdWxsIGJnLVsjOTY0YjAwXSB0ZXh0LXdoaXRlIGZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHRleHQtc20gcHktNCByb3VuZGVkLXhsIGhvdmVyOmJnLWJsYWNrIHRyYW5zaXRpb24tYWxsIGFjdGl2ZTpzY2FsZS05NSBtdC02IHNoYWRvdy14bCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBQQVlMQcWeCiAgICAgICAgICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2Pg==";
 
-    window.ensureProductAdminButton = () => {
-        const mount = document.getElementById('adminAddProductMount');
-        if (!mount || document.getElementById('adminAddProductBtn')) return;
-        mount.innerHTML = qaDecode(PRODUCT_ADMIN_BUTTON_HTML);
+    let quaoraAdminTemplatesPromise = null;
+
+    const loadQuaoraAdminTemplates = async () => {
+        if (window.QUAORA_ADMIN_TEMPLATES) return window.QUAORA_ADMIN_TEMPLATES;
+        if (!quaoraAdminTemplatesPromise) quaoraAdminTemplatesPromise = import('./quaora-admin-templates.js');
+        await quaoraAdminTemplatesPromise;
+        return window.QUAORA_ADMIN_TEMPLATES || {};
     };
 
-    window.ensureProductAdminModal = () => {
+    const getQuaoraAdminTemplate = async () => {
+        const templates = await loadQuaoraAdminTemplates();
+        const fileName = window.location.pathname.split('/').pop() || 'index.html';
+        return templates[fileName] || templates.default || {};
+    };
+
+    window.ensureProductAdminButton = async () => {
+        const mount = document.getElementById('adminAddProductMount');
+        if (!mount || document.getElementById('adminAddProductBtn')) return;
+        const template = await getQuaoraAdminTemplate();
+        if (template.button) mount.innerHTML = qaDecode(template.button);
+    };
+
+    window.ensureProductAdminModal = async () => {
         const mount = document.getElementById('productAdminModalMount');
         if (!mount || document.getElementById('productAdminModal')) return;
-        mount.innerHTML = qaDecode(PRODUCT_ADMIN_MODAL_HTML);
+        const template = await getQuaoraAdminTemplate();
+        if (template.modal) mount.innerHTML = qaDecode(template.modal);
     };
 
 
@@ -842,7 +834,7 @@
 
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800;
+                        const MAX_WIDTH = 640;
                         let width = img.width;
                         let height = img.height;
 
@@ -857,7 +849,7 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        resolve(canvas.toDataURL('image/webp', 0.58));
                     };
 
                     img.src = event.target.result;
@@ -903,8 +895,8 @@
         }
     };
 
-    window.openProductAdmin = () => {
-        window.ensureProductAdminModal?.();
+    window.openProductAdmin = async () => {
+        await window.ensureProductAdminModal?.();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
 
         window.currentEditId = null;
@@ -992,8 +984,8 @@
         }
     };
 
-    window.editProduct = (id) => {
-        window.ensureProductAdminModal?.();
+    window.editProduct = async (id) => {
+        await window.ensureProductAdminModal?.();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
 
         const product = window.allProducts.find(item => item.id === id);
@@ -1066,7 +1058,7 @@
 
         if (userEmail === 'quaoratr@gmail.com') {
             isAdmin = true;
-            window.ensureProductAdminButton?.();
+            await window.ensureProductAdminButton?.();
             adminBtn = document.getElementById('adminAddProductBtn');
 
             if (adminBtn) adminBtn.classList.remove('hidden');
@@ -1128,5 +1120,12 @@
     loadPageTexts();
 </script>
 <script type="module" src="quaora-discounts.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }, { once: true });
+}
+</script>
 </body>
 </html>
