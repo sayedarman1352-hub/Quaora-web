@@ -1,0 +1,5 @@
+bottom.html: OK
+index.html: OK
+outlet.html: OK
+tops.html: OK
+yeni-gelenler.html: OK

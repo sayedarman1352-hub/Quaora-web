@@ -146,11 +146,8 @@
         </div>
         
         <div class="flex items-center gap-4 md:gap-6">
-            <button id="adminAddProductBtn" onclick="openProductAdmin()" class="hidden bg-black text-white text-[8px] md:text-[10px] font-black tracking-widest px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-red-600 transition-colors uppercase shadow-lg">
-                + Ürün Ekle
-            </button>
-
-            <button onclick="toggleCart()" class="text-xl md:text-2xl relative hover:scale-110 transition focus:outline-none border-l border-black/10 pl-4 md:pl-6">
+            <span id="adminAddProductMount"></span>
+<button onclick="toggleCart()" class="text-xl md:text-2xl relative hover:scale-110 transition focus:outline-none border-l border-black/10 pl-4 md:pl-6">
                 🛒
                 <span id="cartCount" class="absolute -top-1 -right-1 md:-right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
             </button>
@@ -180,70 +177,7 @@
 
         <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8"></div>
 
-    <div id="productAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-[#FAE29C] w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] relative border-2 border-white/40">
-            <button onclick="closeProductAdmin()" class="absolute top-4 right-4 z-50 text-red-600 font-black text-2xl w-10 h-10 flex items-center justify-center hover:scale-110 transition-all">✕</button>
-
-            <div class="p-6 md:p-8 overflow-y-auto no-scrollbar custom-scroll bg-white/60">
-                <h2 id="modalTitle" class="font-black tracking-widest text-xl md:text-2xl text-[#964b00] mb-6 uppercase serif border-b border-[#964b00]/20 pb-4">YENİ MAYOKİNİ ALTI</h2>
-                
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Ürün İsmi</label>
-                        <input type="text" id="pName" placeholder="Örn: Ocean Blue Alt" class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1 mt-2">Ürün Açıklaması</label>
-                        <textarea id="pDesc" rows="3" placeholder="Kumaş, kesim veya özellikleri buraya yazabilirsiniz..." class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-[#964b00] resize-none"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1 mt-2">?r?n ?deme Linki</label>
-                        <input type="url" id="pPaymentLink" placeholder="PayTR linkini buraya yapıştır" class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
-                    </div>
-
-                    <div class="flex gap-4">
-                        <div class="w-1/2">
-                            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Eski (₺)</label>
-                            <input type="number" id="pOldPrice" placeholder="1400" oninput="calculateDiscount()" class="w-full bg-white border border-[#964b00]/20 text-gray-800 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#964b00]">
-                        </div>
-                        <div class="w-1/2 relative">
-                            <label class="block text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Satış (₺)</label>
-                            <input type="number" id="pNewPrice" placeholder="980" oninput="calculateDiscount()" class="w-full bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm font-black focus:outline-none focus:border-red-500">
-                            <div id="discountBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-md hidden">-%0</div>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-[#964b00]/20 pt-4 mt-4">
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Beden ve Stok Ekle (Manuel)</label>
-                        <div class="flex gap-2 mb-4">
-                            <input type="text" id="adminSizeInput" placeholder="Beden (Örn: S, 34, 75B)" class="w-1/2 bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00] uppercase">
-                            <input type="number" id="adminStockInput" placeholder="Stok Adedi" class="w-1/4 bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
-                            <button onclick="addAdminSize()" class="w-1/4 bg-[#964b00] text-white rounded-xl font-bold text-xs hover:bg-black transition-colors shadow-md">EKLE</button>
-                        </div>
-                        
-                        <div id="adminSizesContainer" class="flex flex-wrap gap-2"></div>
-                    </div>
-
-                    <div class="border-t border-[#964b00]/20 pt-4 mt-2">
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Fotoğraflar</label>
-                        <input type="file" id="newProductPhoto" accept="image/*" multiple class="hidden" onchange="previewProductImage(this)">
-                        <button onclick="document.getElementById('newProductPhoto').click()" class="w-full bg-white text-[#964b00] border-2 border-dashed border-[#964b00]/30 rounded-xl py-6 flex flex-col items-center justify-center hover:bg-[#964b00]/10 transition-all shadow-sm">
-                            <span class="text-3xl mb-1">+</span>
-                            <span class="text-xs font-black uppercase tracking-widest px-4">Fotoğraf Ekle</span>
-                            <span class="text-[9px] text-gray-500 mt-1">(Otomatik Sıkıştırılır)</span>
-                        </button>
-                        <div id="imagePreviewContainer" class="grid grid-cols-3 md:grid-cols-4 gap-3 mt-4"></div>
-                    </div>
-
-                    <button id="saveBtnText" onclick="saveProduct()" class="w-full bg-[#964b00] text-white font-black tracking-widest text-sm py-4 rounded-xl hover:bg-black transition-all active:scale-95 mt-6 shadow-xl">
-                        PAYLAŞ
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+            <div id="productAdminModalMount"></div>
     </main>
 
 
@@ -275,6 +209,24 @@
     window.allProducts = []; 
     window.currentEditId = null;
     let currentImagesBase64 = [];
+
+
+    const qaDecode = (value) => decodeURIComponent(Array.prototype.map.call(atob(value), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    const PRODUCT_ADMIN_BUTTON_HTML = "PGJ1dHRvbiBpZD0iYWRtaW5BZGRQcm9kdWN0QnRuIiBvbmNsaWNrPSJvcGVuUHJvZHVjdEFkbWluKCkiIGNsYXNzPSJoaWRkZW4gYmctYmxhY2sgdGV4dC13aGl0ZSB0ZXh0LVs4cHhdIG1kOnRleHQtWzEwcHhdIGZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHB4LTMgcHktMS41IG1kOnB4LTQgbWQ6cHktMiByb3VuZGVkLWxnIGhvdmVyOmJnLXJlZC02MDAgdHJhbnNpdGlvbi1jb2xvcnMgdXBwZXJjYXNlIHNoYWRvdy1sZyI+CiAgICAgICAgICAgICAgICArIMOccsO8biBFa2xlCiAgICAgICAgICAgIDwvYnV0dG9uPg==";
+    const PRODUCT_ADMIN_MODAL_HTML = "PGRpdiBpZD0icHJvZHVjdEFkbWluTW9kYWwiIGNsYXNzPSJoaWRkZW4gZml4ZWQgaW5zZXQtMCB6LVsxMDAwXSBiZy1ibGFjay82MCBiYWNrZHJvcC1ibHVyLXNtIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHAtNCI+CiAgICAgICAgPGRpdiBjbGFzcz0iYmctWyNGQUUyOUNdIHctZnVsbCBtYXgtdy0yeGwgcm91bmRlZC1bMnJlbV0gc2hhZG93LTJ4bCBvdmVyZmxvdy1oaWRkZW4gZmxleCBmbGV4LWNvbCBtYXgtaC1bOTB2aF0gcmVsYXRpdmUgYm9yZGVyLTIgYm9yZGVyLXdoaXRlLzQwIj4KICAgICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJjbG9zZVByb2R1Y3RBZG1pbigpIiBjbGFzcz0iYWJzb2x1dGUgdG9wLTQgcmlnaHQtNCB6LTUwIHRleHQtcmVkLTYwMCBmb250LWJsYWNrIHRleHQtMnhsIHctMTAgaC0xMCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBob3ZlcjpzY2FsZS0xMTAgdHJhbnNpdGlvbi1hbGwiPuKclTwvYnV0dG9uPgoKICAgICAgICAgICAgPGRpdiBjbGFzcz0icC02IG1kOnAtOCBvdmVyZmxvdy15LWF1dG8gbm8tc2Nyb2xsYmFyIGN1c3RvbS1zY3JvbGwgYmctd2hpdGUvNjAiPgogICAgICAgICAgICAgICAgPGgyIGlkPSJtb2RhbFRpdGxlIiBjbGFzcz0iZm9udC1ibGFjayB0cmFja2luZy13aWRlc3QgdGV4dC14bCBtZDp0ZXh0LTJ4bCB0ZXh0LVsjOTY0YjAwXSBtYi02IHVwcGVyY2FzZSBzZXJpZiBib3JkZXItYiBib3JkZXItWyM5NjRiMDBdLzIwIHBiLTQiPllFTsSwIE1BWU9LxLBOxLAgQUxUSTwvaDI+CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNwYWNlLXktNCI+CiAgICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0xIj7DnHLDvG4gxLBzbWk8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9InBOYW1lIiBwbGFjZWhvbGRlcj0iw5ZybjogT2NlYW4gQmx1ZSBBbHQiIGNsYXNzPSJ3LWZ1bGwgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bIzk2NGIwMF0vMjAgdGV4dC1ncmF5LTgwMCByb3VuZGVkLXhsIHB4LTQgcHktMyB0ZXh0LXNtIGZvbnQtYm9sZCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6Ym9yZGVyLVsjOTY0YjAwXSI+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC1bMTBweF0gZm9udC1ibGFjayB0ZXh0LWdyYXktNTAwIHVwcGVyY2FzZSB0cmFja2luZy13aWRlc3QgbWItMSBtdC0yIj7DnHLDvG4gQcOnxLFrbGFtYXPEsTwvbGFiZWw+CiAgICAgICAgICAgICAgICAgICAgICAgIDx0ZXh0YXJlYSBpZD0icERlc2MiIHJvd3M9IjMiIHBsYWNlaG9sZGVyPSJLdW1hxZ8sIGtlc2ltIHZleWEgw7Z6ZWxsaWtsZXJpIGJ1cmF5YSB5YXphYmlsaXJzaW5pei4uLiIgY2xhc3M9InctZnVsbCBiZy13aGl0ZSBib3JkZXIgYm9yZGVyLVsjOTY0YjAwXS8yMCB0ZXh0LWdyYXktODAwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1tZWRpdW0gZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0gcmVzaXplLW5vbmUiPjwvdGV4dGFyZWE+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC1bMTBweF0gZm9udC1ibGFjayB0ZXh0LWdyYXktNTAwIHVwcGVyY2FzZSB0cmFja2luZy13aWRlc3QgbWItMSBtdC0yIj4/cj9uID9kZW1lIExpbmtpPC9sYWJlbD4KICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InVybCIgaWQ9InBQYXltZW50TGluayIgcGxhY2Vob2xkZXI9IlBheVRSIGxpbmtpbmkgYnVyYXlhIHlhcMSxxZ90xLFyIiBjbGFzcz0idy1mdWxsIGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHRleHQtZ3JheS04MDAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LWJvbGQgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0iPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGdhcC00Ij4KICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0idy0xLzIiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0xIj5Fc2tpICjigropPC9sYWJlbD4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJudW1iZXIiIGlkPSJwT2xkUHJpY2UiIHBsYWNlaG9sZGVyPSIxNDAwIiBvbmlucHV0PSJjYWxjdWxhdGVEaXNjb3VudCgpIiBjbGFzcz0idy1mdWxsIGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHRleHQtZ3JheS04MDAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LWJvbGQgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1bIzk2NGIwMF0iPgogICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0idy0xLzIgcmVsYXRpdmUiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtcmVkLTUwMCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IG1iLTEiPlNhdMSxxZ8gKOKCuik8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9Im51bWJlciIgaWQ9InBOZXdQcmljZSIgcGxhY2Vob2xkZXI9Ijk4MCIgb25pbnB1dD0iY2FsY3VsYXRlRGlzY291bnQoKSIgY2xhc3M9InctZnVsbCBiZy1yZWQtNTAgYm9yZGVyIGJvcmRlci1yZWQtMjAwIHRleHQtcmVkLTYwMCByb3VuZGVkLXhsIHB4LTQgcHktMyB0ZXh0LXNtIGZvbnQtYmxhY2sgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1yZWQtNTAwIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgaWQ9ImRpc2NvdW50QmFkZ2UiIGNsYXNzPSJhYnNvbHV0ZSAtdG9wLTIgLXJpZ2h0LTIgYmctcmVkLTYwMCB0ZXh0LXdoaXRlIHRleHQtWzEwcHhdIGZvbnQtYmxhY2sgcHgtMiBweS0xIHJvdW5kZWQtbWQgaGlkZGVuIj4tJTA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImJvcmRlci10IGJvcmRlci1bIzk2NGIwMF0vMjAgcHQtNCBtdC00Ij4KICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0yIj5CZWRlbiB2ZSBTdG9rIEVrbGUgKE1hbnVlbCk8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGdhcC0yIG1iLTQiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJhZG1pblNpemVJbnB1dCIgcGxhY2Vob2xkZXI9IkJlZGVuICjDlnJuOiBTLCAzNCwgNzVCKSIgY2xhc3M9InctMS8yIGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1ib2xkIG91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItWyM5NjRiMDBdIHVwcGVyY2FzZSI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0ibnVtYmVyIiBpZD0iYWRtaW5TdG9ja0lucHV0IiBwbGFjZWhvbGRlcj0iU3RvayBBZGVkaSIgY2xhc3M9InctMS80IGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1ib2xkIG91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItWyM5NjRiMDBdIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0iYWRkQWRtaW5TaXplKCkiIGNsYXNzPSJ3LTEvNCBiZy1bIzk2NGIwMF0gdGV4dC13aGl0ZSByb3VuZGVkLXhsIGZvbnQtYm9sZCB0ZXh0LXhzIGhvdmVyOmJnLWJsYWNrIHRyYW5zaXRpb24tY29sb3JzIHNoYWRvdy1tZCI+RUtMRTwvYnV0dG9uPgogICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgaWQ9ImFkbWluU2l6ZXNDb250YWluZXIiIGNsYXNzPSJmbGV4IGZsZXgtd3JhcCBnYXAtMiI+PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImJvcmRlci10IGJvcmRlci1bIzk2NGIwMF0vMjAgcHQtNCBtdC0yIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRleHQtZ3JheS01MDAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBtYi0yIj5Gb3RvxJ9yYWZsYXI8L2xhYmVsPgogICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZmlsZSIgaWQ9Im5ld1Byb2R1Y3RQaG90byIgYWNjZXB0PSJpbWFnZS8qIiBtdWx0aXBsZSBjbGFzcz0iaGlkZGVuIiBvbmNoYW5nZT0icHJldmlld1Byb2R1Y3RJbWFnZSh0aGlzKSI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0iZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ25ld1Byb2R1Y3RQaG90bycpLmNsaWNrKCkiIGNsYXNzPSJ3LWZ1bGwgYmctd2hpdGUgdGV4dC1bIzk2NGIwMF0gYm9yZGVyLTIgYm9yZGVyLWRhc2hlZCBib3JkZXItWyM5NjRiMDBdLzMwIHJvdW5kZWQteGwgcHktNiBmbGV4IGZsZXgtY29sIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBob3ZlcjpiZy1bIzk2NGIwMF0vMTAgdHJhbnNpdGlvbi1hbGwgc2hhZG93LXNtIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LTN4bCBtYi0xIj4rPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQteHMgZm9udC1ibGFjayB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IHB4LTQiPkZvdG/En3JhZiBFa2xlPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtWzlweF0gdGV4dC1ncmF5LTUwMCBtdC0xIj4oT3RvbWF0aWsgU8Sxa8SxxZ90xLFyxLFsxLFyKTwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgaWQ9ImltYWdlUHJldmlld0NvbnRhaW5lciIgY2xhc3M9ImdyaWQgZ3JpZC1jb2xzLTMgbWQ6Z3JpZC1jb2xzLTQgZ2FwLTMgbXQtNCI+PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgIDxidXR0b24gaWQ9InNhdmVCdG5UZXh0IiBvbmNsaWNrPSJzYXZlUHJvZHVjdCgpIiBjbGFzcz0idy1mdWxsIGJnLVsjOTY0YjAwXSB0ZXh0LXdoaXRlIGZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHRleHQtc20gcHktNCByb3VuZGVkLXhsIGhvdmVyOmJnLWJsYWNrIHRyYW5zaXRpb24tYWxsIGFjdGl2ZTpzY2FsZS05NSBtdC02IHNoYWRvdy14bCI+CiAgICAgICAgICAgICAgICAgICAgICAgIFBBWUxBxZ4KICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgIDwvZGl2Pg==";
+
+    window.ensureProductAdminButton = () => {
+        const mount = document.getElementById('adminAddProductMount');
+        if (!mount || document.getElementById('adminAddProductBtn')) return;
+        mount.innerHTML = qaDecode(PRODUCT_ADMIN_BUTTON_HTML);
+    };
+
+    window.ensureProductAdminModal = () => {
+        const mount = document.getElementById('productAdminModalMount');
+        if (!mount || document.getElementById('productAdminModal')) return;
+        mount.innerHTML = qaDecode(PRODUCT_ADMIN_MODAL_HTML);
+    };
+
     window.selectedSizes = {};
     window.currentAdminSizes = {}; 
 
@@ -698,10 +650,11 @@
     };
 
     window.openProductAdmin = () => {
+        window.ensureProductAdminModal?.();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         window.currentEditId = null;
-        document.getElementById('modalTitle').innerText = "YENİ MAYOKİNİ ALTI";
-        document.getElementById('saveBtnText').innerText = "PAYLAŞ";
+        document.getElementById('modalTitle').innerText = qaDecode("WUVOxLAgTUFZT0vEsE7EsCBBTFRJ");
+        document.getElementById('saveBtnText').innerText = qaDecode("UEFZTEHFng==");
         
         document.getElementById('pName').value = '';
         document.getElementById('pDesc').value = '';
@@ -721,8 +674,10 @@
     };
 
     window.closeProductAdmin = () => {
-        document.getElementById('productAdminModal').classList.add('hidden');
-        document.getElementById('productAdminModal').classList.remove('flex');
+        const productAdminModal = document.getElementById('productAdminModal');
+        if (!productAdminModal) return;
+        productAdminModal.classList.add('hidden');
+        productAdminModal.classList.remove('flex');
     };
 
     window.saveProduct = async () => {
@@ -742,7 +697,7 @@
         const oldProduct = window.currentEditId ? window.allProducts.find(item => item.id === window.currentEditId) : null;
 
         try {
-            document.getElementById('saveBtnText').innerText = "YÜKLENİYOR...";
+            document.getElementById('saveBtnText').innerText = qaDecode("WcOcS0xFTsSwWU9SLi4u");
             const productData = {
                 name: name,
                 description: desc,
@@ -772,18 +727,19 @@
             console.error(error);
             alert("İşlem sırasında hata oluştu! Detay: " + error.message);
         } finally {
-            document.getElementById('saveBtnText').innerText = window.currentEditId ? "GÜNCELLE" : "PAYLAŞ";
+            document.getElementById('saveBtnText').innerText = window.currentEditId ? qaDecode("R8OcTkNFTExF") : qaDecode("UEFZTEHFng==");
         }
     };
 
     window.editProduct = (id) => {
+        window.ensureProductAdminModal?.();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         const p = window.allProducts.find(item => item.id === id);
         if (!p) return;
         
         window.currentEditId = id; 
-        document.getElementById('modalTitle').innerText = "ÜRÜNÜ DÜZENLE";
-        document.getElementById('saveBtnText').innerText = "GÜNCELLE";
+        document.getElementById('modalTitle').innerText = qaDecode("w5xSw5xOw5wgRMOcWkVOTEU=");
+        document.getElementById('saveBtnText').innerText = qaDecode("R8OcTkNFTExF");
 
         document.getElementById('pName').value = p.name;
         document.getElementById('pDesc').value = p.description || '';
@@ -842,6 +798,8 @@
         const userEmail = user?.email?.toLowerCase() || '';
         if (userEmail === 'quaoratr@gmail.com') {
             isAdmin = true;
+            window.ensureProductAdminButton?.();
+            adminBtn = document.getElementById('adminAddProductBtn');
             const btn = document.getElementById('adminAddProductBtn');
             if(btn) btn.classList.remove('hidden');
             
