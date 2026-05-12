@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QUAORA | Summer Collection</title>
+    <meta name="description" content="QUAORA Swimwear resmi web sitesi. Koleksiyonlar, ürünler, sepet ve güvenli ödeme sayfaları.">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap');
@@ -92,25 +93,20 @@
     <button onclick="changeBgSlide(1)" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-0 text-white bg-black/20 hover:bg-black/50 p-2 md:p-4 rounded-full backdrop-blur-sm transition-all hidden md:block">❯</button>
 </div>
 
-<button id="admin-bg-btn" onclick="openBgAdmin()" class="hidden fixed bottom-4 right-4 z-50 bg-[#964b00] text-white px-4 py-2 rounded-full shadow-xl font-bold text-xs hover:bg-black transition-colors">
-    📸 Arka Planı Düzenle
-</button>
+<button id="admin-bg-btn" onclick="openBgAdmin()" class="hidden fixed bottom-4 right-4 z-50 bg-[#964b00] text-white px-4 py-2 rounded-full shadow-xl font-bold text-xs hover:bg-black transition-colors" aria-label="Yönetici aracı"></button>
 
 <div id="bgAdminModal" class="hidden fixed inset-0 z-[3000] bg-black/80 backdrop-blur-md items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-2xl p-6 relative">
         <button onclick="closeBgAdmin()" class="absolute top-4 right-4 text-red-500 font-bold hover:scale-110">✕</button>
-        <h2 class="text-xl font-black text-[#964b00] mb-4">ARKA PLAN FOTOĞRAFLARI</h2>
+        <h2 id="bgAdminTitle" class="text-xl font-black text-[#964b00] mb-4"></h2>
         
         <div id="adminBgPreview" class="grid grid-cols-3 gap-2 mb-4 max-h-64 overflow-y-auto custom-scroll">
             </div>
 
         <input type="file" id="bgFileInput" accept="image/*" multiple onchange="uploadBgImages(this)" class="hidden">
-        <button onclick="document.getElementById('bgFileInput').click()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition-colors">
-            + YENİ FOTOĞRAF EKLE
-        </button>
+        <button id="bgAdminUploadBtn" onclick="document.getElementById('bgFileInput').click()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition-colors"></button>
     </div>
 </div>
-<div id="bg-slideshow"></div>   
 <div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
 
 <div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl transition-all duration-500">
@@ -123,9 +119,7 @@
             <span id="userStatusText" class="text-[10px] font-black text-[#964b00] uppercase tracking-[0.4em] italic ml-1">Sign In</span>
         </div>
         <div id="adminAccess" class="hidden mb-6">
-    <button onclick="openAdminPanel()" class="w-full bg-[#964b00] text-white py-3 rounded-xl font-black text-[10px] tracking-[0.3em] uppercase shadow-lg border-2 border-white/20">
-       Admin Paneli
-    </button>
+    <button id="adminAccessBtn" onclick="openAdminPanel()" class="w-full bg-[#964b00] text-white py-3 rounded-xl font-black text-[10px] tracking-[0.3em] uppercase shadow-lg border-2 border-white/20"></button>
 </div>
         <div class="relative mb-6">
             <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
@@ -163,38 +157,38 @@
 <div id="adminPanel" class="fixed top-0 left-0 h-full w-0 bg-white z-[130] overflow-x-hidden shadow-2xl flex flex-col border-r border-black/5 transition-all duration-500">
     <div class="p-8 flex justify-between items-center border-b border-gray-50">
         <div>
-            <h2 class="text-xl font-black serif text-[#964b00] tracking-widest uppercase">ADMIN PANELI</h2>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Iade ve indirim kodlari</p>
+            <h2 id="adminPanelTitle" class="text-xl font-black serif text-[#964b00] tracking-widest uppercase"></h2>
+            <p id="adminPanelSubtitle" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1"></p>
         </div>
         <button onclick="closeAllPanels()" class="text-xl hover:rotate-90 transition-transform">✕</button>
     </div>
     <div class="p-6 space-y-6 overflow-y-auto flex-grow">
         <section class="rounded-2xl border border-[#964b00]/10 bg-[#FAE29C]/20 p-4">
-            <h3 class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3">Indirim Kodu Olustur</h3>
+            <h3 id="adminDiscountCreateTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div class="grid grid-cols-2 gap-2">
-                <input id="adminDiscountCode" type="text" inputmode="numeric" maxlength="12" placeholder="Kod (bos=random)" class="col-span-2 bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold uppercase outline-none focus:border-[#964b00]">
+                <input id="adminDiscountCode" type="text" inputmode="numeric" maxlength="12" placeholder="" data-admin-placeholder="discountCode" class="col-span-2 bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold uppercase outline-none focus:border-[#964b00]">
                 <select id="adminDiscountType" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
-                    <option value="percent">Yuzde</option>
-                    <option value="fixed">TL</option>
+                    <option value="percent"></option>
+                    <option value="fixed"></option>
                 </select>
-                <input id="adminDiscountValue" type="number" min="1" placeholder="Deger" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
-                <input id="adminDiscountMin" type="number" min="0" placeholder="Min sepet" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
-                <input id="adminDiscountMaxUses" type="number" min="0" placeholder="Max kullanim" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+                <input id="adminDiscountValue" type="number" min="1" placeholder="" data-admin-placeholder="discountValue" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+                <input id="adminDiscountMin" type="number" min="0" placeholder="" data-admin-placeholder="discountMin" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+                <input id="adminDiscountMaxUses" type="number" min="0" placeholder="" data-admin-placeholder="discountMax" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
             </div>
-            <button onclick="createAdminDiscountCode()" class="mt-3 w-full bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all">Random Kod Olustur</button>
+            <button onclick="createAdminDiscountCode()" class="mt-3 w-full bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all" id="adminDiscountCreateBtn"> </button>
         </section>
 
         <section>
-            <h3 class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3">Indirim Kodlari</h3>
+            <h3 id="adminDiscountListTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div id="adminDiscountList" class="space-y-3">
-                <div class="text-center py-8 text-gray-400 italic text-sm">Kodlar yukleniyor.</div>
+                <div class="text-center py-8 text-gray-400 italic text-sm"></div>
             </div>
         </section>
 
         <section>
-            <h3 class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3">Iade Talepleri</h3>
+            <h3 id="adminRefundTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div id="adminNotificationsList" class="space-y-4">
-                <div class="text-center py-20 text-gray-400 italic text-sm">Bildirim bulunmuyor.</div>
+                <div class="text-center py-20 text-gray-400 italic text-sm"></div>
             </div>
         </section>
     </div>
@@ -392,6 +386,51 @@
     const overlay = getEl("menuOverlay");
     let activeUser = null;
     let activeIsAdmin = false;
+
+
+    const qText = (value) => decodeURIComponent(value);
+    const setText = (id, value) => { const el = getEl(id); if (el) el.textContent = value ? qText(value) : ''; };
+    const setHtml = (id, value) => { const el = getEl(id); if (el) el.innerHTML = value ? qText(value) : ''; };
+    const setPlaceholderByKey = (key, value) => {
+        document.querySelectorAll(`[data-admin-placeholder="${key}"]`).forEach(el => { el.placeholder = value ? qText(value) : ''; });
+    };
+    window.applyAdminTextContent = (enabled = activeIsAdmin) => {
+        if (!enabled) {
+            ['admin-bg-btn','bgAdminTitle','bgAdminUploadBtn','adminAccessBtn','adminPanelTitle','adminPanelSubtitle','adminDiscountCreateTitle','adminDiscountCreateBtn','adminDiscountListTitle','adminRefundTitle','sliderAdminTitle','sliderAdminAddTitle','sliderAdminUpdateBtn','sliderAdminCurrentTitle'].forEach(id => setText(id, ''));
+            setPlaceholderByKey('discountCode', '');
+            setPlaceholderByKey('discountValue', '');
+            setPlaceholderByKey('discountMin', '');
+            setPlaceholderByKey('discountMax', '');
+            const percent = document.querySelector('#adminDiscountType option[value="percent"]');
+            const fixed = document.querySelector('#adminDiscountType option[value="fixed"]');
+            if (percent) percent.textContent = '';
+            if (fixed) fixed.textContent = '';
+            return;
+        }
+
+        setText('admin-bg-btn', '%F0%9F%93%B8%20Arka%20Plan%C4%B1%20D%C3%BCzenle');
+        setText('bgAdminTitle', 'ARKA%20PLAN%20FOTO%C4%9ERAFLARI');
+        setText('bgAdminUploadBtn', '%2B%20YEN%C4%B0%20FOTO%C4%9ERAF%20EKLE');
+        setText('adminAccessBtn', 'Admin%20Paneli');
+        setText('adminPanelTitle', 'ADMIN%20PANELI');
+        setText('adminPanelSubtitle', 'Iade%20ve%20indirim%20kodlari');
+        setText('adminDiscountCreateTitle', 'Indirim%20Kodu%20Olustur');
+        setText('adminDiscountCreateBtn', 'Random%20Kod%20Olustur');
+        setText('adminDiscountListTitle', 'Indirim%20Kodlari');
+        setText('adminRefundTitle', 'Iade%20Talepleri');
+        setText('sliderAdminTitle', 'SLIDER%20Y%C3%96NET%C4%B0M%C4%B0');
+        setText('sliderAdminAddTitle', 'Yeni%20Foto%C4%9Fraf%20Ekle');
+        setText('sliderAdminUpdateBtn', 'G%C3%9CNCELLE');
+        setText('sliderAdminCurrentTitle', 'Mevcut%20Foto%C4%9Fraflar%20%28Sil%29');
+        setPlaceholderByKey('discountCode', 'Kod%20%28bos%3Drandom%29');
+        setPlaceholderByKey('discountValue', 'Deger');
+        setPlaceholderByKey('discountMin', 'Min%20sepet');
+        setPlaceholderByKey('discountMax', 'Max%20kullanim');
+        const percent = document.querySelector('#adminDiscountType option[value="percent"]');
+        const fixed = document.querySelector('#adminDiscountType option[value="fixed"]');
+        if (percent) percent.textContent = qText('Yuzde');
+        if (fixed) fixed.textContent = qText('TL');
+    };
 
     ["favoritesSidePanel", "ordersSidePanel", "adminPanel"].forEach((id) => {
         const panel = getEl(id);
@@ -697,6 +736,7 @@
 
     window.openAdminPanel = () => {
         if (!activeIsAdmin) return alert("Bu panel sadece admin tarafından görülebilir.");
+        window.applyAdminTextContent(true);
         window.closeAllPanels();
         const panel = getEl('adminPanel');
         if (panel) {
@@ -713,7 +753,7 @@
         const q = query(collection(db, "refund_requests"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             if (snapshot.empty) {
-                list.innerHTML = '<div class="text-center py-20 text-gray-400 italic text-sm">Bildirim bulunmuyor.</div>';
+                list.innerHTML = '<div class="text-center py-20 text-gray-400 italic text-sm"></div>';
                 return;
             }
             list.innerHTML = snapshot.docs.map(reqDoc => {
@@ -804,6 +844,7 @@
     // --- SLIDER YÖNETİM PANELİ ---
     window.openSliderAdmin = () => {
         if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
+        window.applyAdminTextContent(true);
         const modal = getEl('sliderAdminModal');
         if (modal) {
             modal.classList.remove('hidden');
@@ -938,6 +979,7 @@
 
     window.openBgAdmin = () => {
         if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
+        window.applyAdminTextContent(true);
         const modal = getEl("bgAdminModal");
         if (modal) {
             modal.classList.remove("hidden");
@@ -1044,6 +1086,7 @@
         if (user) {
             activeIsAdmin = user.email?.toLowerCase() === "quaoratr@gmail.com";
             adminElements.forEach(el => { if (el) el.classList.toggle("hidden", !activeIsAdmin); });
+            window.applyAdminTextContent(activeIsAdmin);
 
             const snap = await getDoc(doc(db, "users", user.uid));
             if (snap.exists()) {
@@ -1064,6 +1107,7 @@
         } else {
             activeIsAdmin = false;
             adminElements.forEach(el => { if (el) el.classList.add("hidden"); });
+            window.applyAdminTextContent(false);
             if (statusText) statusText.innerText = "Sign In";
             if (actionWrapper) actionWrapper.onclick = window.openAuthModal;
         }
@@ -1129,28 +1173,25 @@
 </script>
 
 <script type="module" src="quaora-discounts.js"></script>
-</body>
 <div id="sliderAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
         
         <div class="p-5 bg-[#964b00] text-white flex justify-between items-center">
-            <h2 class="font-black tracking-widest text-lg">SLIDER YÖNETİMİ</h2>
+            <h2 id="sliderAdminTitle" class="font-black tracking-widest text-lg"></h2>
             <button onclick="closeSliderAdmin()" class="text-white hover:scale-110 active:scale-95 transition-transform font-black text-2xl leading-none">✕</button>
         </div>
         
         <div class="p-6 overflow-y-auto flex-grow flex flex-col gap-6 bg-gray-50">
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-black/5">
-                <h3 class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2">Yeni Fotoğraf Ekle</h3>
+                <h3 id="sliderAdminAddTitle" class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2"></h3>
                 
                 <input type="file" id="newSliderPhoto" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#964b00]/10 file:text-[#964b00] hover:file:bg-[#964b00]/20 mb-4 transition-all cursor-pointer">
                 
-                <button onclick="handleSliderPhotoUpload()" class="w-full bg-[#964b00] text-white font-black tracking-widest text-sm py-3 rounded-xl hover:bg-[#7a3d00] hover:shadow-lg transition-all active:scale-95">
-                    GÜNCELLE
-                </button>
+                <button id="sliderAdminUpdateBtn" onclick="handleSliderPhotoUpload()" class="w-full bg-[#964b00] text-white font-black tracking-widest text-sm py-3 rounded-xl hover:bg-[#7a3d00] hover:shadow-lg transition-all active:scale-95"></button>
             </div>
 
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-black/5">
-                <h3 class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2">Mevcut Fotoğraflar (Sil)</h3>
+                <h3 id="sliderAdminCurrentTitle" class="text-xs font-black text-[#964b00] mb-3 uppercase tracking-widest border-b pb-2"></h3>
                 
                 <div id="sliderAdminList" class="flex flex-col gap-3">
                     </div>
@@ -1158,4 +1199,6 @@
         </div>
     </div>
 </div>
+
+</body>
 </html>
