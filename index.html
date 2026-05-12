@@ -166,7 +166,7 @@
         <section class="rounded-2xl border border-[#964b00]/10 bg-[#FAE29C]/20 p-4">
             <h3 id="adminDiscountCreateTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div class="grid grid-cols-2 gap-2">
-                <input id="adminDiscountCode" type="text" inputmode="numeric" maxlength="12" placeholder="" data-admin-placeholder="discountCode" class="col-span-2 bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold uppercase outline-none focus:border-[#964b00]">
+                <input id="adminDiscountCode" type="text" inputmode="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="" data-admin-placeholder="discountCode" class="col-span-2 bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold uppercase outline-none focus:border-[#964b00]">
                 <select id="adminDiscountType" class="bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
                     <option value="percent"></option>
                     <option value="fixed"></option>
@@ -415,14 +415,14 @@
         setText('adminPanelTitle', 'ADMIN%20PANELI');
         setText('adminPanelSubtitle', 'Iade%20ve%20indirim%20kodlari');
         setText('adminDiscountCreateTitle', 'Indirim%20Kodu%20Olustur');
-        setText('adminDiscountCreateBtn', 'Random%20Kod%20Olustur');
+        setText('adminDiscountCreateBtn', 'Kodu%20Kaydet');
         setText('adminDiscountListTitle', 'Indirim%20Kodlari');
         setText('adminRefundTitle', 'Iade%20Talepleri');
         setText('sliderAdminTitle', 'SLIDER%20Y%C3%96NET%C4%B0M%C4%B0');
         setText('sliderAdminAddTitle', 'Yeni%20Foto%C4%9Fraf%20Ekle');
         setText('sliderAdminUpdateBtn', 'G%C3%9CNCELLE');
         setText('sliderAdminCurrentTitle', 'Mevcut%20Foto%C4%9Fraflar%20%28Sil%29');
-        setPlaceholderByKey('discountCode', 'Kod%20%28bos%3Drandom%29');
+        setPlaceholderByKey('discountCode', 'Kod%20yaz%20veya%20bo%C5%9F%20b%C4%B1rak');
         setPlaceholderByKey('discountValue', 'Deger');
         setPlaceholderByKey('discountMin', 'Min%20sepet');
         setPlaceholderByKey('discountMax', 'Max%20kullanim');

@@ -19,7 +19,7 @@ let discountCodes = {};
 let unsubscribeCodes = null;
 
 const money = (value) => '₺' + Number(value || 0).toLocaleString('tr-TR');
-const normalizeCode = (code) => String(code || '').trim().toUpperCase();
+const normalizeCode = (code) => String(code || '').trim().toLocaleUpperCase('tr-TR').replace(/\s+/g, '').replace(/[^A-ZÇĞİÖŞÜ0-9_-]/g, '');
 const readCart = () => {
   try {
     const cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]');
@@ -52,7 +52,7 @@ const calculateDiscount = (subtotal, promo) => {
 
 const ensureDiscountUi = () => {
   const panel = document.getElementById('cartPanel');
-  if (!panel || document.getElementById('quaoraDiscountBox')) return;
+  if (!panel || document.getElementById('quaoraDiscountBox') || document.getElementById('promoCodeInput')) return;
 
   const footer = panel.querySelector('.border-t');
   const checkoutButton = footer?.querySelector('button[onclick*="siparisVer"]');
@@ -81,6 +81,17 @@ const ensureDiscountUi = () => {
       </div>
     </div>
   `);
+
+  const promoInput = document.getElementById('quaoraPromoInput');
+  if (promoInput && !promoInput.dataset.quaoraEnterBound) {
+    promoInput.dataset.quaoraEnterBound = '1';
+    promoInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        window.applyQuaoraDiscountCode?.();
+      }
+    });
+  }
 };
 
 const updateTotals = () => {
@@ -236,6 +247,7 @@ window.createAdminDiscountCode = async () => {
   const manual = normalizeCode(document.getElementById('adminDiscountCode')?.value);
   const code = manual || String(Math.floor(100000 + Math.random() * 900000));
 
+  if (!code) return alert("Gecerli bir kod yazin veya alanı bos birakin.");
   if (value <= 0) return alert("Indirim degeri girin.");
   if (type === 'percent' && value > 100) return alert("Yuzde indirim 100'den buyuk olamaz.");
 
@@ -249,14 +261,15 @@ window.createAdminDiscountCode = async () => {
     usedCount: 0,
     usedBy: {},
     source: "admin",
-    createdAt: Date.now()
+    createdAt: Date.now(),
+    updatedAt: Date.now()
   }, { merge: true });
 
   ['adminDiscountCode', 'adminDiscountValue', 'adminDiscountMin', 'adminDiscountMaxUses'].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  alert(`Kod olusturuldu: ${code}`);
+  alert(`Kod kaydedildi: ${code}`);
 };
 
 window.toggleAdminDiscountCode = async (code, active) => {
@@ -294,6 +307,204 @@ window.renderAdminDiscountCodes = () => {
   `).join('');
 };
 
+
+
+// --- GLOBAL SEPET SENKRONIZASYONU ---
+// Tum sayfalarda ayni localStorage sepetini okur, ayni gorunumle gosterir.
+const normalizeCartItem = (item, index = 0) => {
+  const productName = item?.name || item?.productName || item?.title || 'Ürün';
+  const size = item?.size || item?.selectedSize || '';
+  const id = item?.id || item?.productId || item?.docId || productName;
+  const price = Number(item?.price ?? item?.salePrice ?? item?.newPrice ?? item?.total ?? 0);
+  const qty = Math.max(1, Number(item?.qty || item?.quantity || 1));
+  const image = item?.image || item?.imageUrl || (Array.isArray(item?.images) ? item.images[0] : '') || '';
+  const cartItemId = item?.cartItemId || `${id}_${size || 'STD'}_${index}`;
+  return {
+    ...item,
+    id,
+    name: productName,
+    price,
+    qty,
+    size,
+    image,
+    cartItemId,
+    paymentLink: item?.paymentLink || item?.paymentUrl || item?.payLink || ''
+  };
+};
+
+const writeCart = (cart) => {
+  localStorage.setItem('quaora_cart', JSON.stringify(cart.map((item, index) => normalizeCartItem(item, index))));
+  updateSharedCartBadges();
+  window.dispatchEvent(new CustomEvent('quaora-cart-updated'));
+};
+
+const sharedCartCount = () => readCart().reduce((sum, item) => sum + Math.max(1, Number(item.qty || 1)), 0);
+
+const sharedCartBadgeText = () => {
+  const count = sharedCartCount();
+  if (count <= 0) return '0';
+  if (count === 1) return '1';
+  return '1+';
+};
+
+const updateSharedCartBadges = () => {
+  document.querySelectorAll('#cartCount, [data-cart-count]').forEach((el) => {
+    el.innerText = sharedCartBadgeText();
+    el.setAttribute('aria-label', `${sharedCartCount()} ürün sepette`);
+  });
+};
+
+const itemKeyMatches = (item, key) => {
+  const k = String(key || '');
+  return String(item.cartItemId || '') === k || String(item.id || '') === k || String(item.name || '') === k || `${item.id}_${item.size || 'STD'}` === k;
+};
+
+const openCartPanelIfPossible = () => {
+  const panel = document.getElementById('cartPanel');
+  if (!panel) return;
+  const targetWidth = window.innerWidth < 768 ? '100%' : (panel.className.includes('w-0') ? '380px' : '380px');
+  const currentWidth = panel.style.width || '0px';
+  if (currentWidth === '0px' || currentWidth === '0' || currentWidth === '') {
+    if (typeof window.closeAllPanels === 'function') window.closeAllPanels();
+    panel.style.width = targetWidth;
+    const overlay = document.getElementById('menuOverlay');
+    if (overlay) overlay.classList.remove('hidden');
+  }
+};
+
+const renderSharedCart = () => {
+  ensureDiscountUi();
+  const itemsContainer = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotal');
+  const cart = readCart().map((item, index) => normalizeCartItem(item, index));
+
+  updateSharedCartBadges();
+
+  if (!itemsContainer) {
+    updateTotals();
+    return;
+  }
+
+  if (cart.length === 0) {
+    itemsContainer.innerHTML = '<div class="flex flex-col items-center justify-center h-40 text-gray-400 italic text-sm"><span class="text-3xl mb-2">🛍️</span>Sepetiniz şu an boş.</div>';
+    if (totalEl) totalEl.innerText = money(0);
+    updateTotals();
+    return;
+  }
+
+  itemsContainer.innerHTML = cart.map((item) => {
+    const lineTotal = Number(item.price || 0) * Number(item.qty || 1);
+    const imageHtml = item.image ? `<img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover border border-black/5 bg-gray-100">` : '';
+    const sizeHtml = item.size ? `<span class="text-[#964b00]">Beden: ${item.size}</span><span class="mx-1 text-gray-300">|</span>` : '';
+    return `
+      <div class="flex items-center gap-3 bg-gray-50 p-3 md:p-4 rounded-2xl border border-black/5 shadow-sm">
+        ${imageHtml}
+        <div class="flex-1 min-w-0">
+          <h4 class="font-bold uppercase text-[10px] md:text-[11px] tracking-tight text-gray-800 line-clamp-2">${item.name}</h4>
+          <p class="text-[9px] md:text-[10px] font-bold text-gray-500 mt-1">${sizeHtml}Adet: ${item.qty}</p>
+          <p class="text-[#964b00] font-black text-xs md:text-sm italic mt-1">${money(lineTotal)}</p>
+        </div>
+        <button onclick="removeFromCart('${String(item.cartItemId).replace(/'/g, "\\'")}')" class="text-red-500 font-bold px-2 hover:scale-110 transition" aria-label="Sepetten kaldır">✕</button>
+      </div>
+    `;
+  }).join('');
+
+  const subtotal = cart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
+  const promoCode = normalizeCode(readPromo()?.code);
+  const promo = promoCode ? discountCodes[promoCode] : null;
+  const discount = calculateDiscount(subtotal, promo);
+  if (totalEl) totalEl.innerText = money(Math.max(0, subtotal - discount));
+  updateTotals();
+};
+
+const sharedRemoveFromCart = (key) => {
+  const cart = readCart().map((item, index) => normalizeCartItem(item, index));
+  const next = cart.filter((item) => !itemKeyMatches(item, key));
+  writeCart(next);
+  renderSharedCart();
+};
+
+const sharedAddToCart = (...args) => {
+  const [first, second, third] = args;
+  const allProducts = Array.isArray(window.allProducts) ? window.allProducts : [];
+  const product = allProducts.find((p) => String(p.id) === String(first));
+  let item;
+
+  if (product) {
+    const size = window.selectedSizes?.[product.id] || window.selectedSizes?.[first] || '';
+    const sizeStocks = product.sizeStocks || {};
+    const requiresSize = Object.keys(sizeStocks).length > 0;
+
+    if (requiresSize && !size) {
+      alert('Lütfen sepete eklemeden önce bir beden seçin!');
+      return;
+    }
+
+    const cart = readCart().map((cartItem, index) => normalizeCartItem(cartItem, index));
+    const stockForSize = requiresSize ? Number(sizeStocks[size] || 0) : Number(product.stock || 999999);
+    const cartItemId = `${product.id}_${size || 'STD'}`;
+    const existing = cart.find((cartItem) => cartItem.cartItemId === cartItemId);
+
+    if (requiresSize && stockForSize <= 0) {
+      alert('Bu bedenin stoğu tükendi.');
+      return;
+    }
+
+    if (existing && existing.qty >= stockForSize) {
+      alert(`Maalesef bu bedende daha fazla ürün ekleyemezsiniz! (Kalan Stok: ${stockForSize})`);
+      return;
+    }
+
+    item = normalizeCartItem({
+      cartItemId,
+      id: product.id,
+      name: second || product.name || 'Ürün',
+      price: Number(third ?? product.salePrice ?? product.price ?? 0),
+      size,
+      qty: 1,
+      image: Array.isArray(product.images) ? product.images[0] : product.image || '',
+      paymentLink: product.paymentLink || product.paymentUrl || product.payLink || ''
+    });
+
+    if (existing) existing.qty += 1;
+    else cart.push(item);
+    writeCart(cart);
+    renderSharedCart();
+    openCartPanelIfPossible();
+    return;
+  }
+
+  const cart = readCart().map((cartItem, index) => normalizeCartItem(cartItem, index));
+  const name = String(first || 'Ürün');
+  const price = Number(second || 0);
+  const cartItemId = `${name}_STD`;
+  const existing = cart.find((cartItem) => cartItem.cartItemId === cartItemId || cartItem.name === name);
+
+  if (existing) existing.qty += 1;
+  else cart.push(normalizeCartItem({ cartItemId, name, price, qty: 1, paymentLink: third || '' }));
+
+  writeCart(cart);
+  renderSharedCart();
+  openCartPanelIfPossible();
+};
+
+const installSharedCartSystem = () => {
+  window.renderCart = renderSharedCart;
+  window.removeFromCart = sharedRemoveFromCart;
+  window.addToCart = sharedAddToCart;
+  window.updateSharedCartBadges = updateSharedCartBadges;
+  window.updateQuaoraCartBadge = updateSharedCartBadges;
+
+  updateSharedCartBadges();
+  renderSharedCart();
+
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'quaora_cart' || event.key === 'quaora_promo') renderSharedCart();
+  });
+  window.addEventListener('focus', renderSharedCart);
+  window.addEventListener('pageshow', renderSharedCart);
+};
+
 const installOrderWrapper = () => {
   const wrap = () => {
     if (window.__quaoraDiscountOrderWrapped || typeof window.siparisVer !== 'function') return;
@@ -321,5 +532,6 @@ const installOrderWrapper = () => {
 
 loadDiscountCodes();
 ensureDiscountUi();
+installSharedCartSystem();
 installOrderWrapper();
 setInterval(updateTotals, 700);

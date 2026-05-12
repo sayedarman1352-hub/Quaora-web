@@ -141,7 +141,7 @@
             <div class="mb-4">
                 <label class="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Promosyon Kodu</label>
                 <div class="flex gap-2">
-                    <input id="promoCodeInput" type="text" placeholder="Kod gir" class="flex-1 bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-xs font-bold uppercase focus:outline-none focus:border-[#964b00]">
+                    <input id="promoCodeInput" type="text" onkeydown="if(event.key==='Enter'){event.preventDefault(); applyPromoCode();}" placeholder="Kod gir" class="flex-1 bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-xs font-bold uppercase focus:outline-none focus:border-[#964b00]">
                     <button onclick="applyPromoCode()" class="bg-black text-white rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#964b00] transition-colors">Uygula</button>
                 </div>
                 <p id="promoMessage" class="text-[10px] font-bold mt-2 min-h-[16px]"></p>
@@ -1096,5 +1096,6 @@
     loadProducts();
     loadPageTexts();
 </script>
+<script type="module" src="quaora-discounts.js"></script>
 </body>
 </html>

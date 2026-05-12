@@ -122,7 +122,7 @@
             <div class="mb-4 rounded-2xl border border-[#964b00]/15 bg-white p-3 shadow-sm">
                 <label for="promoCodeInput" class="block text-[9px] font-black uppercase tracking-[0.25em] text-gray-500 mb-2">Promosyon Kodu</label>
                 <div class="flex gap-2">
-                    <input id="promoCodeInput" type="text" placeholder="Kodu gir" class="flex-1 min-w-0 rounded-xl border border-[#964b00]/20 px-3 py-2 text-xs font-bold uppercase tracking-widest outline-none focus:border-[#964b00]">
+                    <input id="promoCodeInput" type="text" onkeydown="if(event.key==='Enter'){event.preventDefault(); applyPromoCode();}" placeholder="Kodu gir" class="flex-1 min-w-0 rounded-xl border border-[#964b00]/20 px-3 py-2 text-xs font-bold uppercase tracking-widest outline-none focus:border-[#964b00]">
                     <button onclick="applyPromoCode()" class="bg-[#964b00] text-white rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-widest hover:bg-black transition-colors">Uygula</button>
                 </div>
                 <div class="mt-2 flex items-center justify-between gap-2">
@@ -1021,5 +1021,6 @@
     loadProducts();
     loadPageTexts(); // Sayfa açılışında metinleri veritabanından çek
 </script>
+<script type="module" src="quaora-discounts.js"></script>
 </body>
 </html>

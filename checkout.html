@@ -50,13 +50,15 @@
     const money = (value) => '₺' + Number(value || 0).toLocaleString('tr-TR');
     const subtotal = () => cart.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0);
 
+    const normalizeCode = (code) => String(code || '').trim().toLocaleUpperCase('tr-TR').replace(/\s+/g, '').replace(/[^A-ZÇĞİÖŞÜ0-9_-]/g, '');
+
     const readAppliedPromo = () => {
       try { return JSON.parse(localStorage.getItem('quaora_promo') || 'null'); } catch (e) { return null; }
     };
 
     const getDiscount = async (user) => {
       const promo = readAppliedPromo();
-      const code = (promo?.code || promo?.promoCode || '').trim().toUpperCase();
+      const code = normalizeCode(promo?.code || promo?.promoCode || '');
       if (!code) return { discount: 0, promo: null };
 
       const snap = await getDoc(doc(db, "discount_codes", code));
