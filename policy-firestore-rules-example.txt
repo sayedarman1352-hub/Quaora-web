@@ -1,0 +1,22 @@
+// Firestore policy page write rules example
+// Bunu mevcut firestore.rules dosyana uyarlayarak ekleyebilirsin.
+// Ama HTML dosyaları admin kontrolünü de kendi içinde yapıyor.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isPolicyAdmin() {
+      return request.auth != null &&
+        request.auth.token.email in [
+          "quaoratr@gmail.com",
+          "sayedarman1352@gmail.com",
+          "250508501@st.atlas.edu.tr"
+        ];
+    }
+
+    match /policy_pages/{policyId} {
+      allow read: if true;
+      allow create, update, delete: if isPolicyAdmin();
+    }
+  }
+}

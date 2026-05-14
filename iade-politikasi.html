@@ -14,105 +14,133 @@
     .content p, .content li { color:#333; font-size:.9rem; line-height:1.8; font-weight:500; }
     .content ul { padding-left:1.2rem; list-style:disc; }
     #sideMenu { transition: all .5s cubic-bezier(.4,0,.2,1); }
+    .policy-edit-button { position:absolute; top:-1.25rem; right:1rem; z-index:20; }
+    @media (max-width: 768px) {
+      nav.sticky { padding: 1rem; }
+      nav.sticky h1 { font-size:1.45rem; letter-spacing:.16em; }
+      nav.sticky p { margin-left:2.4rem; font-size:.48rem; }
+      nav.sticky .menu-label { display:none; }
+      main { padding-top:2rem; }
+      #policyTitle { font-size:2.45rem; line-height:1; }
+      #policySubtitle { letter-spacing:.16em; font-size:.55rem; }
+      #policyContent { padding:1.35rem; border-radius:1.5rem; }
+      .policy-edit-button { position:static; width:100%; margin-bottom:.85rem; }
+      #policyAdminModal .modal-card { max-height:95vh; border-radius:1.35rem; }
+      #policyAdminModal .modal-head, #policyAdminModal .modal-body, #policyAdminModal .modal-foot { padding:1rem; }
+      #policyAdminModal h3 { font-size:1.45rem; }
+      .policy-admin-block { padding:.85rem; }
+    }
   </style>
   <link rel="stylesheet" href="quaora-responsive.css">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="quaora-performance.js" defer></script>
 </head>
 <body data-policy-page="return_policy" class="min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[90] hidden transition-opacity"></div>
+<div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[90] hidden transition-opacity"></div>
 
-    <div id="sideMenu" class="fixed top-0 left-0 h-full bg-[#FAE29C] z-[100] w-0 overflow-x-hidden shadow-2xl flex flex-col">
-        <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
-        <div class="mt-12 px-8 flex flex-col h-full items-start text-left"> 
-            <div class="relative mb-8">
-                <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
-                <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
-            </div>
-            <nav class="flex flex-col space-y-3 w-full"> 
-                <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
-                    <span class="text-xs mr-2">←</span> MAIN MENU
-                </a>
-                <div class="flex flex-col space-y-4 pt-1">
-                    <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
-                    <div class="flex flex-col">
-                        <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
-                            Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                        </button>
-                        <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                            <a href="coquette.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
-                            <a href="panzer.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
-                            <a href="relove.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
-                            <a href="pie.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
-                        </div>
-                    </div>
-                    <div class="flex flex-col">
-                        <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
-                            Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                        </button>
-                        <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                            <a href="mayokini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini üstleri</a>
-                            <a href="mayokini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> mayokini altları</a>
-                            <a href="bikini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini üstleri</a>
-                            <a href="bikini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini altları</a>
-                            <a href="mayolar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
-                        </div>
-                    </div>
-                    <div class="flex flex-col">
-                        <button onclick="toggleMenuSection('topsItems', 'topsArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
-                            accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                        </button>
-                        <div id="topsItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                            <a href="ayakkabilar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
-                            <a href="takilar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
-                            <a href="cantalar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
-                            <a href="sapkalar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
-                            <a href="pareolar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
-                            <a href="gozlukler.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
-                        </div>
-                    </div>
-                    <a href="tops.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
-                    <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
-                    <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
-                    <div class="pt-2">
-                        <button onclick="toggleMenuSection('policyItems', 'policyArrow')" class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-black uppercase tracking-[0.2em] italic focus:outline-none w-full">
-                            POLİTİKALAR <span id="policyArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                        </button>
-                        <div id="policyItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1 mt-0">
-                            <a href="mesafeli-satis-sozlesmesi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic pt-3">Mesafeli Satış Sözleşmesi</a>
-                            <a href="teslimat-bilgileri.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic">Teslimat Bilgileri</a>
-                            <a href="iade-politikasi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic">İade Politikası</a>
-                            <a href="gizlilik-sozlesmesi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic pb-1">Gizlilik Sözleşmesi</a>
-                        </div>
-                    </div>
-                    <div class="pt-2">
-                        <hr class="border-[#964b00]/10 mb-4">
-                        <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
-                    </div>
-                </div>
-                <div class="py-8">
-                    <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
-                    <div class="flex flex-col space-y-3 pl-3">
-                        <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">INSTAGRAM</a>
-                        <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">TIKTOK</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
+<div id="sideMenu" class="fixed top-0 left-0 h-full bg-[#FAE29C] z-[100] w-0 overflow-x-hidden shadow-2xl flex flex-col">
+  <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
+  <div class="mt-12 px-8 flex flex-col h-full items-start text-left"> 
+    <div class="relative mb-8">
+      <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
+      <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
     </div>
+
+    <nav class="flex flex-col space-y-3 w-full"> 
+      <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
+        <span class="text-xs mr-2">←</span> MAIN MENU
+      </a>
+
+      <div class="flex flex-col space-y-4 pt-1">
+        <a href="yeni-gelenler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">New</a>
+
+        <div class="flex flex-col">
+          <button onclick="toggleMenuSection('colItems', 'colArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+            Collections <span id="colArrow" class="text-[10px] transition-transform duration-300">▼</span>
+          </button>
+          <div id="colItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+            <a href="coquette.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> coquette</a>
+            <a href="panzer.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> panzer</a>
+            <a href="relove.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> relove</a>
+            <a href="pie.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+            Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
+          </button>
+          <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+            <a href="mayokini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini üstleri</a>
+            <a href="mayokini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> mayokini altları</a>
+            <a href="bikini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini üstleri</a>
+            <a href="bikini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini altları</a>
+            <a href="mayolar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <button onclick="toggleMenuSection('topsItems', 'topsArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
+            accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
+          </button>
+          <div id="topsItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
+            <a href="ayakkabilar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span>ayakkabılar</a>
+            <a href="takilar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>takılar</a>
+            <a href="cantalar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>çantalar</a>
+            <a href="sapkalar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>şapkalar</a>
+            <a href="pareolar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span>pareolar</a>
+            <a href="gozlukler.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span>gözlükler</a>
+          </div>
+        </div>
+
+        <a href="tops.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
+        <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
+        <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+
+        <div class="pt-2">
+          <button onclick="toggleMenuSection('policyItems', 'policyArrow')" class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-black uppercase tracking-[0.2em] italic focus:outline-none w-full">
+            POLİTİKALAR <span id="policyArrow" class="text-[10px] transition-transform duration-300">▼</span>
+          </button>
+          <div id="policyItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1 mt-0">
+            <a href="mesafeli-satis-sozlesmesi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic pt-3">Mesafeli Satış Sözleşmesi</a>
+            <a href="teslimat-bilgileri.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic">Teslimat Bilgileri</a>
+            <a href="iade-politikasi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic">İade Politikası</a>
+            <a href="gizlilik-sozlesmesi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic pb-1">Gizlilik Sözleşmesi</a>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <hr class="border-[#964b00]/10 mb-4">
+          <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
+        </div>
+      </div>
+
+      <div class="py-8">
+        <p class="text-[9px] font-bold text-[#964b00]/60 uppercase tracking-[0.3em] mb-4 border-l-2 border-[#964b00]/20 pl-3">FOLLOW US</p>
+        <div class="flex flex-col space-y-3 pl-3">
+          <a href="https://www.instagram.com/quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">INSTAGRAM</a>
+          <a href="https://www.tiktok.com/@quaoratr" target="_blank" class="text-[#964b00] font-black underline decoration-1 underline-offset-4 tracking-widest text-[10px] hover:text-black transition-colors w-fit">TIKTOK</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
 
 
   <nav class="p-6 bg-[#FAE29C] shadow-md flex justify-between items-center sticky top-0 z-50">
-    <div class="flex items-center space-x-6">
+    <div class="flex items-center space-x-4 md:space-x-6">
       <button onclick="toggleMenu()" class="flex items-center space-x-3 focus:outline-none group">
         <div class="space-y-1.5 group-hover:scale-105 transition-transform">
           <span class="block w-6 h-[3px] bg-[#964b00]"></span>
           <span class="block w-6 h-[3px] bg-[#964b00]"></span>
           <span class="block w-6 h-[3px] bg-[#964b00]"></span>
         </div>
-        <span class="text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
+        <span class="menu-label text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
       </button>
-      <div class="flex flex-col border-l border-[#964b00]/20 pl-6 cursor-pointer" onclick="window.location.href='index.html'">
+      <div class="flex flex-col border-l border-[#964b00]/20 pl-4 md:pl-6 cursor-pointer" onclick="window.location.href='index.html'">
         <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
         <p class="text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-14 font-semibold italic">Swimwear</p>
       </div>
@@ -125,71 +153,274 @@
       <header class="text-center mb-10">
         <h2 id="policyTitle" class="text-4xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">İade Politikası</h2>
         <p id="policySubtitle" class="mt-4 text-[10px] font-black uppercase tracking-[0.28em] text-gray-700 bg-white/30 inline-block px-4 py-2 rounded-full border border-white/20">İade ve değişim koşulları</p>
-        <button id="policyAdminOpenBtn" onclick="openPolicyAdminModal()" class="hidden mt-6 bg-[#964b00] text-white px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.25em] shadow-lg hover:bg-black transition-all">Politikayı Düzenle</button>
       </header>
-      <article id="policyContent" class="glass-card rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 content space-y-7">
-        <section><p class="font-semibold text-[#964b00]">Yükleniyor...</p></section>
-      </article>
+
+      <div class="relative">
+        <button id="policyInlineEditBtn" onclick="openPolicyAdminModal()" class="policy-edit-button hidden bg-[#964b00] text-white px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.25em] shadow-lg hover:bg-black transition-all">
+          ✎ Yazıları Düzenle
+        </button>
+        <article id="policyContent" class="glass-card rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 content space-y-7">
+          <section><p class="font-semibold text-[#964b00]">Yükleniyor...</p></section>
+        </article>
+      </div>
     </div>
   </main>
 
   <div id="policyAdminModal" class="hidden fixed inset-0 z-[3000] bg-black/70 backdrop-blur-md items-center justify-center p-4">
-    <div class="bg-[#FAE29C] w-full max-w-3xl rounded-[2rem] shadow-2xl border-2 border-white/40 max-h-[92vh] overflow-hidden flex flex-col">
-      <div class="p-5 md:p-6 flex justify-between items-center border-b border-[#964b00]/10 bg-white/40">
+    <div class="modal-card bg-[#FAE29C] w-full max-w-3xl rounded-[2rem] shadow-2xl border-2 border-white/40 max-h-[92vh] overflow-hidden flex flex-col">
+      <div class="modal-head p-5 md:p-6 flex justify-between items-center border-b border-[#964b00]/10 bg-white/40">
         <div>
           <h3 class="serif text-2xl font-black text-[#964b00] italic">Politika Yönetimi</h3>
-          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.22em] mt-1">Sayfa içinden başlık ve metin düzenleme</p>
+          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.22em] mt-1">Sadece admin görür: başlık, alt başlık ve metin bölümleri</p>
         </div>
         <button onclick="closePolicyAdminModal()" class="text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform">✕</button>
       </div>
-      <div class="p-5 md:p-6 overflow-y-auto space-y-4">
-        <input id="policyAdminTitleInput" type="text" placeholder="Sayfa başlığı" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
-        <input id="policyAdminSubtitleInput" type="text" placeholder="Alt başlık" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+
+      <div class="modal-body p-5 md:p-6 overflow-y-auto space-y-4">
+        <label class="block">
+          <span class="block text-[10px] font-black uppercase tracking-widest text-[#964b00] mb-1">Sayfa Başlığı</span>
+          <input id="policyAdminTitleInput" type="text" placeholder="Sayfa başlığı" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+        </label>
+        <label class="block">
+          <span class="block text-[10px] font-black uppercase tracking-widest text-[#964b00] mb-1">Kısa Açıklama</span>
+          <input id="policyAdminSubtitleInput" type="text" placeholder="Alt başlık" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+        </label>
+
         <div id="policyAdminBlocksContainer" class="space-y-3"></div>
-        <button type="button" onclick="addPolicyAdminBlock()" class="w-full bg-white text-[#964b00] border border-dashed border-[#964b00]/30 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00]/10 transition-all">+ Bölüm Ekle</button>
+
+        <button type="button" onclick="addPolicyAdminBlock()" class="w-full bg-white text-[#964b00] border border-dashed border-[#964b00]/30 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00]/10 transition-all">
+          + Bölüm Ekle
+        </button>
         <p class="text-[10px] text-gray-600 font-bold leading-relaxed">Kod yazmana gerek yok. Her bölüm için başlık ve metin ekle; sayfa tasarımı otomatik aynı kalır.</p>
       </div>
-      <div class="p-5 md:p-6 border-t border-[#964b00]/10 bg-white/40 grid grid-cols-1 md:grid-cols-3 gap-3">
-        <button onclick="resetPolicyAdminContent()" class="bg-white text-[#964b00] border border-[#964b00]/20 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all">Varsayılanı Getir</button>
+
+      <div class="modal-foot p-5 md:p-6 border-t border-[#964b00]/10 bg-white/40 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <button onclick="resetPolicyAdminContent()" class="bg-white text-[#964b00] border border-[#964b00]/20 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00]/10 transition-all">Varsayılanı Getir</button>
         <button onclick="closePolicyAdminModal()" class="bg-white text-gray-600 border border-black/10 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-gray-100 transition-all">Vazgeç</button>
-        <button onclick="savePolicyAdminContent()" class="bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all">Kaydet</button>
+        <button id="policySaveBtn" onclick="savePolicyAdminContent()" class="bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all">Kaydet</button>
       </div>
     </div>
   </div>
 
-  <footer class="py-8 text-center bg-[#FAE29C]/50 mt-auto">
+  <footer class="py-8 text-center bg-[#FAE29C]/50 mt-12">
     <p class="text-[9px] text-[#964b00] font-bold uppercase tracking-[0.3em]">© 2026 QUAORA SWIMWEAR</p>
   </footer>
 
   <script>
-    const overlay = document.getElementById('menuOverlay');
-    function closeAllPanels() {
-      const menu = document.getElementById('sideMenu');
-      if (menu) menu.style.width = '0';
-      if (overlay) overlay.classList.add('hidden');
-    }
-    function toggleMenu() {
-      const menu = document.getElementById('sideMenu');
-      if (!menu) return;
-      const targetWidth = window.innerWidth < 768 ? '100%' : '300px';
-      const isOpen = menu.style.width === targetWidth;
-      if (!isOpen) { menu.style.width = targetWidth; if (overlay) overlay.classList.remove('hidden'); }
-      else closeAllPanels();
-    }
-    function toggleMenuSection(sectionId, arrowId) {
-      const section = document.getElementById(sectionId);
-      const arrow = document.getElementById(arrowId);
-      if (!section) return;
-      const isOpen = section.style.maxHeight && section.style.maxHeight !== '0px';
-      section.style.maxHeight = isOpen ? '0px' : section.scrollHeight + 'px';
-      if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
+    window.DEFAULT_POLICY_DATA = {"title": "İade Politikası", "subtitle": "İade ve değişim koşulları", "blocks": [{"heading": "1. İade süresi", "text": "Müşteri, mevzuatta belirtilen istisnalar saklı kalmak kaydıyla teslim aldığı ürünü 14 gün içinde iade talebiyle bildirebilir."}, {"heading": "2. İade koşulları", "text": "İade edilecek ürün kullanılmamış, yıkanmamış, hasar görmemiş, etiketi ve varsa hijyen bandı/koruyucu ambalajı çıkarılmamış olmalıdır. Ürün, tüm aksesuarlarıyla birlikte gönderilmelidir."}, {"heading": "3. Hijyen ürünleri", "text": "Mayo, bikini ve benzeri hijyen niteliğindeki ürünlerde koruyucu ambalaj, hijyen bandı veya etiket açıldıysa iade kabul edilmeyebilir. Kusurlu, hasarlı veya yanlış gönderilen ürünler bu kapsamda değerlendirilmez."}, {"heading": "4. İade talebi oluşturma", "text": "İade talebi için müşteri QUAORA iletişim kanalları üzerinden sipariş bilgileriyle birlikte başvuru yapmalıdır. Talep incelendikten sonra iade gönderim adımları müşteriye bildirilir."}, {"heading": "5. Ücret iadesi", "text": "İade onaylandıktan sonra ücret iadesi, ödeme yapılan yönteme göre ilgili finans kuruluşunun süreçlerine bağlı olarak gerçekleştirilir. Banka/kart kaynaklı yansıtma süreleri QUAORA kontrolünde değildir."}, {"heading": "6. Değişim", "text": "Beden veya ürün değişimi stok durumuna bağlıdır. Değişim talebi için müşteri, ürün kullanılmadan ve iade şartları korunarak iletişim kanallarından destek almalıdır."}]};
   </script>
-  <script type="module" src="quaora-policy-manager.js"></script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }, { once: true });
+
+<script>
+  window.closeAllPanels = () => {
+    const menu = document.getElementById("sideMenu");
+    const overlay = document.getElementById("menuOverlay");
+    if (menu) menu.style.width = "0";
+    if (overlay) overlay.classList.add("hidden");
+  };
+
+  window.toggleMenu = () => {
+    const menu = document.getElementById("sideMenu");
+    const overlay = document.getElementById("menuOverlay");
+    if (!menu) return;
+    const width = window.innerWidth < 768 ? "100%" : "300px";
+    const isOpen = menu.style.width === width;
+    window.closeAllPanels();
+    if (!isOpen) {
+      menu.style.width = width;
+      if (overlay) overlay.classList.remove("hidden");
+    }
+  };
+
+  window.toggleMenuSection = (sectionId, arrowId) => {
+    const section = document.getElementById(sectionId);
+    const arrow = document.getElementById(arrowId);
+    if (!section) return;
+    const open = section.style.maxHeight && section.style.maxHeight !== "0px";
+    if (open) {
+      section.style.maxHeight = "0px";
+      section.style.marginTop = "0px";
+      if (arrow) arrow.style.transform = "rotate(0deg)";
+    } else {
+      section.style.maxHeight = section.scrollHeight + "px";
+      section.style.marginTop = "8px";
+      if (arrow) arrow.style.transform = "rotate(180deg)";
+    }
+  };
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
+    authDomain: "quaora-web.firebaseapp.com",
+    projectId: "quaora-web",
+    storageBucket: "quaora-web.firebasestorage.app",
+    messagingSenderId: "69244174750",
+    appId: "1:69244174750:web:5c9e82172704bb39a2568f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const ADMIN_EMAILS = [
+    "quaoratr@gmail.com",
+    "sayedarman1352@gmail.com",
+    "250508501@st.atlas.edu.tr"
+  ];
+
+  const POLICY_KEY = document.body.dataset.policyPage || "policy";
+  const DEFAULT_POLICY = window.DEFAULT_POLICY_DATA;
+  let activePolicy = structuredClone(DEFAULT_POLICY);
+  let activeIsAdmin = false;
+
+  const getEl = (id) => document.getElementById(id);
+
+  const escapeHtml = (value = "") => String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+  const renderText = (text = "") => {
+    const lines = String(text).split("\n").map(line => line.trim()).filter(Boolean);
+    if (!lines.length) return "<p></p>";
+
+    const bulletLines = lines.filter(line => line.startsWith("- ") || line.startsWith("• "));
+    if (bulletLines.length === lines.length) {
+      return `<ul>${lines.map(line => `<li>${escapeHtml(line.replace(/^[-•]\s*/, ""))}</li>`).join("")}</ul>`;
+    }
+
+    return lines.map(line => `<p>${escapeHtml(line)}</p>`).join("");
+  };
+
+  const normalizePolicy = (data) => ({
+    title: data?.title || DEFAULT_POLICY.title,
+    subtitle: data?.subtitle || DEFAULT_POLICY.subtitle,
+    blocks: Array.isArray(data?.blocks) && data.blocks.length
+      ? data.blocks.map(block => ({
+          heading: block.heading || "",
+          text: block.text || ""
+        }))
+      : structuredClone(DEFAULT_POLICY.blocks)
+  });
+
+  const renderPolicy = (data) => {
+    activePolicy = normalizePolicy(data);
+    getEl("policyTitle").innerText = activePolicy.title;
+    getEl("policySubtitle").innerText = activePolicy.subtitle;
+    getEl("policyContent").innerHTML = activePolicy.blocks.map(block => `
+      <section class="policy-block">
+        ${block.heading ? `<h3>${escapeHtml(block.heading)}</h3>` : ""}
+        ${renderText(block.text)}
+      </section>
+    `).join("");
+  };
+
+  const fillAdminForm = () => {
+    getEl("policyAdminTitleInput").value = activePolicy.title;
+    getEl("policyAdminSubtitleInput").value = activePolicy.subtitle;
+    const container = getEl("policyAdminBlocksContainer");
+    container.innerHTML = "";
+    activePolicy.blocks.forEach(block => addPolicyAdminBlock(block.heading, block.text));
+  };
+
+  window.openPolicyAdminModal = () => {
+    if (!activeIsAdmin) return;
+    fillAdminForm();
+    const modal = getEl("policyAdminModal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  };
+
+  window.closePolicyAdminModal = () => {
+    const modal = getEl("policyAdminModal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  };
+
+  window.addPolicyAdminBlock = (heading = "", text = "") => {
+    if (!activeIsAdmin) return;
+    const container = getEl("policyAdminBlocksContainer");
+    const block = document.createElement("div");
+    block.className = "policy-admin-block bg-white/70 border border-[#964b00]/15 rounded-2xl p-4 space-y-3 shadow-sm";
+    block.innerHTML = `
+      <div class="flex justify-between gap-3 items-center">
+        <input type="text" value="${escapeHtml(heading)}" placeholder="Bölüm başlığı" class="policy-block-heading flex-1 bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-black outline-none focus:border-[#964b00]">
+        <button type="button" class="bg-red-50 text-red-600 w-10 h-10 rounded-xl font-black hover:bg-red-600 hover:text-white transition-colors" aria-label="Bölümü sil">✕</button>
+      </div>
+      <textarea placeholder="Bu bölümün metnini yaz..." rows="6" class="policy-block-text w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-medium leading-relaxed outline-none focus:border-[#964b00] resize-y">${escapeHtml(text)}</textarea>
+    `;
+    block.querySelector("button").addEventListener("click", () => block.remove());
+    container.appendChild(block);
+  };
+
+  const getFormData = () => {
+    const blocks = [...document.querySelectorAll(".policy-admin-block")].map(block => ({
+      heading: block.querySelector(".policy-block-heading")?.value.trim() || "",
+      text: block.querySelector(".policy-block-text")?.value.trim() || ""
+    })).filter(block => block.heading || block.text);
+
+    return {
+      title: getEl("policyAdminTitleInput").value.trim() || DEFAULT_POLICY.title,
+      subtitle: getEl("policyAdminSubtitleInput").value.trim() || DEFAULT_POLICY.subtitle,
+      blocks: blocks.length ? blocks : structuredClone(DEFAULT_POLICY.blocks),
+      updatedAt: Date.now()
+    };
+  };
+
+  window.savePolicyAdminContent = async () => {
+    if (!activeIsAdmin) return alert("Bu işlem sadece admin tarafından yapılabilir.");
+    const saveBtn = getEl("policySaveBtn");
+    const oldText = saveBtn.innerText;
+    saveBtn.innerText = "KAYDEDİLİYOR...";
+    try {
+      const nextPolicy = getFormData();
+      await setDoc(doc(db, "policy_pages", POLICY_KEY), nextPolicy, { merge: true });
+      renderPolicy(nextPolicy);
+      window.closePolicyAdminModal();
+      alert("Politika sayfası güncellendi.");
+    } catch (error) {
+      console.error(error);
+      alert("Kaydetme sırasında hata oluştu: " + error.message);
+    } finally {
+      saveBtn.innerText = oldText;
+    }
+  };
+
+  window.resetPolicyAdminContent = () => {
+    if (!activeIsAdmin) return;
+    if (!confirm("Bu sayfayı varsayılan metne döndürmek istiyor musunuz?")) return;
+    activePolicy = structuredClone(DEFAULT_POLICY);
+    fillAdminForm();
+  };
+
+  onSnapshot(doc(db, "policy_pages", POLICY_KEY), (snap) => {
+    if (snap.exists()) renderPolicy(snap.data());
+    else renderPolicy(DEFAULT_POLICY);
+  }, (error) => {
+    console.warn("Politika içeriği yüklenemedi, varsayılan içerik gösteriliyor:", error);
+    renderPolicy(DEFAULT_POLICY);
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    activeIsAdmin = !!user && ADMIN_EMAILS.includes((user.email || "").toLowerCase());
+    const editBtn = getEl("policyInlineEditBtn");
+    if (editBtn) editBtn.classList.toggle("hidden", !activeIsAdmin);
+  });
+</script>
+<script type="module" src="quaora-discounts.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }, { once: true });
   }
-  </script>
+</script>
+
 </body>
 </html>
