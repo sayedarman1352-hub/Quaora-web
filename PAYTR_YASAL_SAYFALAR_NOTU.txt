@@ -1,0 +1,20 @@
+PAYTR EKSIKLERI TAMAMLANDI
+
+Eklenen sayfalar:
+- mesafeli-satis-sozlesmesi.html
+- iade-politikasi.html
+- teslimat-bilgileri.html
+- gizlilik-sozlesmesi.html
+- iletisim.html içinde satıcı/adres/telefon alanları
+
+ÖNEMLİ:
+Paket içinde şu iki alan bilinmediği için placeholder bırakıldı. PayTR'ye göndermeden önce tüm dosyalarda gerçek bilgilerle değiştir:
+
+TELEFON_NUMARANIZI_BURAYA_YAZIN
+ADRES_BILGINIZI_BURAYA_YAZIN
+
+Önerilen PowerShell arama komutu:
+Select-String -Path .\*.html -Pattern "TELEFON_NUMARANIZI_BURAYA_YAZIN|ADRES_BILGINIZI_BURAYA_YAZIN"
+
+Sonra deploy:
+npx vercel --prod

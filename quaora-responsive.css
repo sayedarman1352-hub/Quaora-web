@@ -249,84 +249,375 @@ li {
     }
 }
 
-/* QUAORA ortak sayfa hissi: yazı stili, animasyon ve politika/admin blokları */
-@keyframes quaoraFadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-}
 
-.quaora-fade-up {
-    animation: quaoraFadeUp 0.55s ease both;
-}
+/* =========================================================
+   QUAORA MOBILE FIX PACK
+   Tasarım değişmeden telefon uyumluluğu ve admin panel düzeltmeleri
+   ========================================================= */
 
-.policy-content section {
-    margin-bottom: 1.75rem;
-}
-
-.policy-content section:last-child {
-    margin-bottom: 0;
-}
-
-.policy-content h4 {
-    font-family: var(--quaora-font-serif);
-    font-size: 1.25rem;
-    line-height: 1.35;
-    font-style: italic;
-    color: #964b00;
-    margin-bottom: 0.75rem;
-}
-
-.policy-content p,
-.policy-content li {
-    color: rgb(31 41 55);
-    line-height: 1.75;
-}
-
-.policy-content ul {
-    list-style: disc;
-    padding-left: 1.5rem;
-    display: grid;
-    gap: 0.5rem;
-}
-
-.policy-content a {
-    color: #964b00;
-    font-weight: 900;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-}
-
-.auth-modal-box {
-    width: min(92vw, 28rem) !important;
-    max-height: min(90vh, 46rem) !important;
-    overflow-y: auto !important;
-}
-
-#authModal input,
-#authModal button,
-#authModal textarea,
-#policyAdminModal input,
-#policyAdminModal textarea,
-#adminPanel textarea {
-    min-width: 0;
-}
-
-#policyAdminModal textarea,
-#adminPanel textarea {
-    line-height: 1.55;
-}
-
-@media (max-width: 640px) {
-    .auth-modal-box {
-        border-radius: 1.5rem !important;
-        padding: 1.25rem !important;
+@media (max-width: 768px) {
+    html, body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden !important;
     }
 
-    .policy-content section {
-        margin-bottom: 1.25rem;
+    body > nav,
+    nav.sticky {
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        padding: 0.85rem 0.9rem !important;
+        gap: 0.55rem !important;
     }
 
-    .policy-content h4 {
-        font-size: 1.1rem !important;
+    body > nav > div,
+    nav.sticky > div {
+        min-width: 0 !important;
+        gap: 0.7rem !important;
+    }
+
+    body > nav h1,
+    nav.sticky h1 {
+        font-size: 1.35rem !important;
+        letter-spacing: 0.13em !important;
+        white-space: nowrap !important;
+    }
+
+    body > nav p,
+    nav.sticky p {
+        margin-left: 0.8rem !important;
+        letter-spacing: 0.24em !important;
+        font-size: 0.46rem !important;
+        max-width: 58vw !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    body > nav button,
+    nav.sticky button {
+        flex-shrink: 0 !important;
+    }
+
+    main {
+        width: 100% !important;
+        max-width: 100vw !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    main header {
+        margin-bottom: 1.6rem !important;
+    }
+
+    #page-title,
+    main header h2 {
+        font-size: clamp(1.8rem, 10vw, 2.65rem) !important;
+        line-height: 1.02 !important;
+        letter-spacing: 0.02em !important;
+        max-width: 100% !important;
+    }
+
+    #page-subtitle,
+    main header p {
+        max-width: calc(100vw - 2rem) !important;
+        white-space: normal !important;
+        line-height: 1.5 !important;
+    }
+
+    #sideMenu,
+    #cartPanel,
+    #profileSidePanel,
+    #favoritesSidePanel,
+    #ordersSidePanel,
+    #adminPanel {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+
+    #sideMenu > div {
+        padding-left: 1.1rem !important;
+        padding-right: 1.1rem !important;
+    }
+
+    #sideMenu nav {
+        padding-bottom: 2rem !important;
+    }
+
+    #sideMenu nav a,
+    #sideMenu nav button {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    #cartPanel {
+        border-left: 0 !important;
+    }
+
+    #cartPanel > div:first-child,
+    #cartPanel > div:last-child {
+        padding: 1rem !important;
+    }
+
+    #cartItems {
+        padding: 1rem !important;
+    }
+
+    #cartItems .flex,
+    #favoritesList .flex,
+    #ordersList .flex {
+        min-width: 0 !important;
+    }
+
+    #cartItems h4,
+    #favoritesList h4,
+    #ordersList h4 {
+        max-width: 60vw !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    /* Ürün kartları mobilde taşmadan iki sütun kalır */
+    #productGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.75rem !important;
+    }
+
+    #productGrid article,
+    #newProductsGrid > div,
+    .glass-card {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    #productGrid article h3,
+    #productGrid article h4 {
+        font-size: 0.72rem !important;
+        line-height: 1.25 !important;
+        letter-spacing: 0.08em !important;
+    }
+
+    #productGrid article .relative.h-56,
+    #productGrid article [class*="h-[26rem]"] {
+        height: 13.2rem !important;
+    }
+
+    #productGrid article .p-3,
+    #productGrid article .p-6 {
+        padding: 0.75rem !important;
+    }
+
+    #productGrid article button {
+        min-height: 38px !important;
+        letter-spacing: 0.06em !important;
+    }
+
+    .size-btn,
+    [class*="size-btn-"] {
+        min-width: 2rem !important;
+        padding-left: 0.55rem !important;
+        padding-right: 0.55rem !important;
+    }
+
+    #newProductsGrid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 1rem !important;
+    }
+
+    #newProductsGrid [class*="h-[400px]"],
+    #newProductsGrid .h-\[400px\] {
+        height: 22rem !important;
+    }
+
+    /* Modal ve admin panelleri telefonda tam ekran ve kaydırılabilir */
+    .modal-overlay,
+    #productAdminModal,
+    #newProductAdminModal,
+    #newBgAdminModal,
+    #bgAdminModal,
+    #sliderAdminModal,
+    #descModal {
+        align-items: flex-start !important;
+        justify-content: center !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding: 0.5rem !important;
+    }
+
+    .modal-overlay > div,
+    #productAdminModal > div,
+    #newProductAdminModal > div,
+    #newBgAdminModal > div,
+    #bgAdminModal > div,
+    #sliderAdminModal > div,
+    #descModal > div {
+        width: calc(100vw - 1rem) !important;
+        max-width: none !important;
+        max-height: calc(100dvh - 1rem) !important;
+        margin: 0.5rem auto !important;
+        border-radius: 1.15rem !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    #productAdminModal .p-6,
+    #productAdminModal .p-8,
+    #newProductAdminModal .p-6,
+    #newProductAdminModal .p-8,
+    #newBgAdminModal .p-6,
+    #newBgAdminModal .p-8,
+    #bgAdminModal .p-6,
+    #sliderAdminModal .p-6,
+    #sliderAdminModal .p-5,
+    .modal-overlay .p-8 {
+        padding: 1rem !important;
+    }
+
+    #productAdminModal input,
+    #productAdminModal select,
+    #productAdminModal textarea,
+    #productAdminModal button,
+    #newProductAdminModal input,
+    #newProductAdminModal select,
+    #newProductAdminModal textarea,
+    #newProductAdminModal button,
+    #newBgAdminModal input,
+    #newBgAdminModal button,
+    #bgAdminModal input,
+    #bgAdminModal button,
+    #adminPanel input,
+    #adminPanel select,
+    #adminPanel textarea,
+    #adminPanel button,
+    #authModal input,
+    #authModal button {
+        font-size: 16px !important;
+        min-height: 44px !important;
+    }
+
+    #productAdminModal .flex,
+    #newProductAdminModal .flex,
+    #newBgAdminModal .flex,
+    #bgAdminModal .flex,
+    #adminPanel .flex {
+        min-width: 0 !important;
+    }
+
+    #productAdminModal .w-1\/2,
+    #productAdminModal .w-1\/4,
+    #newProductAdminModal .w-1\/2,
+    #newProductAdminModal .w-1\/4,
+    #adminPanel .w-1\/2,
+    #adminPanel .w-1\/4 {
+        width: 100% !important;
+    }
+
+    #productAdminModal .flex.gap-4,
+    #productAdminModal .flex.gap-2,
+    #newProductAdminModal .flex.gap-4,
+    #newProductAdminModal .flex.gap-2,
+    #adminPanel .flex.gap-4,
+    #adminPanel .flex.gap-2 {
+        flex-wrap: wrap !important;
+    }
+
+    #imagePreviewContainer,
+    #newImagePreview,
+    #newBgPreview,
+    #adminBgPreview {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #adminPanel {
+        left: 0 !important;
+        right: 0 !important;
+        height: 100dvh !important;
+        border-right: 0 !important;
+    }
+
+    #adminPanel > div:first-child {
+        padding: 1rem !important;
+        gap: 0.5rem !important;
+    }
+
+    #adminPanel > div:first-child h2 {
+        font-size: 1.12rem !important;
+        letter-spacing: 0.1em !important;
+    }
+
+    #adminPanel > div:last-child {
+        padding: 1rem !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #adminPanel .grid,
+    #adminPanel .grid-cols-2 {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    #adminPanel .col-span-2 {
+        grid-column: auto !important;
+    }
+
+    /* Yasal ve bilgi sayfaları */
+    article.content,
+    .content,
+    main article {
+        max-width: 100% !important;
+        border-radius: 1.35rem !important;
+    }
+
+    article.content,
+    main article.glass-card {
+        padding: 1rem !important;
+    }
+
+    .content h3 {
+        font-size: 0.78rem !important;
+        letter-spacing: 0.07em !important;
+        line-height: 1.45 !important;
+    }
+
+    .content p,
+    .content li {
+        font-size: 0.84rem !important;
+        line-height: 1.65 !important;
+    }
+
+    footer {
+        padding: 1.35rem 0.9rem !important;
+    }
+
+    footer .flex {
+        gap: 0.65rem !important;
+    }
+
+    footer a,
+    footer p,
+    footer span {
+        line-height: 1.65 !important;
+    }
+}
+
+@media (max-width: 380px) {
+    body > nav h1,
+    nav.sticky h1 {
+        font-size: 1.12rem !important;
+        letter-spacing: 0.1em !important;
+    }
+
+    #productGrid {
+        gap: 0.55rem !important;
+    }
+
+    #productGrid article .relative.h-56,
+    #productGrid article [class*="h-[26rem]"] {
+        height: 11.5rem !important;
+    }
+
+    #productGrid article button {
+        font-size: 0.56rem !important;
     }
 }
