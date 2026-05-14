@@ -16,7 +16,7 @@
   </style>
   <link rel="stylesheet" href="quaora-responsive.css">
 </head>
-<body class="min-h-screen flex flex-col">
+<body data-policy-page="distance_sales_policy" class="min-h-screen flex flex-col">
   <nav class="flex justify-between items-center p-4 md:p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
     <div class="flex items-center gap-4 md:gap-6">
       <button onclick="history.back()" class="text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#964b00] hover:text-black transition">← Geri</button>
@@ -30,36 +30,12 @@
 
   <main class="max-w-4xl mx-auto px-4 py-10 md:py-16 flex-grow w-full">
     <header class="text-center mb-10">
-      <h2 class="text-4xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">Mesafeli Satış Sözleşmesi</h2>
-      <p class="mt-4 text-[10px] font-black uppercase tracking-[0.28em] text-gray-700 bg-white/30 inline-block px-4 py-2 rounded-full border border-white/20">Satış ve ön bilgilendirme koşulları</p>
+      <h2 id="policyTitle" class="text-4xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">Mesafeli Satış Sözleşmesi</h2>
+      <p id="policySubtitle" class="mt-4 text-[10px] font-black uppercase tracking-[0.28em] text-gray-700 bg-white/30 inline-block px-4 py-2 rounded-full border border-white/20">Satış ve ön bilgilendirme koşulları</p>
+      <button id="policyAdminOpenBtn" onclick="openPolicyAdminModal()" class="hidden mt-6 bg-[#964b00] text-white px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.25em] shadow-lg hover:bg-black transition-all">Politikayı Düzenle</button>
     </header>
-    <article class="glass-card rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 content">
-      <section class="bg-white/45 border border-[#964b00]/10 rounded-2xl p-5 mb-6">
-        <p><strong>Satıcı:</strong> YAĞMUR TOPRAK KOÇ</p>
-        <p><strong>Marka:</strong> QUAORA</p>
-        <p><strong>E-posta:</strong> quaoratr@gmail.com</p>
-        <p><strong>Telefon:</strong> TELEFON_NUMARANIZI_BURAYA_YAZIN</p>
-        <p><strong>Adres:</strong> ADRES_BILGINIZI_BURAYA_YAZIN</p>
-        <p><strong>Web sitesi:</strong> https://www.quaora.com.tr</p>
-      </section>
-      
-<h3>1. Taraflar</h3>
-<p>Bu sözleşme, QUAORA internet sitesi üzerinden ürün satın alan alıcı ile satıcı arasında elektronik ortamda kurulmuştur. Alıcı, siparişi onaylamadan önce ürün temel nitelikleri, satış fiyatı, ödeme şekli, teslimat ve cayma hakkı konularında bilgilendirildiğini kabul eder.</p>
-<h3>2. Konu</h3>
-<p>Sözleşmenin konusu, alıcının QUAORA internet sitesi üzerinden elektronik ortamda sipariş verdiği ürünlerin satışı ve teslimi ile tarafların hak ve yükümlülüklerinin belirlenmesidir.</p>
-<h3>3. Ürün, Fiyat ve Ödeme</h3>
-<p>Ürünlerin türü, adedi, satış bedeli ve ödeme bilgileri sipariş/ödeme ekranında gösterilir. Siparişin tamamlanmasıyla alıcı, gösterilen toplam bedeli ve bu sözleşme hükümlerini kabul etmiş sayılır.</p>
-<h3>4. Teslimat</h3>
-<p>Siparişler, stok ve ödeme onayının ardından alıcının bildirdiği teslimat adresine gönderilir. Teslimat süresi ürün hazırlık ve kargo süreçlerine göre değişebilir.</p>
-<h3>5. Cayma Hakkı</h3>
-<p>Alıcı, mesafeli satışlarda ürünün tesliminden itibaren 14 gün içinde cayma hakkını kullanabilir. Cayma bildirimi e-posta veya yazılı kalıcı veri saklayıcısı yoluyla satıcıya iletilmelidir.</p>
-<h3>6. Cayma Hakkının Kullanılamayacağı Durumlar</h3>
-<ul><li>Hijyen nedeniyle iadesi uygun olmayan, teslimden sonra ambalajı, etiketi, koruyucu bandı veya hijyen mührü açılmış mayo, bikini, iç giyim niteliğindeki ürünler.</li><li>Kullanılmış, yıkanmış, kokusu değişmiş, hasar görmüş veya tekrar satılabilir niteliğini kaybetmiş ürünler.</li><li>Alıcının özel istekleri doğrultusunda hazırlanan kişiselleştirilmiş ürünler.</li></ul>
-<h3>7. İade Bedeli</h3>
-<p>İade koşullarının sağlanması ve ürünün satıcıya ulaşması sonrasında ödeme, siparişte kullanılan ödeme yöntemine uygun şekilde iade edilir. Banka/ödeme kuruluşu süreçlerinden kaynaklanan gecikmeler satıcının kontrolü dışındadır.</p>
-<h3>8. Uyuşmazlık</h3>
-<p>Taraflar arasında doğabilecek uyuşmazlıklarda, mevzuatta belirtilen parasal sınırlar dahilinde tüketici hakem heyetleri ve tüketici mahkemeleri yetkilidir.</p>
-
+    <article id="policyContent" class="glass-card rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 content space-y-7">
+      <section><p class="font-semibold text-[#964b00]">Yükleniyor...</p></section>
     </article>
   </main>
   
@@ -79,5 +55,30 @@
     <p class="text-[9px] text-[#964b00] font-bold uppercase tracking-[0.3em]">© 2026 QUAORA SWIMWEAR</p>
   </div>
 </footer>
+
+  <div id="policyAdminModal" class="hidden fixed inset-0 z-[3000] bg-black/70 backdrop-blur-md items-center justify-center p-4">
+    <div class="bg-[#FAE29C] w-full max-w-3xl rounded-[2rem] shadow-2xl border-2 border-white/40 max-h-[92vh] overflow-hidden flex flex-col">
+      <div class="p-5 md:p-6 flex justify-between items-center border-b border-[#964b00]/10 bg-white/40">
+        <div>
+          <h3 class="serif text-2xl font-black text-[#964b00] italic">Politika Yönetimi</h3>
+          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.22em] mt-1">Başlık ve metin düzenleme</p>
+        </div>
+        <button onclick="closePolicyAdminModal()" class="text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform">✕</button>
+      </div>
+      <div class="p-5 md:p-6 overflow-y-auto space-y-4">
+        <input id="policyAdminTitleInput" type="text" placeholder="Sayfa başlığı" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+        <input id="policyAdminSubtitleInput" type="text" placeholder="Alt başlık" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+        <div id="policyAdminBlocksContainer" class="space-y-3"></div>
+        <button type="button" onclick="addPolicyAdminBlock()" class="w-full bg-white text-[#964b00] border border-dashed border-[#964b00]/30 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00]/10 transition-all">+ Bölüm Ekle</button>
+        <p class="text-[10px] text-gray-600 font-bold leading-relaxed">Kod yazmana gerek yok. Her bölüm için başlık ve metin ekle; sayfa tasarımı otomatik aynı kalır.</p>
+      </div>
+      <div class="p-5 md:p-6 border-t border-[#964b00]/10 bg-white/40 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <button onclick="resetPolicyAdminContent()" class="bg-white text-[#964b00] border border-[#964b00]/20 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all">Varsayılanı Getir</button>
+        <button onclick="closePolicyAdminModal()" class="bg-white text-gray-600 border border-black/10 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-gray-100 transition-all">Vazgeç</button>
+        <button onclick="savePolicyAdminContent()" class="bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all">Kaydet</button>
+      </div>
+    </div>
+  </div>
+<script type="module" src="quaora-policy-manager.js"></script>
 </body>
 </html>

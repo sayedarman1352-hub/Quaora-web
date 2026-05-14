@@ -198,12 +198,15 @@
             <h3 id="adminPolicyEditorTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div class="space-y-3">
                 <select id="adminPolicyPageSelect" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+                    <option value="distance_sales_policy">Mesafeli Satış Sözleşmesi</option>
+                    <option value="delivery_policy">Teslimat Bilgileri</option>
                     <option value="return_policy">İade Politikası</option>
                     <option value="privacy_policy">Gizlilik Sözleşmesi</option>
                 </select>
                 <input id="adminPolicyTitleInput" type="text" placeholder="" data-admin-placeholder="policyTitle" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
                 <input id="adminPolicySubtitleInput" type="text" placeholder="" data-admin-placeholder="policySubtitle" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
-                <textarea id="adminPolicyContentInput" rows="12" spellcheck="false" placeholder="" data-admin-placeholder="policyContent" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-semibold outline-none focus:border-[#964b00] resize-y"></textarea>
+                <div id="adminPolicyBlocksContainer" class="space-y-3"></div>
+                <button type="button" onclick="addAdminPolicyBlock()" id="adminPolicyAddBlockBtn" class="w-full bg-white text-[#964b00] border border-dashed border-[#964b00]/30 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00]/10 transition-all"></button>
                 <p id="adminPolicyHelp" class="text-[10px] text-gray-500 font-bold leading-relaxed"></p>
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="resetAdminPolicyPage()" class="bg-white text-[#964b00] border border-[#964b00]/20 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all" id="adminPolicyDefaultBtn"></button>
@@ -265,10 +268,17 @@
                 <a href="tops.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
                 <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
                 <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
-                    <a href="mesafeli-satis-sozlesmesi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Mesafeli Satış Sözleşmesi</a>
-                    <a href="teslimat-bilgileri.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Teslimat Bilgileri</a>
-                <a href="iade-politikasi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">İade Politikası</a>
-                <a href="gizlilik-sozlesmesi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Gizlilik Sözleşmesi</a>
+<div class="pt-2">
+                        <button onclick="toggleMenuSection('policyItems', 'policyArrow')" class="flex justify-between items-center text-sm font-medium text-gray-500 hover:text-black uppercase tracking-[0.2em] italic focus:outline-none w-full">
+                            POLİTİKALAR <span id="policyArrow" class="text-[10px] transition-transform duration-300">▼</span>
+                        </button>
+                        <div id="policyItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1 mt-0">
+                            <a href="mesafeli-satis-sozlesmesi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic pt-3">Mesafeli Satış Sözleşmesi</a>
+                            <a href="teslimat-bilgileri.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic">Teslimat Bilgileri</a>
+                            <a href="iade-politikasi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic">İade Politikası</a>
+                            <a href="gizlilik-sozlesmesi.html" class="text-[11px] font-semibold text-gray-600 hover:text-[#964b00] uppercase tracking-[0.16em] italic pb-1">Gizlilik Sözleşmesi</a>
+                        </div>
+                    </div>
                 <div class="pt-2">
                     <hr class="border-[#964b00]/10 mb-4">
                     <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
@@ -428,7 +438,7 @@
     };
     window.applyAdminTextContent = (enabled = activeIsAdmin) => {
         if (!enabled) {
-            ['admin-bg-btn','bgAdminTitle','bgAdminUploadBtn','adminAccessBtn','adminPanelTitle','adminPanelSubtitle','adminDiscountCreateTitle','adminDiscountCreateBtn','adminDiscountListTitle','adminPolicyEditorTitle','adminPolicyHelp','adminPolicyDefaultBtn','adminPolicySaveBtn','adminRefundTitle','sliderAdminTitle','sliderAdminAddTitle','sliderAdminUpdateBtn','sliderAdminCurrentTitle'].forEach(id => setText(id, ''));
+            ['admin-bg-btn','bgAdminTitle','bgAdminUploadBtn','adminAccessBtn','adminPanelTitle','adminPanelSubtitle','adminDiscountCreateTitle','adminDiscountCreateBtn','adminDiscountListTitle','adminPolicyEditorTitle','adminPolicyHelp','adminPolicyAddBlockBtn','adminPolicyDefaultBtn','adminPolicySaveBtn','adminRefundTitle','sliderAdminTitle','sliderAdminAddTitle','sliderAdminUpdateBtn','sliderAdminCurrentTitle'].forEach(id => setText(id, ''));
             setPlaceholderByKey('discountCode', '');
             setPlaceholderByKey('discountValue', '');
             setPlaceholderByKey('discountMin', '');
@@ -453,7 +463,8 @@
         setText('adminDiscountCreateBtn', 'Kodu%20Kaydet');
         setText('adminDiscountListTitle', 'Indirim%20Kodlari');
         setText('adminPolicyEditorTitle', 'Politika%20Sayfalari');
-        setText('adminPolicyHelp', 'HTML%20destekler%3A%20%3Cp%3E%2C%20%3Ch4%3E%2C%20%3Cul%3E%20ve%20%3Cli%3E%20kullanabilirsin.%20Tasarim%20otomatik%20ayni%20kalir.');
+        setText('adminPolicyHelp', 'Kod%20yazmana%20gerek%20yok.%20B%C3%B6l%C3%BCm%20ba%C5%9Fl%C4%B1%C4%9F%C4%B1n%C4%B1%20ve%20metnini%20ayr%C4%B1%20ayr%C4%B1%20yaz.%20Yeni%20b%C3%B6l%C3%BCm%20ekleyebilirsin.');
+        setText('adminPolicyAddBlockBtn', '%2B%20B%C3%B6l%C3%BCm%20Ekle');
         setText('adminPolicyDefaultBtn', 'Varsayilan');
         setText('adminPolicySaveBtn', 'Kaydet');
         setText('adminRefundTitle', 'Iade%20Talepleri');
@@ -467,7 +478,7 @@
         setPlaceholderByKey('discountMax', 'Max%20kullanim');
         setPlaceholderByKey('policyTitle', 'Baslik');
         setPlaceholderByKey('policySubtitle', 'Alt%20baslik');
-        setPlaceholderByKey('policyContent', 'Metni%20HTML%20olarak%20duzenle');
+        setPlaceholderByKey('policyContent', '');
         const percent = document.querySelector('#adminDiscountType option[value="percent"]');
         const fixed = document.querySelector('#adminDiscountType option[value="fixed"]');
         if (percent) percent.textContent = qText('Yuzde');
