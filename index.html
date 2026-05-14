@@ -192,6 +192,26 @@
             </div>
         </section>
 
+
+
+        <section class="rounded-2xl border border-[#964b00]/10 bg-[#FAE29C]/20 p-4">
+            <h3 id="adminPolicyEditorTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
+            <div class="space-y-3">
+                <select id="adminPolicyPageSelect" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+                    <option value="return_policy">İade Politikası</option>
+                    <option value="privacy_policy">Gizlilik Sözleşmesi</option>
+                </select>
+                <input id="adminPolicyTitleInput" type="text" placeholder="" data-admin-placeholder="policyTitle" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+                <input id="adminPolicySubtitleInput" type="text" placeholder="" data-admin-placeholder="policySubtitle" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+                <textarea id="adminPolicyContentInput" rows="12" spellcheck="false" placeholder="" data-admin-placeholder="policyContent" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-semibold outline-none focus:border-[#964b00] resize-y"></textarea>
+                <p id="adminPolicyHelp" class="text-[10px] text-gray-500 font-bold leading-relaxed"></p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="resetAdminPolicyPage()" class="bg-white text-[#964b00] border border-[#964b00]/20 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all" id="adminPolicyDefaultBtn"></button>
+                    <button onclick="saveAdminPolicyPage()" class="bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all" id="adminPolicySaveBtn"></button>
+                </div>
+            </div>
+        </section>
+
         <section>
             <h3 id="adminRefundTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div id="adminNotificationsList" class="space-y-4">
@@ -245,6 +265,8 @@
                 <a href="tops.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">TOPS</a>
                 <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
                 <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
+                <a href="iade-politikasi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">İade Politikası</a>
+                <a href="gizlilik-sozlesmesi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Gizlilik Sözleşmesi</a>
                 <div class="pt-2">
                     <hr class="border-[#964b00]/10 mb-4">
                     <a href="outlet.html" class="text-lg font-black italic text-red-600 uppercase tracking-widest hover:scale-105 transition-transform inline-block">% Outlet</a>
@@ -345,22 +367,22 @@
 
 
 <div id="authModal" class="modal-overlay" onclick="if(event.target === this) closeAuthModal()">
-    <div class="bg-white/90 p-8 rounded-[3rem] w-[90%] max-w-md shadow-2xl relative border border-white/50" onclick="event.stopPropagation()">
+    <div class="auth-modal-box bg-white/90 p-8 rounded-[3rem] w-[90%] max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative border border-white/50" onclick="event.stopPropagation()">
         <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-xl text-gray-400 hover:text-black">✕</button>
         <div class="flex justify-center space-x-8 mb-8 border-b border-gray-100 pb-4">
-            <button id="tabLogin" onclick="switchTab('login')" class="text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all">Giriş Yap</button>
-            <button id="tabRegister" onclick="switchTab('register')" class="text-sm font-black tracking-widest uppercase text-gray-400 hover:text-[#964b00] pb-1 transition-all">Kayıt Ol</button>
+            <button id="tabLogin" type="button" onclick="switchTab('login')" aria-selected="true" class="text-sm font-black tracking-widest uppercase text-[#964b00] border-b-2 border-[#964b00] pb-1 transition-all">Giriş Yap</button>
+            <button id="tabRegister" type="button" onclick="switchTab('register')" aria-selected="false" class="text-sm font-black tracking-widest uppercase text-gray-400 border-b-2 border-transparent hover:text-[#964b00] pb-1 transition-all">Kayıt Ol</button>
         </div>
         <div id="formLogin" class="space-y-4">
-            <input id="loginEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="loginPass" type="password" placeholder="ŞİFRE" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="loginEmail" type="email" autocomplete="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="loginPass" type="password" autocomplete="current-password" placeholder="ŞİFRE" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
             <button onclick="handleLogin()" class="w-full bg-[#964b00] text-white py-4 rounded-2xl font-black tracking-[0.2em] uppercase text-xs shadow-lg hover:bg-black transition-all">Giriş Yap</button>
         </div>
         <div id="formRegister" class="space-y-4 hidden">
-            <input id="regUser" type="text" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="regEmail" type="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="regPass" type="password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
-            <input id="regPhone" type="tel" placeholder="TELEFON" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regUser" type="text" autocomplete="name" placeholder="KULLANICI ADI" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regEmail" type="email" autocomplete="email" placeholder="E-POSTA" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regPass" type="password" autocomplete="new-password" placeholder="ŞİFRE BELİRLE" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
+            <input id="regPhone" type="tel" autocomplete="tel" placeholder="TELEFON" class="w-full p-4 rounded-2xl bg-gray-100 border-none outline-none text-xs font-bold tracking-widest uppercase">
             <div class="relative border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center cursor-pointer">
                 <input id="regPhoto" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="showPhotoSelected()">
                 <div id="photoStatus" class="text-[9px] font-black text-gray-400 uppercase">Profil Fotoğrafı Seç</div>
@@ -404,11 +426,14 @@
     };
     window.applyAdminTextContent = (enabled = activeIsAdmin) => {
         if (!enabled) {
-            ['admin-bg-btn','bgAdminTitle','bgAdminUploadBtn','adminAccessBtn','adminPanelTitle','adminPanelSubtitle','adminDiscountCreateTitle','adminDiscountCreateBtn','adminDiscountListTitle','adminRefundTitle','sliderAdminTitle','sliderAdminAddTitle','sliderAdminUpdateBtn','sliderAdminCurrentTitle'].forEach(id => setText(id, ''));
+            ['admin-bg-btn','bgAdminTitle','bgAdminUploadBtn','adminAccessBtn','adminPanelTitle','adminPanelSubtitle','adminDiscountCreateTitle','adminDiscountCreateBtn','adminDiscountListTitle','adminPolicyEditorTitle','adminPolicyHelp','adminPolicyDefaultBtn','adminPolicySaveBtn','adminRefundTitle','sliderAdminTitle','sliderAdminAddTitle','sliderAdminUpdateBtn','sliderAdminCurrentTitle'].forEach(id => setText(id, ''));
             setPlaceholderByKey('discountCode', '');
             setPlaceholderByKey('discountValue', '');
             setPlaceholderByKey('discountMin', '');
             setPlaceholderByKey('discountMax', '');
+            setPlaceholderByKey('policyTitle', '');
+            setPlaceholderByKey('policySubtitle', '');
+            setPlaceholderByKey('policyContent', '');
             const percent = document.querySelector('#adminDiscountType option[value="percent"]');
             const fixed = document.querySelector('#adminDiscountType option[value="fixed"]');
             if (percent) percent.textContent = '';
@@ -421,10 +446,14 @@
         setText('bgAdminUploadBtn', '%2B%20YEN%C4%B0%20FOTO%C4%9ERAF%20EKLE');
         setText('adminAccessBtn', 'Admin%20Paneli');
         setText('adminPanelTitle', 'ADMIN%20PANELI');
-        setText('adminPanelSubtitle', 'Iade%20ve%20indirim%20kodlari');
+        setText('adminPanelSubtitle', 'Iade%2C%20gizlilik%20ve%20indirim%20kodlari');
         setText('adminDiscountCreateTitle', 'Indirim%20Kodu%20Olustur');
         setText('adminDiscountCreateBtn', 'Kodu%20Kaydet');
         setText('adminDiscountListTitle', 'Indirim%20Kodlari');
+        setText('adminPolicyEditorTitle', 'Politika%20Sayfalari');
+        setText('adminPolicyHelp', 'HTML%20destekler%3A%20%3Cp%3E%2C%20%3Ch4%3E%2C%20%3Cul%3E%20ve%20%3Cli%3E%20kullanabilirsin.%20Tasarim%20otomatik%20ayni%20kalir.');
+        setText('adminPolicyDefaultBtn', 'Varsayilan');
+        setText('adminPolicySaveBtn', 'Kaydet');
         setText('adminRefundTitle', 'Iade%20Talepleri');
         setText('sliderAdminTitle', 'SLIDER%20Y%C3%96NET%C4%B0M%C4%B0');
         setText('sliderAdminAddTitle', 'Yeni%20Foto%C4%9Fraf%20Ekle');
@@ -434,6 +463,9 @@
         setPlaceholderByKey('discountValue', 'Deger');
         setPlaceholderByKey('discountMin', 'Min%20sepet');
         setPlaceholderByKey('discountMax', 'Max%20kullanim');
+        setPlaceholderByKey('policyTitle', 'Baslik');
+        setPlaceholderByKey('policySubtitle', 'Alt%20baslik');
+        setPlaceholderByKey('policyContent', 'Metni%20HTML%20olarak%20duzenle');
         const percent = document.querySelector('#adminDiscountType option[value="percent"]');
         const fixed = document.querySelector('#adminDiscountType option[value="fixed"]');
         if (percent) percent.textContent = qText('Yuzde');
@@ -756,6 +788,7 @@
             panel.style.width = (window.innerWidth < 768) ? "100%" : "420px";
             if (overlay) overlay.classList.remove("hidden");
             window.loadAdminNotifications();
+            window.loadAdminPolicyEditor?.();
         }
     };
 
@@ -806,8 +839,22 @@
 
     window.switchTab = (type) => {
         const isLogin = type === 'login';
-        if(getEl('formLogin')) getEl('formLogin').classList.toggle('hidden', !isLogin);
-        if(getEl('formRegister')) getEl('formRegister').classList.toggle('hidden', isLogin);
+        const loginForm = getEl('formLogin');
+        const registerForm = getEl('formRegister');
+        const loginTab = getEl('tabLogin');
+        const registerTab = getEl('tabRegister');
+        if (loginForm) loginForm.classList.toggle('hidden', !isLogin);
+        if (registerForm) registerForm.classList.toggle('hidden', isLogin);
+        const setTabState = (tab, active) => {
+            if (!tab) return;
+            tab.setAttribute('aria-selected', active ? 'true' : 'false');
+            tab.classList.toggle('text-[#964b00]', active);
+            tab.classList.toggle('border-[#964b00]', active);
+            tab.classList.toggle('text-gray-400', !active);
+            tab.classList.toggle('border-transparent', !active);
+        };
+        setTabState(loginTab, isLogin);
+        setTabState(registerTab, !isLogin);
     };
 
     window.handleRegister = async () => {
@@ -817,13 +864,14 @@
             const res = await createUserWithEmailAndPassword(auth, e, p);
             await setDoc(doc(db, "users", res.user.uid), { username: u, email: e, createdAt: new Date().toISOString() });
             const welcomeCode = await window.generateWelcomeDiscountCode?.(res.user);
-            alert(welcomeCode ? `Kayit basarili! Ilk alisverisin icin kodun: ${welcomeCode}` : "Kayit basarili!");
-            window.switchTab('login');
+            alert(welcomeCode ? `Kayıt başarılı! İlk alışverişin için kodun: ${welcomeCode}` : "Kayıt başarılı!");
+            window.closeAuthModal();
         } catch (err) { alert("Hata: " + err.message); }
     };
 
     window.handleLogin = async () => {
         const e = getEl('loginEmail')?.value, p = getEl('loginPass')?.value;
+        if (!e || !p) return alert("E-posta ve şifreyi doldur.");
         try { 
             await signInWithEmailAndPassword(auth, e, p); 
             window.closeAuthModal(); 
@@ -1186,6 +1234,7 @@
 
 </script>
 
+<script type="module" src="quaora-policy-manager.js"></script>
 <script type="module" src="quaora-discounts.js"></script>
 <div id="sliderAdminModal" class="hidden fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
