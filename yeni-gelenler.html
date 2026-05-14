@@ -549,7 +549,7 @@
     });
 
     onAuthStateChanged(auth, (user) => {
-        isAdmin = (user?.email || '').toLowerCase() === 'quaoratr@gmail.com';
+        isAdmin = ['quaoratr@gmail.com','sayedarman1352@gmail.com','250508501@st.atlas.edu.tr'].includes((user?.email || '').toLowerCase());
         if (isAdmin) window.ensureNewAdminActions?.();
         document.getElementById('adminNewProductBtn')?.classList.toggle('hidden', !isAdmin);
         document.getElementById('adminNewBgBtn')?.classList.toggle('hidden', !isAdmin);

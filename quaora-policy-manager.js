@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC5vGWkRvVDfBMTCH-zgOioE-8_OsCwUmo",
+  apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
   authDomain: "quaora-web.firebaseapp.com",
   projectId: "quaora-web",
   storageBucket: "quaora-web.firebasestorage.app",
@@ -14,7 +14,7 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const ADMIN_EMAIL = "quaoratr@gmail.com";
+const ADMIN_EMAILS = ["quaoratr@gmail.com", "sayedarman1352@gmail.com", "250508501@st.atlas.edu.tr"];
 
 const block = (heading, text) => ({ heading, text });
 
@@ -84,7 +84,7 @@ export const QUAORA_POLICY_DEFAULTS = {
 };
 
 const getPolicyConfig = (pageKey) => QUAORA_POLICY_DEFAULTS[pageKey] || QUAORA_POLICY_DEFAULTS.return_policy;
-const isAdminUser = (user) => !!user?.email && user.email.toLowerCase() === ADMIN_EMAIL;
+const isAdminUser = (user) => !!user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
 const escapeHtml = (value) => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 function htmlToBlocks(html = "") {

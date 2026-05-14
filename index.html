@@ -1123,7 +1123,7 @@
         activeUser = user || null;
 
         if (user) {
-            activeIsAdmin = user.email?.toLowerCase() === "quaoratr@gmail.com";
+            activeIsAdmin = ['quaoratr@gmail.com','sayedarman1352@gmail.com','250508501@st.atlas.edu.tr'].includes(user.email?.toLowerCase() || '');
             adminElements.forEach(el => { if (el) el.classList.toggle("hidden", !activeIsAdmin); });
             window.applyAdminTextContent(activeIsAdmin);
 

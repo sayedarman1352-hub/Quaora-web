@@ -1068,7 +1068,7 @@
         currentUser = user || null;
         const userEmail = user?.email?.toLowerCase() || '';
 
-        if (userEmail === 'quaoratr@gmail.com') {
+        if (['quaoratr@gmail.com','sayedarman1352@gmail.com','250508501@st.atlas.edu.tr'].includes(userEmail)) {
             isAdmin = true;
             await window.ensureProductAdminButton?.();
             adminBtn = document.getElementById('adminAddProductBtn');
