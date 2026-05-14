@@ -192,29 +192,6 @@
             </div>
         </section>
 
-
-
-        <section class="rounded-2xl border border-[#964b00]/10 bg-[#FAE29C]/20 p-4">
-            <h3 id="adminPolicyEditorTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
-            <div class="space-y-3">
-                <select id="adminPolicyPageSelect" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
-                    <option value="distance_sales_policy">Mesafeli Satış Sözleşmesi</option>
-                    <option value="delivery_policy">Teslimat Bilgileri</option>
-                    <option value="return_policy">İade Politikası</option>
-                    <option value="privacy_policy">Gizlilik Sözleşmesi</option>
-                </select>
-                <input id="adminPolicyTitleInput" type="text" placeholder="" data-admin-placeholder="policyTitle" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
-                <input id="adminPolicySubtitleInput" type="text" placeholder="" data-admin-placeholder="policySubtitle" class="w-full bg-white border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
-                <div id="adminPolicyBlocksContainer" class="space-y-3"></div>
-                <button type="button" onclick="addAdminPolicyBlock()" id="adminPolicyAddBlockBtn" class="w-full bg-white text-[#964b00] border border-dashed border-[#964b00]/30 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00]/10 transition-all"></button>
-                <p id="adminPolicyHelp" class="text-[10px] text-gray-500 font-bold leading-relaxed"></p>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="resetAdminPolicyPage()" class="bg-white text-[#964b00] border border-[#964b00]/20 py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-[#964b00] hover:text-white transition-all" id="adminPolicyDefaultBtn"></button>
-                    <button onclick="saveAdminPolicyPage()" class="bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all" id="adminPolicySaveBtn"></button>
-                </div>
-            </div>
-        </section>
-
         <section>
             <h3 id="adminRefundTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div id="adminNotificationsList" class="space-y-4">
@@ -438,14 +415,11 @@
     };
     window.applyAdminTextContent = (enabled = activeIsAdmin) => {
         if (!enabled) {
-            ['admin-bg-btn','bgAdminTitle','bgAdminUploadBtn','adminAccessBtn','adminPanelTitle','adminPanelSubtitle','adminDiscountCreateTitle','adminDiscountCreateBtn','adminDiscountListTitle','adminPolicyEditorTitle','adminPolicyHelp','adminPolicyAddBlockBtn','adminPolicyDefaultBtn','adminPolicySaveBtn','adminRefundTitle','sliderAdminTitle','sliderAdminAddTitle','sliderAdminUpdateBtn','sliderAdminCurrentTitle'].forEach(id => setText(id, ''));
+            ['admin-bg-btn','bgAdminTitle','bgAdminUploadBtn','adminAccessBtn','adminPanelTitle','adminPanelSubtitle','adminDiscountCreateTitle','adminDiscountCreateBtn','adminDiscountListTitle','adminRefundTitle','sliderAdminTitle','sliderAdminAddTitle','sliderAdminUpdateBtn','sliderAdminCurrentTitle'].forEach(id => setText(id, ''));
             setPlaceholderByKey('discountCode', '');
             setPlaceholderByKey('discountValue', '');
             setPlaceholderByKey('discountMin', '');
             setPlaceholderByKey('discountMax', '');
-            setPlaceholderByKey('policyTitle', '');
-            setPlaceholderByKey('policySubtitle', '');
-            setPlaceholderByKey('policyContent', '');
             const percent = document.querySelector('#adminDiscountType option[value="percent"]');
             const fixed = document.querySelector('#adminDiscountType option[value="fixed"]');
             if (percent) percent.textContent = '';
@@ -458,15 +432,10 @@
         setText('bgAdminUploadBtn', '%2B%20YEN%C4%B0%20FOTO%C4%9ERAF%20EKLE');
         setText('adminAccessBtn', 'Admin%20Paneli');
         setText('adminPanelTitle', 'ADMIN%20PANELI');
-        setText('adminPanelSubtitle', 'Iade%2C%20gizlilik%20ve%20indirim%20kodlari');
+        setText('adminPanelSubtitle', 'Iade%20ve%20indirim%20kodlari');
         setText('adminDiscountCreateTitle', 'Indirim%20Kodu%20Olustur');
         setText('adminDiscountCreateBtn', 'Kodu%20Kaydet');
         setText('adminDiscountListTitle', 'Indirim%20Kodlari');
-        setText('adminPolicyEditorTitle', 'Politika%20Sayfalari');
-        setText('adminPolicyHelp', 'Kod%20yazmana%20gerek%20yok.%20B%C3%B6l%C3%BCm%20ba%C5%9Fl%C4%B1%C4%9F%C4%B1n%C4%B1%20ve%20metnini%20ayr%C4%B1%20ayr%C4%B1%20yaz.%20Yeni%20b%C3%B6l%C3%BCm%20ekleyebilirsin.');
-        setText('adminPolicyAddBlockBtn', '%2B%20B%C3%B6l%C3%BCm%20Ekle');
-        setText('adminPolicyDefaultBtn', 'Varsayilan');
-        setText('adminPolicySaveBtn', 'Kaydet');
         setText('adminRefundTitle', 'Iade%20Talepleri');
         setText('sliderAdminTitle', 'SLIDER%20Y%C3%96NET%C4%B0M%C4%B0');
         setText('sliderAdminAddTitle', 'Yeni%20Foto%C4%9Fraf%20Ekle');
@@ -476,9 +445,6 @@
         setPlaceholderByKey('discountValue', 'Deger');
         setPlaceholderByKey('discountMin', 'Min%20sepet');
         setPlaceholderByKey('discountMax', 'Max%20kullanim');
-        setPlaceholderByKey('policyTitle', 'Baslik');
-        setPlaceholderByKey('policySubtitle', 'Alt%20baslik');
-        setPlaceholderByKey('policyContent', '');
         const percent = document.querySelector('#adminDiscountType option[value="percent"]');
         const fixed = document.querySelector('#adminDiscountType option[value="fixed"]');
         if (percent) percent.textContent = qText('Yuzde');
@@ -801,7 +767,6 @@
             panel.style.width = (window.innerWidth < 768) ? "100%" : "420px";
             if (overlay) overlay.classList.remove("hidden");
             window.loadAdminNotifications();
-            window.loadAdminPolicyEditor?.();
         }
     };
 
