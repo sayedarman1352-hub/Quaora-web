@@ -15,7 +15,7 @@
 <script src="quaora-performance.js" defer></script>
 </head>
 <body class="min-h-screen bg-[#FAE29C] text-[#964b00] p-4 md:p-8">
-  <main class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
+  <main class="quaora-fade-up max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
     <a href="index.html" class="text-xs font-black tracking-widest uppercase">&larr; QUAORA</a>
     <h1 class="text-3xl md:text-4xl font-black mt-4 mb-6">Odeme</h1>
     <section id="checkoutContent" class="space-y-4"></section>
@@ -26,6 +26,10 @@
       <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
       <iframe id="paytriframe" frameborder="0" scrolling="no" style="width: 100%; min-height: 640px;"></iframe>
     </section>
+    <div id="checkoutPolicyLinks" class="mt-8 pt-5 border-t border-[#964b00]/10 flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-[0.22em]">
+      <a href="iade-politikasi.html" class="hover:text-black transition-colors">İade Politikası</a>
+      <a href="gizlilik-sozlesmesi.html" class="hover:text-black transition-colors">Gizlilik Sözleşmesi</a>
+    </div>
   </main>
 
   <script type="module">
@@ -262,22 +266,5 @@ if ('serviceWorker' in navigator) {
   }, { once: true });
 }
 </script>
-
-<footer class="mt-auto bg-[#FAE29C]/70 border-t border-[#964b00]/10 py-8 px-6 text-center">
-  <div class="max-w-5xl mx-auto space-y-5">
-    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] font-black uppercase tracking-[0.18em] text-[#964b00]">
-      <a href="mesafeli-satis-sozlesmesi.html" class="hover:text-black transition-colors">Mesafeli Satış Sözleşmesi</a>
-      <a href="iade-politikasi.html" class="hover:text-black transition-colors">İptal / İade Politikası</a>
-      <a href="teslimat-bilgileri.html" class="hover:text-black transition-colors">Teslimat</a>
-      <a href="gizlilik-sozlesmesi.html" class="hover:text-black transition-colors">Gizlilik Sözleşmesi</a>
-      <a href="iletisim.html" class="hover:text-black transition-colors">İletişim</a>
-    </div>
-    <div class="text-[10px] md:text-[11px] font-semibold text-gray-700 leading-relaxed">
-      <p><span class="font-black text-[#964b00]">Satıcı:</span> YAĞMUR TOPRAK KOÇ · <span class="font-black text-[#964b00]">E-posta:</span> quaoratr@gmail.com</p>
-      <p><span class="font-black text-[#964b00]">Telefon:</span> TELEFON_NUMARANIZI_BURAYA_YAZIN · <span class="font-black text-[#964b00]">Adres:</span> ADRES_BILGINIZI_BURAYA_YAZIN</p>
-    </div>
-    <p class="text-[9px] text-[#964b00] font-bold uppercase tracking-[0.3em]">© 2026 QUAORA SWIMWEAR</p>
-  </div>
-</footer>
 </body>
 </html>

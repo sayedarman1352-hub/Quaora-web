@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yeni Gelenler | QUAORA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap');
-        
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            margin: 0;
-            background-color: #E3B778; 
-            background: linear-gradient(135deg, #E3B778 0%, #d4a76a 100%);
-            background-attachment: fixed;
-        }
-        .serif { font-family: 'Playfair Display', serif; }
-        
-        .glass-card {
-            background: rgba(250, 226, 156, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yeni Gelenler | QUAORA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap');
 
-        #sideMenu, #cartPanel {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-    </style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg,#E3B778 0%,#d4a76a 100%);
+      background-attachment: fixed;
+    }
+
+    .serif { font-family:'Playfair Display', serif; }
+
+    .glass-card {
+      background: rgba(255,255,255,.4);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,.05);
+    }
+
+    #sideMenu,#cartPanel {
+      transition: all .5s cubic-bezier(.4,0,.2,1);
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+  </style>
+    <link rel="stylesheet" href="quaora-responsive.css">
 <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,22 +39,21 @@
 <link rel="dns-prefetch" href="//firestore.googleapis.com">
 <link rel="dns-prefetch" href="//www.paytr.com">
 <script src="quaora-performance.js" defer></script>
-    <link rel="stylesheet" href="quaora-responsive.css">
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative">
 
-<div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[90] hidden"></div>
+    <div id="menuOverlay" onclick="closeAllPanels()" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[90] hidden transition-opacity"></div>
 
-<div id="sideMenu" class="fixed top-0 left-0 h-full w-0 bg-[#FAE29C] z-[100] overflow-x-hidden border-r border-black/10 shadow-2xl flex flex-col">
-    <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
-    
-    <div class="mt-12 px-8 flex flex-col h-full items-start text-left"> 
-        <div class="relative mb-8">
-            <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
-            <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
-        </div>
+    <div id="sideMenu" class="fixed top-0 left-0 h-full bg-[#FAE29C] z-[100] w-0 overflow-x-hidden shadow-2xl flex flex-col">
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 text-2xl font-black text-[#964b00] hover:rotate-90 transition-transform duration-300">✕</button>
         
-        <nav class="flex flex-col space-y-3 w-full"> 
+        <div class="mt-12 px-8 flex flex-col h-full items-start text-left"> 
+            <div class="relative mb-8">
+                <h2 class="text-3xl font-black text-[#964b00] serif uppercase tracking-tighter">MENU</h2>
+                <div class="absolute -bottom-1 left-0 w-12 h-[2px] bg-[#964b00]/30"></div>
+            </div>
+            
+            <nav class="flex flex-col space-y-3 w-full"> 
                 <a href="index.html" class="text-lg font-bold text-[#964b00] hover:translate-x-2 transition-transform uppercase tracking-widest italic flex items-center mb-1">
                     <span class="text-xs mr-2">←</span> MAIN MENU
                 </a>
@@ -95,8 +99,8 @@
                     <a href="bottom.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">Bottoms</a>
                     <a href="iletisim.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic pt-2">Connection</a>
                     <a href="mesafeli-satis-sozlesmesi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Mesafeli Satış Sözleşmesi</a>
-                    <a href="iade-politikasi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">İptal / İade Politikası</a>
-                    <a href="teslimat-bilgileri.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Teslimat</a>
+                    <a href="teslimat-bilgileri.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Teslimat Bilgileri</a>
+                    <a href="iade-politikasi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">İade Politikası</a>
                     <a href="gizlilik-sozlesmesi.html" class="text-sm font-medium text-gray-500 hover:text-black hover:translate-x-2 transition-all uppercase tracking-[0.2em] italic">Gizlilik Sözleşmesi</a>
                     <div class="pt-2">
                         <hr class="border-[#964b00]/10 mb-4">
@@ -111,178 +115,84 @@
                     </div>
                 </div>
             </nav>
-    </div>
-</div>
-
-<div id="cartPanel" class="fixed top-0 right-0 h-full w-0 bg-white z-[101] overflow-x-hidden shadow-2xl flex flex-col">
-    <div class="p-6 flex justify-between items-center border-b bg-[#FAE29C]/10">
-        <h2 class="text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
-        <button onclick="toggleCart()" class="text-xl hover:rotate-90 transition-transform">✕</button>
-    </div>
-    <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4"></div>
-    <div class="p-6 border-t bg-gray-50">
-        <div class="flex justify-between items-center mb-4">
-            <span class="font-bold uppercase text-[10px] tracking-widest text-gray-400">Toplam Tutar</span>
-            <span id="cartTotal" class="text-xl font-black text-[#964b00]">₺0,00</span>
         </div>
-        <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md uppercase text-sm">Siparişi Tamamla</button>
     </div>
-</div>
 
-<nav class="flex justify-between items-center p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
-    <div class="flex items-center space-x-6">
-        <button onclick="toggleMenu()" class="flex items-center space-x-3 group focus:outline-none">
-            <div class="space-y-1.5">
-                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
-                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
-                <span class="block w-6 h-[3px] bg-[#964b00]"></span>
+    <div id="cartPanel" class="fixed top-0 right-0 h-full bg-white z-[101] w-0 overflow-hidden shadow-2xl flex flex-col border-l border-[#964b00]/20">
+        <div class="p-4 md:p-6 flex justify-between items-center border-b">
+            <h2 class="text-xl md:text-2xl font-black serif text-[#964b00]">SEPETİM</h2>
+            <button onclick="toggleCart()" class="text-xl hover:scale-110 transition-transform">✕</button>
+        </div>
+        <div id="cartItems" class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4 no-scrollbar"></div>
+        <div class="p-4 md:p-6 border-t bg-gray-50">
+            <div class="flex justify-between items-center mb-4">
+                <span class="font-bold uppercase text-[10px] tracking-widest text-gray-500">Toplam Tutar:</span>
+                <span id="cartTotal" class="text-lg md:text-xl font-black text-[#964b00]">₺0,00</span>
             </div>
-            <span class="text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
-        </button>
-        <div class="flex flex-col border-l border-[#964b00]/20 pl-6 cursor-pointer" onclick="window.location.href='index.html'">
-            <h1 class="text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
-            <p class="text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-14 font-semibold italic">Swimwear</p>
+            <button onclick="siparisVer()" class="w-full bg-[#964b00] text-white py-3 md:py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all shadow-md uppercase text-sm active:scale-95">Siparişi Tamamla</button>
         </div>
     </div>
-    <div class="flex items-center gap-4">
-        <span id="newAdminActionsMount"></span><button onclick="toggleCart()" aria-label="Sepet" class="text-2xl relative hover:scale-110 transition border-l border-black/10 pl-6 focus:outline-none">
-            &#128722;
-            <span id="cartCount" class="absolute -top-1 -right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
+
+    <nav class="flex justify-between items-center p-4 md:p-6 bg-[#FAE29C] shadow-md sticky top-0 z-50">
+        <div class="flex items-center space-x-4 md:space-x-6">
+            <button onclick="toggleMenu()" class="flex items-center space-x-2 md:space-x-3 group focus:outline-none">
+                <div class="space-y-1 md:space-y-1.5 group-hover:scale-105 transition-transform">
+                    <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                    <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                    <span class="block w-5 h-[2px] md:w-6 md:h-[3px] bg-[#964b00]"></span>
+                </div>
+                <span class="hidden md:inline text-[11px] font-black uppercase tracking-widest text-[#964b00]">Menu</span>
+            </button>
+            <div class="flex flex-col border-l border-[#964b00]/20 pl-4 md:pl-6 cursor-pointer" onclick="window.location.href='index.html'">
+                <h1 class="text-2xl md:text-3xl font-black tracking-[0.2em] text-[#964b00] serif uppercase leading-none">QUAORA</h1>
+                <p class="text-[8px] md:text-[10px] tracking-[0.5em] text-gray-600 uppercase mt-1 ml-10 md:ml-14 font-semibold italic"> YENİ GELENLER </p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 md:gap-6">
+            <span id="adminAddProductMount"></span>
+<button onclick="toggleCart()" class="text-xl md:text-2xl relative hover:scale-110 transition focus:outline-none border-l border-black/10 pl-4 md:pl-6">
+                🛒
+                <span id="cartCount" class="absolute -top-1 -right-1 md:-right-2 bg-[#964b00] text-white text-[8px] rounded-full h-4 w-4 flex items-center justify-center font-bold">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-8 md:py-16 px-2 md:px-4 flex-grow w-full">
+       <header class="text-center mb-10 md:mb-16">
+    <div class="flex items-center justify-center gap-3">
+        <h2 id="page-title" class="text-4xl md:text-6xl font-black text-[#964b00] uppercase tracking-tighter drop-shadow-sm serif" >
+            YENİ GELENLER
+        </h2> 
+        
+        
+        <button id="edit-title-btn" onclick="editPageText('title')" class="hidden bg-blue-600 text-white w-8 h-8 rounded-full font-bold shadow-lg text-sm hover:bg-blue-800 transition-transform hover:scale-110 items-center justify-center">
+            ✎
         </button>
     </div>
-</nav>
-
-<main class="max-w-7xl mx-auto py-16 px-4 flex-grow">
-    <header class="text-center mb-16">
-        <h2 class="text-5xl md:text-6xl font-black text-[#964b00] serif italic drop-shadow-sm">Yeni Gelenler</h2>
-        <div class="w-20 h-1 bg-[#964b00]/20 mx-auto mt-4 mb-2"></div>
-        <p class="text-gray-800 tracking-[0.3em] uppercase text-[10px] font-bold">Sezonun En Yeni Tasarımları</p>
-    </header>
     
-    <div id="newProductsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div class="mt-2 md:mt-4 flex items-center justify-center gap-2">
+        <p id="page-subtitle" class="text-gray-900 tracking-[0.2em] md:tracking-[0.3em] uppercase text-[8px] md:text-[10px] font-bold bg-white/30 inline-block px-3 py-1 rounded-full border border-white/20">
+            quaora
+        </p>
+        <button id="edit-subtitle-btn" onclick="editPageText('subtitle')" class="hidden bg-blue-600 text-white w-6 h-6 rounded-full font-bold shadow-lg text-xs hover:bg-blue-800 transition-transform hover:scale-110 items-center justify-center">
+            ✎
+        </button>
     </div>
-</main>
+</header>
 
-<div id="newProductAdminModalMount"></div>
+        <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8"></div>
 
-<div id="newBgAdminModalMount"></div>
+            <div id="productAdminModalMount"></div>
+    </main>
 
-<footer class="mt-auto bg-[#FAE29C]/70 border-t border-[#964b00]/10 py-8 px-6 text-center">
-  <div class="max-w-5xl mx-auto space-y-5">
-    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] font-black uppercase tracking-[0.18em] text-[#964b00]">
-      <a href="mesafeli-satis-sozlesmesi.html" class="hover:text-black transition-colors">Mesafeli Satış Sözleşmesi</a>
-      <a href="iade-politikasi.html" class="hover:text-black transition-colors">İptal / İade Politikası</a>
-      <a href="teslimat-bilgileri.html" class="hover:text-black transition-colors">Teslimat</a>
-      <a href="gizlilik-sozlesmesi.html" class="hover:text-black transition-colors">Gizlilik Sözleşmesi</a>
-      <a href="iletisim.html" class="hover:text-black transition-colors">İletişim</a>
-    </div>
-    <div class="text-[10px] md:text-[11px] font-semibold text-gray-700 leading-relaxed">
-      <p><span class="font-black text-[#964b00]">Satıcı:</span> YAĞMUR TOPRAK KOÇ · <span class="font-black text-[#964b00]">E-posta:</span> quaoratr@gmail.com</p>
-      <p><span class="font-black text-[#964b00]">Telefon:</span> TELEFON_NUMARANIZI_BURAYA_YAZIN · <span class="font-black text-[#964b00]">Adres:</span> ADRES_BILGINIZI_BURAYA_YAZIN</p>
-    </div>
-    <p class="text-[9px] text-[#964b00] font-bold uppercase tracking-[0.3em]">© 2026 QUAORA SWIMWEAR</p>
-  </div>
-</footer>
-<script>
-    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
-    const overlay = document.getElementById("menuOverlay");
 
-    function closeAllPanels() {
-        document.getElementById("sideMenu").style.width = "0";
-        document.getElementById("cartPanel").style.width = "0";
-        if(overlay) overlay.classList.add("hidden");
-    }
-
-    function toggleMenu() {
-        const menu = document.getElementById("sideMenu");
-        const isOpen = menu.style.width === "300px";
-        if (!isOpen) {
-            closeAllPanels();
-            menu.style.width = "300px";
-            overlay.classList.remove("hidden");
-        } else {
-            closeAllPanels();
-        }
-    }
-
-    function toggleCart() {
-        const panel = document.getElementById("cartPanel");
-        const isOpen = panel.style.width === "300px";
-        if (!isOpen) {
-            closeAllPanels();
-            panel.style.width = "300px";
-            overlay.classList.remove("hidden");
-            renderCart();
-        } else {
-            closeAllPanels();
-        }
-    }
-
-    function toggleMenuSection(sectionId, arrowId) {
-        const content = document.getElementById(sectionId);
-        const arrow = document.getElementById(arrowId);
-        const isClosed = content.style.maxHeight === '0px' || content.style.maxHeight === '';
-        
-        content.style.maxHeight = isClosed ? '350px' : '0px';
-        content.style.marginTop = isClosed ? '8px' : '0px';
-        arrow.style.transform = isClosed ? 'rotate(180deg)' : 'rotate(0deg)';
-    }
-
-    // SEPET MANTIĞI
-    function addToCart(name, price, paymentLink = '') {
-        cart = [{ name, price, qty: 1, paymentLink }];
-        updateCart();
-        toggleCart();
-    }
-
-    function removeFromCart(name) {
-        cart = cart.filter(item => item.name !== name);
-        updateCart();
-        renderCart();
-    }
-
-    function updateCart() {
-        localStorage.setItem('quaora_cart', JSON.stringify(cart));
-        const countElement = document.getElementById('cartCount');
-        if (countElement) countElement.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
-    }
-
-    function renderCart() {
-        const items = document.getElementById('cartItems');
-        const totalDisp = document.getElementById('cartTotal');
-        if (cart.length === 0) {
-            items.innerHTML = '<div class="flex flex-col items-center mt-20 text-gray-400"><span class="text-4xl mb-2">🛍️</span><p class="text-xs font-bold uppercase tracking-widest italic">Sepetin Boş</p></div>';
-            totalDisp.innerText = '₺0,00';
-            return;
-        }
-        let total = 0;
-        items.innerHTML = cart.map(item => {
-            total += (item.price * item.qty);
-            return `<div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-black/5 shadow-sm">
-                <div>
-                    <h4 class="font-bold uppercase text-[10px] tracking-tight text-gray-800">${item.name}</h4>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Adet: ${item.qty}</p>
-                    <p class="text-[#964b00] font-black text-sm italic mt-1">₺${(item.price * item.qty).toLocaleString('tr-TR')}</p>
-                </div>
-                <button onclick="removeFromCart('${item.name}')" class="text-red-400 hover:text-red-600 transition-colors p-2 text-lg">✕</button>
-            </div>`;
-        }).join('');
-        totalDisp.innerText = '₺' + total.toLocaleString('tr-TR');
-    }
-
-    function siparisVer() {
-        if (cart.length === 0) { alert("Sepetiniz boş!"); return; }
-        window.location.href = "checkout.html";
-    }
-    
-    updateCart();
-</script>
 
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, updateDoc, setDoc, onSnapshot, deleteDoc, doc, deleteField, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, updateDoc, setDoc, onSnapshot, deleteDoc, doc, getDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -296,265 +206,679 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const PRODUCTS = "yeni_gelenler";
-    const BG_DOC = "yeni_gelenler_background";
 
+    const COLLECTION_NAME = "yeni_gelenler";
+    const PAGE_SETTINGS_DOC = "yeni_gelenler_header";
+
+    let cart = JSON.parse(localStorage.getItem('quaora_cart')) || [];
+    let favorites = JSON.parse(localStorage.getItem('quaora_favorites')) || [];
+    let currentUser = null;
     let isAdmin = false;
-    let currentEditId = null;
-    let newImages = [];
-    let newBgImages = [];
-    let loadedProducts = [];
+    window.allProducts = []; 
+    window.currentEditId = null;
+    let currentImagesBase64 = [];
+
 
     const qaDecode = (value) => decodeURIComponent(Array.prototype.map.call(atob(value), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    const NEW_ADMIN_ACTIONS_HTML = "PGJ1dHRvbiBpZD0iYWRtaW5OZXdQcm9kdWN0QnRuIiBvbmNsaWNrPSJvcGVuTmV3UHJvZHVjdEFkbWluKCkiIGNsYXNzPSJoaWRkZW4gYmctYmxhY2sgdGV4dC13aGl0ZSB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRyYWNraW5nLXdpZGVzdCBweC00IHB5LTIgcm91bmRlZC1sZyBob3ZlcjpiZy1bIzk2NGIwMF0gdHJhbnNpdGlvbi1jb2xvcnMgdXBwZXJjYXNlIHNoYWRvdy1sZyI+CiAgICAgICAgICAgICsgw5xyw7xuIEVrbGUKICAgICAgICA8L2J1dHRvbj4KPGJ1dHRvbiBpZD0iYWRtaW5OZXdCZ0J0biIgb25jbGljaz0ib3Blbk5ld0JnQWRtaW4oKSIgY2xhc3M9ImhpZGRlbiBiZy1bIzk2NGIwMF0gdGV4dC13aGl0ZSB0ZXh0LVsxMHB4XSBmb250LWJsYWNrIHRyYWNraW5nLXdpZGVzdCBweC00IHB5LTIgcm91bmRlZC1sZyBob3ZlcjpiZy1ibGFjayB0cmFuc2l0aW9uLWNvbG9ycyB1cHBlcmNhc2Ugc2hhZG93LWxnIj4KICAgICAgICAgICAgQXJrYSBQbGFuCiAgICAgICAgPC9idXR0b24+";
-    const NEW_PRODUCT_MODAL_HTML = "PGRpdiBpZD0ibmV3UHJvZHVjdEFkbWluTW9kYWwiIGNsYXNzPSJoaWRkZW4gZml4ZWQgaW5zZXQtMCB6LVsxMDAwXSBiZy1ibGFjay82MCBiYWNrZHJvcC1ibHVyLXNtIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBwLTQiPgogICAgPGRpdiBjbGFzcz0iYmctWyNGQUUyOUNdIHctZnVsbCBtYXgtdy0yeGwgcm91bmRlZC1bMnJlbV0gc2hhZG93LTJ4bCBvdmVyZmxvdy1oaWRkZW4gZmxleCBmbGV4LWNvbCBtYXgtaC1bOTB2aF0gcmVsYXRpdmUgYm9yZGVyLTIgYm9yZGVyLXdoaXRlLzQwIj4KICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImNsb3NlTmV3UHJvZHVjdEFkbWluKCkiIGNsYXNzPSJhYnNvbHV0ZSB0b3AtNCByaWdodC00IHotNTAgdGV4dC1yZWQtNjAwIGZvbnQtYmxhY2sgdGV4dC0yeGwgdy0xMCBoLTEwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGhvdmVyOnNjYWxlLTExMCB0cmFuc2l0aW9uLWFsbCI+w5c8L2J1dHRvbj4KICAgICAgICA8ZGl2IGNsYXNzPSJwLTYgbWQ6cC04IG92ZXJmbG93LXktYXV0byBiZy13aGl0ZS82MCI+CiAgICAgICAgICAgIDxoMiBpZD0ibmV3UHJvZHVjdE1vZGFsVGl0bGUiIGNsYXNzPSJmb250LWJsYWNrIHRyYWNraW5nLXdpZGVzdCB0ZXh0LXhsIG1kOnRleHQtMnhsIHRleHQtWyM5NjRiMDBdIG1iLTYgdXBwZXJjYXNlIHNlcmlmIGJvcmRlci1iIGJvcmRlci1bIzk2NGIwMF0vMjAgcGItNCI+WWVuaSBWaXRyaW4gw5xyw7xuw7w8L2gyPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJzcGFjZS15LTQiPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJuZXdOYW1lIiBwbGFjZWhvbGRlcj0iw5xyw7xuIGlzbWkiIGNsYXNzPSJ3LWZ1bGwgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bIzk2NGIwMF0vMjAgcm91bmRlZC14bCBweC00IHB5LTMgdGV4dC1zbSBmb250LWJvbGQgb3V0bGluZS1ub25lIj4KICAgICAgICAgICAgICAgIDx0ZXh0YXJlYSBpZD0ibmV3RGVzYyIgcm93cz0iMyIgcGxhY2Vob2xkZXI9IsOccsO8biBhw6fEsWtsYW1hc8SxIiBjbGFzcz0idy1mdWxsIGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyM5NjRiMDBdLzIwIHJvdW5kZWQteGwgcHgtNCBweS0zIHRleHQtc20gZm9udC1tZWRpdW0gb3V0bGluZS1ub25lIHJlc2l6ZS1ub25lIj48L3RleHRhcmVhPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9ImZpbGUiIGlkPSJuZXdJbWFnZXNJbnB1dCIgYWNjZXB0PSJpbWFnZS8qIiBtdWx0aXBsZSBjbGFzcz0iaGlkZGVuIiBvbmNoYW5nZT0icHJldmlld05ld0ltYWdlcyh0aGlzKSI+CiAgICAgICAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCduZXdJbWFnZXNJbnB1dCcpLmNsaWNrKCkiIGNsYXNzPSJ3LWZ1bGwgYmctd2hpdGUgdGV4dC1bIzk2NGIwMF0gYm9yZGVyLTIgYm9yZGVyLWRhc2hlZCBib3JkZXItWyM5NjRiMDBdLzMwIHJvdW5kZWQteGwgcHktNiBmb250LWJsYWNrIHVwcGVyY2FzZSB0cmFja2luZy13aWRlc3QiPisgRm90b8SfcmFmIEVrbGU8L2J1dHRvbj4KICAgICAgICAgICAgICAgIDxkaXYgaWQ9Im5ld0ltYWdlUHJldmlldyIgY2xhc3M9ImdyaWQgZ3JpZC1jb2xzLTMgZ2FwLTMiPjwvZGl2PgogICAgICAgICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJzYXZlTmV3UHJvZHVjdCgpIiBjbGFzcz0idy1mdWxsIGJnLVsjOTY0YjAwXSB0ZXh0LXdoaXRlIGZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHRleHQtc20gcHktNCByb3VuZGVkLXhsIGhvdmVyOmJnLWJsYWNrIHRyYW5zaXRpb24tYWxsIj5LYXlkZXQ8L2J1dHRvbj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KPC9kaXY+";
-    const NEW_BG_MODAL_HTML = "PGRpdiBpZD0ibmV3QmdBZG1pbk1vZGFsIiBjbGFzcz0iaGlkZGVuIGZpeGVkIGluc2V0LTAgei1bMTAwMF0gYmctYmxhY2svNjAgYmFja2Ryb3AtYmx1ci1zbSBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcC00Ij4KICAgIDxkaXYgY2xhc3M9ImJnLVsjRkFFMjlDXSB3LWZ1bGwgbWF4LXctbGcgcm91bmRlZC1bMnJlbV0gc2hhZG93LTJ4bCBvdmVyZmxvdy1oaWRkZW4gZmxleCBmbGV4LWNvbCBtYXgtaC1bOTB2aF0gcmVsYXRpdmUgYm9yZGVyLTIgYm9yZGVyLXdoaXRlLzQwIj4KICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImNsb3NlTmV3QmdBZG1pbigpIiBjbGFzcz0iYWJzb2x1dGUgdG9wLTQgcmlnaHQtNCB6LTUwIHRleHQtcmVkLTYwMCBmb250LWJsYWNrIHRleHQtMnhsIHctMTAgaC0xMCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBob3ZlcjpzY2FsZS0xMTAgdHJhbnNpdGlvbi1hbGwiPsOXPC9idXR0b24+CiAgICAgICAgPGRpdiBjbGFzcz0icC02IG1kOnAtOCBvdmVyZmxvdy15LWF1dG8gYmctd2hpdGUvNjAiPgogICAgICAgICAgICA8aDIgY2xhc3M9ImZvbnQtYmxhY2sgdHJhY2tpbmctd2lkZXN0IHRleHQteGwgbWQ6dGV4dC0yeGwgdGV4dC1bIzk2NGIwMF0gbWItNiB1cHBlcmNhc2Ugc2VyaWYgYm9yZGVyLWIgYm9yZGVyLVsjOTY0YjAwXS8yMCBwYi00Ij5OZXcgQXJrYSBQbGFuPC9oMj4KICAgICAgICAgICAgPGlucHV0IHR5cGU9ImZpbGUiIGlkPSJuZXdCZ0lucHV0IiBhY2NlcHQ9ImltYWdlLyoiIG11bHRpcGxlIGNsYXNzPSJoaWRkZW4iIG9uY2hhbmdlPSJ1cGxvYWROZXdCYWNrZ3JvdW5kcyh0aGlzKSI+CiAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0iZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ25ld0JnSW5wdXQnKS5jbGljaygpIiBjbGFzcz0idy1mdWxsIGJnLXdoaXRlIHRleHQtWyM5NjRiMDBdIGJvcmRlci0yIGJvcmRlci1kYXNoZWQgYm9yZGVyLVsjOTY0YjAwXS8zMCByb3VuZGVkLXhsIHB5LTYgZm9udC1ibGFjayB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0Ij4rIEFya2EgUGxhbiBGb3RvxJ9yYWbEsSBFa2xlPC9idXR0b24+CiAgICAgICAgICAgIDxkaXYgaWQ9Im5ld0JnUHJldmlldyIgY2xhc3M9ImdyaWQgZ3JpZC1jb2xzLTMgZ2FwLTMgbXQtNSI+PC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KPC9kaXY+";
 
-    window.ensureNewAdminActions = () => {
-        const mount = document.getElementById('newAdminActionsMount');
-        if (!mount || document.getElementById('adminNewProductBtn')) return;
-        mount.innerHTML = qaDecode(NEW_ADMIN_ACTIONS_HTML);
-    };
-    window.ensureNewProductAdminModal = () => {
-        const mount = document.getElementById('newProductAdminModalMount');
-        if (!mount || document.getElementById('newProductAdminModal')) return;
-        mount.innerHTML = qaDecode(NEW_PRODUCT_MODAL_HTML);
-    };
-    window.ensureNewBgAdminModal = () => {
-        const mount = document.getElementById('newBgAdminModalMount');
-        if (!mount || document.getElementById('newBgAdminModal')) return;
-        mount.innerHTML = qaDecode(NEW_BG_MODAL_HTML);
+    let quaoraAdminTemplatesPromise = null;
+
+    const loadQuaoraAdminTemplates = async () => {
+        if (window.QUAORA_ADMIN_TEMPLATES) return window.QUAORA_ADMIN_TEMPLATES;
+        if (!quaoraAdminTemplatesPromise) quaoraAdminTemplatesPromise = import('./quaora-admin-templates.js');
+        await quaoraAdminTemplatesPromise;
+        return window.QUAORA_ADMIN_TEMPLATES || {};
     };
 
-    const compressImage = (file, maxWidth = 900, quality = 0.65) => new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let w = img.width;
-                let h = img.height;
-                if (w > maxWidth) {
-                    h = Math.round((h * maxWidth) / w);
-                    w = maxWidth;
-                }
-                canvas.width = w;
-                canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                resolve(canvas.toDataURL('image/jpeg', quality));
-            };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    const clearIfExists = (id) => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
+    const getQuaoraAdminTemplate = async () => {
+        const templates = await loadQuaoraAdminTemplates();
+        const fileName = window.location.pathname.split('/').pop() || 'index.html';
+        return templates[fileName] || templates['ayakkabilar.html'] || templates.default || {};
     };
 
-    const renderNewProducts = () => {
-        const grid = document.getElementById('newProductsGrid');
-        if (!grid) return;
+    window.ensureProductAdminButton = async () => {
+        const mount = document.getElementById('adminAddProductMount');
+        if (!mount || document.getElementById('adminAddProductBtn')) return;
+        const template = await getQuaoraAdminTemplate();
+        if (template.button) mount.innerHTML = qaDecode(template.button);
+    };
 
-        const productCards = loadedProducts.map(product => {
-            const images = Array.isArray(product.images) ? product.images : [];
-            const img = images[0] || "";
-            const adminControls = isAdmin ? `
-                <div class="absolute top-4 left-4 z-20 flex gap-2">
-                    <button onclick="editNewProduct('${product.id}')" class="bg-blue-600 text-white w-8 h-8 rounded-full font-bold shadow-lg">✎</button>
-                    <button onclick="deleteNewProduct('${product.id}')" class="bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow-lg">×</button>
+    window.ensureProductAdminModal = async () => {
+        const mount = document.getElementById('productAdminModalMount');
+        if (!mount || document.getElementById('productAdminModal')) return;
+        const template = await getQuaoraAdminTemplate();
+        if (template.modal) mount.innerHTML = qaDecode(template.modal);
+    };
+
+    window.selectedSizes = {};
+    window.currentAdminSizes = {}; 
+
+    // --- SAYFA METİNLERİNİ YÜKLEME VE KAYDETME ---
+    const loadPageTexts = () => {
+        onSnapshot(doc(db, "page_settings", PAGE_SETTINGS_DOC), (docSnap) => {
+            const titleEl = document.getElementById("page-title");
+            const subtitleEl = document.getElementById("page-subtitle");
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if(titleEl && data.title) titleEl.innerText = data.title;
+                if(subtitleEl && data.subtitle) subtitleEl.innerText = data.subtitle;
+            }
+        });
+    };
+
+    window.savePageTexts = async () => {
+        const titleText = document.getElementById("page-title")?.innerText.trim() || "YENİ GELENLER"; // ________________________________-
+        const subtitleText = document.getElementById("page-subtitle")?.innerText.trim() || "quaora";
+        
+        try {
+            await setDoc(doc(db, "page_settings", PAGE_SETTINGS_DOC), {
+                title: titleText,
+                subtitle: subtitleText
+            }, { merge: true });
+            console.log("Metinler başarıyla kaydedildi.");
+        } catch (error) {
+            console.error("Yazı güncellenirken hata:", error);
+        }
+    };
+
+    // Butona tıklayınca açılacak güvenli düzenleme penceresi
+    window.editPageText = async (type) => {
+        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
+        const targetElement = document.getElementById(type === 'title' ? 'page-title' : 'page-subtitle');
+        const currentText = targetElement.innerText;
+        
+        // Ekrana giriş penceresi çıkar
+        const newText = prompt("Yeni metni girin:", currentText);
+        
+        // Eğer iptale basılmadıysa ve boş bırakılmadıysa kaydet
+        if (newText !== null && newText.trim() !== "") {
+            targetElement.innerText = newText.trim();
+            await window.savePageTexts(); // Firebase'e kaydet
+            alert("Yazı başarıyla güncellendi!");
+        }
+    };
+
+    // --- ARAYÜZ ---
+    window.closeAllPanels = () => {
+        document.getElementById("sideMenu").style.width = "0";
+        document.getElementById("cartPanel").style.width = "0";
+        document.getElementById("menuOverlay").classList.add("hidden");
+    };
+
+    window.toggleMenu = () => {
+        const m = document.getElementById("sideMenu");
+        const w = window.innerWidth < 768 ? "100%" : "300px";
+        if (m.style.width === w) { closeAllPanels(); } 
+        else { closeAllPanels(); m.style.width = w; document.getElementById("menuOverlay").classList.remove("hidden"); }
+    };
+
+    window.toggleCart = () => {
+        const p = document.getElementById("cartPanel");
+        const w = window.innerWidth < 768 ? "100%" : "350px"; 
+        if (p.style.width === w) { closeAllPanels(); } 
+        else { closeAllPanels(); p.style.width = w; document.getElementById("menuOverlay").classList.remove("hidden"); window.renderCart(); }
+    };
+
+    window.toggleMenuSection = (sectionId, arrowId) => {
+        const section = document.getElementById(sectionId);
+        const arrow = document.getElementById(arrowId);
+        if (section.style.maxHeight && section.style.maxHeight !== "0px") {
+            section.style.maxHeight = "0px";
+            arrow.style.transform = "rotate(0deg)";
+        } else {
+            section.style.maxHeight = section.scrollHeight + "px";
+            arrow.style.transform = "rotate(180deg)";
+        }
+    };
+
+    // --- BİLGİ / AÇIKLAMA MODALI ---
+    window.showDescription = (id) => {
+        const product = window.allProducts.find(p => p.id === id);
+        if(!product) return;
+        
+        let descModal = document.getElementById('descModal');
+        if(!descModal) {
+            descModal = document.createElement('div');
+            descModal.id = 'descModal';
+            descModal.className = 'fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300';
+            descModal.innerHTML = `
+                <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-6 relative transform scale-95 transition-transform duration-300 border border-[#964b00]/20" id="descModalContent">
+                    <button onclick="closeDescription()" class="absolute top-4 right-4 bg-gray-100 text-black rounded-full w-8 h-8 flex items-center justify-center font-bold hover:bg-red-500 hover:text-white transition-colors">✕</button>
+                    <h3 id="descModalTitle" class="text-xl font-black text-[#964b00] uppercase tracking-widest mb-4 pr-8 serif border-b border-[#964b00]/20 pb-2"></h3>
+                    <div id="descModalText" class="text-sm text-gray-700 font-medium leading-relaxed max-h-[50vh] overflow-y-auto custom-scroll pr-2 whitespace-pre-wrap"></div>
                 </div>
-            ` : "";
+            `;
+            document.body.appendChild(descModal);
+        }
+        
+        document.getElementById('descModalTitle').innerText = product.name;
+        document.getElementById('descModalText').innerText = product.description || "Bu ürün için detaylı bir açıklama eklenmemiştir.";
+        
+        descModal.classList.remove('opacity-0', 'pointer-events-none');
+        document.getElementById('descModalContent').classList.remove('scale-95');
+        document.getElementById('descModalContent').classList.add('scale-100');
+    };
 
+    window.closeDescription = () => {
+        const descModal = document.getElementById('descModal');
+        if(descModal) {
+            descModal.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('descModalContent').classList.remove('scale-100');
+            document.getElementById('descModalContent').classList.add('scale-95');
+        }
+    };
+
+    // --- SEPET İŞLEMLERİ ---
+    window.updateCart = () => {
+        localStorage.setItem('quaora_cart', JSON.stringify(cart));
+        const c = document.getElementById('cartCount');
+        if(c) c.innerText = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    };
+    
+    window.renderCart = () => {
+        const items = document.getElementById('cartItems');
+        const tDisp = document.getElementById('cartTotal');
+        if (cart.length === 0) {
+            items.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Sepetiniz boş.</p>';
+            tDisp.innerText = '₺0,00'; return;
+        }
+        let total = 0;
+        items.innerHTML = cart.map(i => {
+            total += (i.price * i.qty);
             return `
-                <div class="group glass-card p-4 rounded-[2.5rem] shadow-2xl transition-all hover:-translate-y-2 relative">
-                    ${adminControls}
-                    <div class="overflow-hidden bg-gray-200 relative rounded-[2rem] h-[400px]">
-                        <div class="absolute top-4 right-4 bg-black text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-widest">VİTRİN</div>
-                        ${img ? `<img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">` : ""}
+                <div class="flex justify-between items-center bg-gray-50 p-3 md:p-4 rounded-xl border border-black/5">
+                    <div>
+                        <h4 class="font-bold uppercase text-[10px] md:text-[11px] tracking-tight text-gray-800">${i.name}</h4>
+                        <p class="text-[9px] md:text-[10px] font-bold text-gray-500 mb-1">Beden: <span class="text-[#964b00]">${i.size}</span> | Adet: ${i.qty}</p>
+                        <p class="text-[#964b00] font-black text-xs md:text-sm italic">₺${(i.price * i.qty).toLocaleString('tr-TR')}</p>
                     </div>
-                    <div class="mt-6 px-4 pb-2">
-                        <h4 class="font-bold text-gray-900 uppercase text-xs italic tracking-tighter">${product.name || "Yeni Ürün"}</h4>
-                        ${product.description ? `<p class="text-[10px] text-gray-600 mt-1 max-w-[220px]">${product.description}</p>` : ""}
-                    </div>
+                    <button onclick="removeFromCart('${i.cartItemId}')" class="text-red-500 font-bold px-2 hover:scale-110">✕</button>
                 </div>
             `;
         }).join('');
-
-        grid.innerHTML = productCards;
+        tDisp.innerText = '₺' + total.toLocaleString('tr-TR');
     };
 
-    window.openNewProductAdmin = () => {
-        window.ensureNewProductAdminModal?.();
-        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
-        currentEditId = null;
-        newImages = [];
-        document.getElementById('newProductModalTitle').innerText = qaDecode("WWVuaSBWaXRyaW4gw5xyw7xuw7w=");
-        document.getElementById('newName').value = '';
-        document.getElementById('newDesc').value = '';
+    window.addToCart = (id, name, price) => {
+        const product = window.allProducts.find(p => p.id === id);
+        const size = window.selectedSizes[id];
+        
+        if (!size) return alert("Lütfen sepete eklemeden önce bir beden seçin!");
+        
+        const pSizeStocks = product.sizeStocks || {};
+        const stockForSize = pSizeStocks[size] || 0;
+        const cartItemId = id + "_" + size; 
+        const index = cart.findIndex(i => i.cartItemId === cartItemId);
+        
+        let currentQty = index > -1 ? cart[index].qty : 0;
+        if (currentQty >= stockForSize) {
+            return alert(`Maalesef bu bedende daha fazla ürün ekleyemezsiniz! (Kalan Stok: ${stockForSize})`);
+        }
 
-        // Eski HTML'de bu alanlar duruyorsa değerlerini temizle. Artık kullanılmıyorlar.
-        clearIfExists('newPaymentLink');
-        clearIfExists('newOldPrice');
-        clearIfExists('newSalePrice');
-
-        renderNewImagePreview();
-        document.getElementById('newProductAdminModal').classList.remove('hidden');
-        document.getElementById('newProductAdminModal').classList.add('flex');
+        if (index > -1) { cart[index].qty += 1; } 
+        else { cart.push({ cartItemId, id, name, price, size, qty: 1, paymentLink: product.paymentLink || product.paymentUrl || product.payLink || '', image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '' }); }
+        window.updateCart(); window.toggleCart();
     };
 
-    window.closeNewProductAdmin = () => {
-        const modal = document.getElementById('newProductAdminModal');
-        if (!modal) return;
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+    window.removeFromCart = (cartItemId) => {
+        cart = cart.filter(i => i.cartItemId !== cartItemId);
+        window.updateCart(); window.renderCart();
+    };
+    
+    window.siparisVer = () => {
+        if(cart.length > 0) window.location.href = "checkout.html";
     };
 
-    window.previewNewImages = async (input) => {
-        if (!input.files) return;
-        for (const file of input.files) newImages.push(await compressImage(file));
-        input.value = '';
-        renderNewImagePreview();
+    window.selectSize = (productId, size) => {
+        window.selectedSizes[productId] = size;
+        document.querySelectorAll(`.size-btn-${productId}`).forEach(btn => {
+            if(!btn.disabled) {
+                btn.classList.remove('bg-[#964b00]', 'text-white', 'border-[#964b00]');
+                btn.classList.add('bg-white/50', 'text-gray-800', 'border-black/10');
+            }
+        });
+        const selectedBtn = document.getElementById(`size-btn-${productId}-${size}`);
+        if (selectedBtn && !selectedBtn.disabled) {
+            selectedBtn.classList.remove('bg-white/50', 'text-gray-800', 'border-black/10');
+            selectedBtn.classList.add('bg-[#964b00]', 'text-white', 'border-[#964b00]');
+        }
     };
 
-    const renderNewImagePreview = () => {
-        const container = document.getElementById('newImagePreview');
-        if (!container) return;
-        container.innerHTML = newImages.map((img, index) => `
-            <div class="relative h-24 rounded-xl overflow-hidden border-2 border-white shadow-md">
-                <img src="${img}" class="w-full h-full object-cover">
-                <button onclick="removeNewImage(${index})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full font-black text-xs">×</button>
-            </div>
-        `).join('');
+    // --- ÜRÜN LİSTELEME ---
+    const renderProducts = (products) => {
+        const grid = document.getElementById('productGrid');
+        if(!grid) return;
+        
+        if(products.length === 0) {
+            grid.innerHTML = '<p class="text-center col-span-2 md:col-span-3 lg:col-span-4 text-[#964b00] font-bold italic mt-10">Şu an ürün bulunmamaktadır.</p>';
+            return;
+        }
+
+        grid.innerHTML = products.map(p => {
+            const images = p.images && p.images.length > 0 ? p.images : [];
+            const mainImg = images.length > 0 ? images[0] : '';
+            const pSizeStocks = p.sizeStocks || {};
+            const totalStock = Object.values(pSizeStocks).reduce((sum, val) => sum + val, 0);
+
+            let sliderHtml = images.length > 1 ? `
+                <div id="slider-${p.id}" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar w-full h-full">
+                    ${images.map(img => `<img src="${img}" class="snap-center shrink-0 w-full h-full object-cover">`).join('')}
+                </div>
+                <button onclick="scrollSlider('${p.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow hover:bg-white z-10 text-[10px] md:text-sm flex items-center justify-center">❮</button>
+                <button onclick="scrollSlider('${p.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 text-black w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow hover:bg-white z-10 text-[10px] md:text-sm flex items-center justify-center">❯</button>
+            ` : `<img src="${mainImg}" class="w-full h-full object-cover">`;
+
+            const adminButtons = isAdmin ? `
+                <div class="absolute top-14 right-2 md:top-16 md:right-4 z-20 flex flex-col gap-1.5 md:gap-2">
+                    <button onclick="editProduct('${p.id}')" class="bg-blue-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-blue-800 transition-colors">✎</button>
+                    <button onclick="deleteProduct('${p.id}')" class="bg-red-600 text-white w-6 h-6 md:w-8 md:h-8 rounded-full font-bold shadow-lg text-[10px] md:text-xs hover:bg-red-800 transition-colors">✕</button>
+                </div>
+            ` : '';
+
+            const isFav = favorites.includes(p.id);
+
+            return `
+            <article id="product-${p.id}" class="glass-card rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col group relative shadow-xl">
+                
+                <button onclick="toggleFavorite('${p.id}')" class="absolute top-2 right-2 md:top-4 md:right-4 z-20 w-8 h-8 md:w-10 md:h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+                    <svg class="w-4 h-4 md:w-5 md:h-5 transition-colors ${isFav ? 'text-red-500 fill-current' : 'text-gray-400 fill-none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+                    </svg>
+                </button>
+                ${adminButtons}
+                <div class="relative h-56 md:h-[26rem] overflow-hidden bg-white/50">
+                    ${sliderHtml}
+                    <div class="absolute top-2 left-2 md:top-4 md:left-4 discount-tag shadow-lg text-[10px] md:text-xs px-2 py-1 md:px-3 md:py-1.5 bg-white text-black rounded font-bold z-10">
+                        -%${p.discount || Math.round(((p.originalPrice - p.salePrice) / p.originalPrice) * 100)}
+                    </div>
+                    ${totalStock < 5 && totalStock > 0 ? `<div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 bg-black text-white text-[8px] md:text-[9px] px-2 py-1 md:px-3 md:py-1.5 rounded-full font-black tracking-[0.2em] uppercase shadow-lg z-10">SON ${totalStock}</div>` : ''}
+                    ${totalStock === 0 ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-10"><span class="bg-black text-white px-3 py-1.5 md:px-6 md:py-2 rounded-lg md:rounded-xl font-black tracking-widest text-[10px] md:text-sm uppercase rotate-[-10deg]">Tükendi</span></div>` : ''}
+                </div>
+                
+                <div class="p-3 md:p-6 flex flex-col flex-grow bg-white/40">
+                    <h3 class="text-xs md:text-xl font-black text-gray-900 uppercase tracking-widest mb-1.5 md:mb-2 line-clamp-2">${p.name}</h3>
+                    
+                    <div class="flex items-center gap-2 mb-3 md:mb-4 flex-wrap">
+                        <span class="text-sm md:text-2xl font-black text-red-600 italic">₺${p.salePrice}</span>
+                        <span class="text-[10px] md:text-sm font-bold text-gray-500 line-through">₺${p.originalPrice}</span>
+                    </div>
+
+                    <div class="mb-3 md:mb-6 mt-auto">
+                        <p class="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-gray-500 mb-1.5 md:mb-2">Beden</p>
+                        <div class="flex flex-wrap gap-1.5 md:gap-2 mt-1">
+                            ${Object.keys(pSizeStocks).map(s => {
+                                const stockOfSize = pSizeStocks[s];
+                                const isOutOfStock = stockOfSize <= 0;
+                                return `
+                                    <button id="size-btn-${p.id}-${s}" 
+                                            onclick="${isOutOfStock ? '' : `selectSize('${p.id}', '${s}')`}"
+                                            class="size-btn-${p.id} px-2 py-1.5 md:px-4 md:py-2.5 bg-white/50 border border-black/10 rounded-lg text-[10px] md:text-sm font-bold ${isOutOfStock ? 'text-gray-300 line-through opacity-50 cursor-not-allowed' : 'text-gray-800 hover:border-[#964b00] cursor-pointer'} transition-colors focus:outline-none shadow-sm min-w-[2rem] md:min-w-[3rem]"
+                                            ${isOutOfStock ? 'disabled' : ''}>
+                                        ${s}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 w-full mt-auto">
+                        <button onclick="showDescription('${p.id}')" class="w-[30%] md:w-[35%] bg-white hover:bg-gray-100 text-[#964b00] border border-[#964b00]/30 py-2.5 md:py-4 rounded-lg md:rounded-xl font-black tracking-widest uppercase text-[8px] md:text-[10px] transition-all shadow-md flex items-center justify-center">
+                            ℹ️ BİLGİ
+                        </button>
+                        <button onclick="addToCart('${p.id}', '${p.name}', ${p.salePrice})" 
+                                ${totalStock === 0 ? 'disabled' : ''}
+                                class="w-[70%] md:w-[65%] ${totalStock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#964b00] hover:bg-black active:scale-95'} text-white py-2.5 md:py-4 rounded-lg md:rounded-xl font-black tracking-[0.1em] md:tracking-[0.2em] uppercase text-[9px] md:text-[11px] transition-all shadow-lg">
+                            ${totalStock === 0 ? 'TÜKENDİ' : 'SEPETE EKLE'}
+                        </button>
+                    </div>
+                </div>
+            </article>
+            `;
+        }).join('');
     };
 
-    window.removeNewImage = (index) => {
-        newImages.splice(index, 1);
-        renderNewImagePreview();
+    window.scrollSlider = (id, direction) => {
+        const slider = document.getElementById(`slider-${id}`);
+        if(slider) {
+            const scrollAmount = slider.clientWidth;
+            slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
     };
 
-    window.saveNewProduct = async () => {
-        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
+    window.queueDiscountEmails = async (productName, oldPrice, newPrice) => {
+        try {
+            const usersSnap = await getDocs(collection(db, "users"));
+            const subject = "Quaora'da favori indirimi";
+            const text = productName + " ürününde fiyat " + oldPrice + " TL\'den " + newPrice + " TL\'ye düştü.";
+            await Promise.all(usersSnap.docs.map(userDoc => {
+                const email = userDoc.data().email;
+                if (!email) return Promise.resolve();
+                return addDoc(collection(db, "mail"), {
+                    to: [email],
+                    message: { subject, text, html: `<p>${text}</p>` },
+                    createdAt: Date.now(),
+                    type: "price_drop"
+                });
+            }));
+        } catch (error) {
+            console.warn("?ndirim e-postas? kuyru?a al?namad?:", error);
+        }
+    };
 
-        const name = document.getElementById('newName').value.trim();
-        if (!name || newImages.length === 0) return alert('Ürün adı ve fotoğraf zorunlu.');
+    // --- ADM?N ??LEMLER? ---
+    window.addAdminSize = () => {
+        const sizeInput = document.getElementById('adminSizeInput');
+        const stockInput = document.getElementById('adminStockInput');
+        const size = sizeInput.value.trim().toUpperCase();
+        const stock = parseInt(stockInput.value);
 
-        const data = {
-            name,
-            description: document.getElementById('newDesc').value.trim(),
-            images: newImages
-        };
-
-        if (currentEditId) {
-            await updateDoc(doc(db, PRODUCTS, currentEditId), {
-                ...data,
-                // Eski satış alanlarını Firestore dokümanından temizler.
-                paymentLink: deleteField(),
-                originalPrice: deleteField(),
-                salePrice: deleteField()
-            });
+        if(size && stock >= 0) {
+            window.currentAdminSizes[size] = stock;
+            sizeInput.value = '';
+            stockInput.value = '';
+            window.renderAdminSizes();
         } else {
-            await addDoc(collection(db, PRODUCTS), { ...data, createdAt: Date.now() });
+            alert("Lütfen geçerli bir beden adı ve stok miktarı giriniz.");
+        }
+    };
+
+    window.removeAdminSize = (size) => {
+        delete window.currentAdminSizes[size];
+        window.renderAdminSizes();
+    };
+
+    window.renderAdminSizes = () => {
+        const container = document.getElementById('adminSizesContainer');
+        const sizes = Object.keys(window.currentAdminSizes);
+        
+        if(sizes.length === 0) {
+            container.innerHTML = '<span class="text-[10px] text-gray-500 font-bold">Henüz beden eklenmedi.</span>';
+            return;
         }
 
-        closeNewProductAdmin();
-    };
-
-    window.editNewProduct = (id) => {
-        window.ensureNewProductAdminModal?.();
-        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
-        const product = loadedProducts.find(item => item.id === id);
-        if (!product) return;
-
-        currentEditId = id;
-        newImages = Array.isArray(product.images) ? [...product.images] : [];
-        document.getElementById('newProductModalTitle').innerText = qaDecode("Vml0cmluIMOccsO8bsO8bsO8IETDvHplbmxl");
-        document.getElementById('newName').value = product.name || '';
-        document.getElementById('newDesc').value = product.description || '';
-
-        // Eski HTML'de bu alanlar duruyorsa değerlerini temizle. Artık kullanılmıyorlar.
-        clearIfExists('newPaymentLink');
-        clearIfExists('newOldPrice');
-        clearIfExists('newSalePrice');
-
-        renderNewImagePreview();
-        document.getElementById('newProductAdminModal').classList.remove('hidden');
-        document.getElementById('newProductAdminModal').classList.add('flex');
-    };
-
-    window.deleteNewProduct = async (id) => {
-        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
-        if (confirm('Bu ürün silinsin mi?')) await deleteDoc(doc(db, PRODUCTS, id));
-    };
-
-    window.openNewBgAdmin = () => {
-        window.ensureNewBgAdminModal?.();
-        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
-        document.getElementById('newBgAdminModal').classList.remove('hidden');
-        document.getElementById('newBgAdminModal').classList.add('flex');
-        renderNewBgPreview();
-    };
-
-    window.closeNewBgAdmin = () => {
-        const modal = document.getElementById('newBgAdminModal');
-        if (!modal) return;
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    };
-
-    window.uploadNewBackgrounds = async (input) => {
-        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
-        if (!input.files) return;
-        const next = [...newBgImages];
-        for (const file of input.files) next.push(await compressImage(file, 1280, 0.65));
-        input.value = '';
-        await setDoc(doc(db, 'page_settings', BG_DOC), { images: next }, { merge: true });
-    };
-
-    const renderNewBgPreview = () => {
-        const container = document.getElementById('newBgPreview');
-        if (!container) return;
-        container.innerHTML = newBgImages.map((img, index) => `
-            <div class="relative h-24 rounded-xl overflow-hidden border-2 border-white shadow-md">
-                <img src="${img}" class="w-full h-full object-cover">
-                <button onclick="deleteNewBackground(${index})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full font-black text-xs">×</button>
+        container.innerHTML = sizes.map(s => `
+            <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-[#964b00]/20 shadow-sm">
+                <span class="text-xs font-black text-[#964b00]">${s}</span>
+                <span class="text-[10px] font-bold text-gray-600">(${window.currentAdminSizes[s]} adet)</span>
+                <button onclick="removeAdminSize('${s}')" class="text-red-500 font-bold ml-2 hover:scale-110">✕</button>
             </div>
         `).join('');
     };
 
-    window.deleteNewBackground = async (index) => {
-        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
-        const next = [...newBgImages];
-        next.splice(index, 1);
-        await setDoc(doc(db, 'page_settings', BG_DOC), { images: next }, { merge: true });
+    window.previewProductImage = async (input) => {
+        if (input.files && input.files.length > 0) {
+            for (let i = 0; i < input.files.length; i++) {
+                const file = input.files[i];
+                let base64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 640; 
+                            let w = img.width; 
+                            let h = img.height;
+                            
+                            if (w > MAX_WIDTH) {
+                                h = Math.round((h * MAX_WIDTH) / w);
+                                w = MAX_WIDTH;
+                            }
+                            canvas.width = w; 
+                            canvas.height = h;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+                            
+                            resolve(canvas.toDataURL('image/webp', 0.58));
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                currentImagesBase64.push(base64); 
+            }
+            window.renderAdminImagePreviews(); 
+            input.value = ""; 
+        }
     };
 
-    onSnapshot(query(collection(db, PRODUCTS), orderBy('createdAt', 'desc')), (snapshot) => {
-        loadedProducts = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
-        renderNewProducts();
-    });
+    window.renderAdminImagePreviews = () => {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = currentImagesBase64.map((img, index) => `
+            <div class="relative rounded-xl overflow-hidden h-24 md:h-32 border-2 border-white shadow-md">
+                <img src="${img}" class="w-full h-full object-cover">
+                <button onclick="removeAdminImage(${index})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full font-black text-xs shadow-lg hover:bg-red-800">✕</button>
+            </div>
+        `).join('');
+    };
 
-    onSnapshot(doc(db, 'page_settings', BG_DOC), (docSnap) => {
-        newBgImages = docSnap.exists() && Array.isArray(docSnap.data().images) ? docSnap.data().images : [];
-        if (newBgImages[0]) {
-            document.body.style.backgroundImage = `linear-gradient(rgba(227,183,120,.5), rgba(212,167,106,.6)), url('${newBgImages[0]}')`;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundPosition = 'center';
-            document.body.style.backgroundAttachment = 'fixed';
+    window.removeAdminImage = (index) => {
+        currentImagesBase64.splice(index, 1);
+        window.renderAdminImagePreviews();
+    };
+
+    window.calculateDiscount = () => {
+        const oldP = parseFloat(document.getElementById('pOldPrice').value);
+        const newP = parseFloat(document.getElementById('pNewPrice').value);
+        const badge = document.getElementById('discountBadge');
+
+        if (oldP && newP && oldP > newP) {
+            const percent = Math.round(((oldP - newP) / oldP) * 100);
+            badge.innerText = `-%${percent}`;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
         }
-        renderNewBgPreview();
+    };
+
+    window.openProductAdmin = async () => {
+        await window.ensureProductAdminModal?.();
+        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
+        window.currentEditId = null;
+        document.getElementById('modalTitle').innerText = qaDecode("WUVOxLAgw5xSw5xO");
+        document.getElementById('saveBtnText').innerText = qaDecode("UEFZTEHFng==");
+        
+        document.getElementById('pName').value = '';
+        document.getElementById('pDesc').value = '';
+        document.getElementById('pPaymentLink').value = '';
+        document.getElementById('pOldPrice').value = '';
+        document.getElementById('pNewPrice').value = '';
+        document.getElementById('discountBadge').classList.add('hidden');
+        
+        currentImagesBase64 = []; 
+        window.currentAdminSizes = {}; 
+        
+        window.renderAdminImagePreviews(); 
+        window.renderAdminSizes();
+
+        document.getElementById('productAdminModal').classList.remove('hidden');
+        document.getElementById('productAdminModal').classList.add('flex');
+    };
+
+    window.closeProductAdmin = () => {
+        const productAdminModal = document.getElementById('productAdminModal');
+        if (!productAdminModal) return;
+        productAdminModal.classList.add('hidden');
+        productAdminModal.classList.remove('flex');
+    };
+
+    window.saveProduct = async () => {
+        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
+        const name = document.getElementById('pName').value.trim();
+        const desc = document.getElementById('pDesc').value.trim();
+        const paymentLink = document.getElementById('pPaymentLink').value.trim();
+        const oldP = parseFloat(document.getElementById('pOldPrice').value);
+        const newP = parseFloat(document.getElementById('pNewPrice').value);
+        
+        if (currentImagesBase64.length === 0 || !name || !oldP || !newP || Object.keys(window.currentAdminSizes).length === 0) {
+            return alert("Lütfen fotoğraf, isim, fiyatlar ve en az bir bedenin stok miktarını girin!");
+        }
+
+        const totalStock = Object.values(window.currentAdminSizes).reduce((sum, val) => sum + val, 0);
+        const discountPercent = Math.round(((oldP - newP) / oldP) * 100);
+        const oldProduct = window.currentEditId ? window.allProducts.find(item => item.id === window.currentEditId) : null;
+
+        try {
+            document.getElementById('saveBtnText').innerText = qaDecode("WcOcS0xFTsSwWU9SLi4u");
+            const productData = {
+                name: name,
+                description: desc,
+                paymentLink: paymentLink,
+                originalPrice: oldP,
+                salePrice: newP,
+                discount: discountPercent,
+                sizeStocks: window.currentAdminSizes, 
+                sizes: Object.keys(window.currentAdminSizes),
+                stock: totalStock, 
+                images: currentImagesBase64
+            };
+
+            if(window.currentEditId) {
+                await updateDoc(doc(db, COLLECTION_NAME, window.currentEditId), productData);
+                if (oldProduct && Number(oldProduct.salePrice || 0) > newP) await window.queueDiscountEmails(name, oldProduct.salePrice, newP);
+                alert("Ürün başarıyla güncellendi!");
+            } else {
+                productData.createdAt = Date.now();
+                await addDoc(collection(db, COLLECTION_NAME), productData);
+                alert("Ürün başarıyla eklendi!");
+            }
+            
+            window.closeProductAdmin();
+
+        } catch (error) {
+            console.error(error);
+            alert("İşlem sırasında hata oluştu! Detay: " + error.message);
+        } finally {
+            document.getElementById('saveBtnText').innerText = window.currentEditId ? qaDecode("R8OcTkNFTExF") : qaDecode("UEFZTEHFng==");
+        }
+    };
+
+    window.editProduct = async (id) => {
+        await window.ensureProductAdminModal?.();
+        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
+        const p = window.allProducts.find(item => item.id === id);
+        if (!p) return;
+        
+        window.currentEditId = id; 
+        document.getElementById('modalTitle').innerText = qaDecode("w5xSw5xOw5wgRMOcWkVOTEU=");
+        document.getElementById('saveBtnText').innerText = qaDecode("R8OcTkNFTExF");
+
+        document.getElementById('pName').value = p.name;
+        document.getElementById('pDesc').value = p.description || '';
+        document.getElementById('pPaymentLink').value = p.paymentLink || p.paymentUrl || p.payLink || '';
+        document.getElementById('pOldPrice').value = p.originalPrice;
+        document.getElementById('pNewPrice').value = p.salePrice;
+        calculateDiscount();
+        
+        window.currentAdminSizes = { ...(p.sizeStocks || {}) };
+        currentImagesBase64 = [...(p.images || [])];
+        
+        window.renderAdminImagePreviews(); 
+        window.renderAdminSizes();
+        
+        document.getElementById('productAdminModal').classList.remove('hidden');
+        document.getElementById('productAdminModal').classList.add('flex');
+    };
+
+    window.deleteProduct = async (id) => {
+        if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
+        if(confirm("Bu ürünü silmek istediğinize emin misiniz?")) {
+            try {
+                await deleteDoc(doc(db, COLLECTION_NAME, id));
+            } catch (error) {
+                console.error("Hata:", error);
+                alert("Ürün silinirken bir hata oluştu.");
+            }
+        }
+    };
+
+    const loadProducts = () => {
+        const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            window.allProducts = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            renderProducts(window.allProducts);
+            if (window.location.hash) {
+                const target = document.querySelector(window.location.hash);
+                if (target) {
+                    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                }
+            }
+        }, (error) => {
+            console.error("Ürünler yüklenirken hata:", error);
+        });
+    };
+
+    // --- ADMİN GİRİŞ KONTROLÜ VE YAZI EDİTLEME YETKİSİ ---
+    onAuthStateChanged(auth, async (user) => {
+        const editTitleBtn = document.getElementById("edit-title-btn");
+        const editSubtitleBtn = document.getElementById("edit-subtitle-btn");
+
+        currentUser = user || null;
+        const userEmail = user?.email?.toLowerCase() || '';
+        if (userEmail === 'quaoratr@gmail.com') {
+            isAdmin = true;
+            window.ensureProductAdminButton?.();
+            const btn = document.getElementById('adminAddProductBtn');
+            if(btn) btn.classList.remove('hidden');
+            
+            // Adminse düzenleme butonlarını göster
+            if(editTitleBtn) { editTitleBtn.classList.remove("hidden"); editTitleBtn.classList.add("flex"); }
+            if(editSubtitleBtn) { editSubtitleBtn.classList.remove("hidden"); editSubtitleBtn.classList.add("flex"); }
+
+        } else {
+            isAdmin = false;
+            const btn = document.getElementById('adminAddProductBtn');
+            if(btn) btn.classList.add('hidden');
+            
+            // Kullanıcıysa düzenleme butonlarını gizle
+            if(editTitleBtn) { editTitleBtn.classList.add("hidden"); editTitleBtn.classList.remove("flex"); }
+            if(editSubtitleBtn) { editSubtitleBtn.classList.add("hidden"); editSubtitleBtn.classList.remove("flex"); }
+        }
+        
+        if (user) {
+            try {
+                const favoriteSnap = await getDoc(doc(db, "users", user.uid));
+                if (favoriteSnap.exists() && Array.isArray(favoriteSnap.data().favorites)) {
+                    favorites = favoriteSnap.data().favorites;
+                    localStorage.setItem('quaora_favorites', JSON.stringify(favorites));
+                }
+            } catch (error) {
+                console.warn('Favoriler y?klenemedi:', error);
+            }
+        }
+
+        if(window.allProducts && window.allProducts.length > 0) {
+            renderProducts(window.allProducts);
+        }
     });
 
-    onAuthStateChanged(auth, (user) => {
-        isAdmin = (user?.email || '').toLowerCase() === 'quaoratr@gmail.com';
-        if (isAdmin) window.ensureNewAdminActions?.();
-        document.getElementById('adminNewProductBtn')?.classList.toggle('hidden', !isAdmin);
-        document.getElementById('adminNewBgBtn')?.classList.toggle('hidden', !isAdmin);
-        renderNewProducts();
-    });
+    // --- FAVOR? ??LEMLER? ---
+    window.toggleFavorite = async (id) => {
+        const index = favorites.indexOf(id);
+        if (index > -1) {
+            favorites.splice(index, 1);
+        } else {
+            favorites.push(id);
+        }
+        localStorage.setItem('quaora_favorites', JSON.stringify(favorites));
+        if (currentUser) {
+            try {
+                await setDoc(doc(db, "users", currentUser.uid), { favorites, email: currentUser.email }, { merge: true });
+            } catch (error) {
+                console.warn('Favoriler kaydedilemedi:', error);
+            }
+        }
+        renderProducts(window.allProducts);
+    };
+
+    updateCart();
+    loadProducts();
+    loadPageTexts(); // Sayfa açılışında metinleri veritabanından çek
 </script>
-
 <script type="module" src="quaora-discounts.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
