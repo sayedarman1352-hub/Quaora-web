@@ -304,7 +304,7 @@
                 form.reset();
                 setContactFormStatus("Mesaj\u0131n\u0131z al\u0131nd\u0131. En k\u0131sa s\u00fcrede d\u00f6nece\u011fiz.", "success");
             } catch (error) {
-                setContactFormStatus("Mesaj g\u00f6nderilemedi. L\u00fctfen tekrar deneyin veya direkt quaoratr@gmail.com adresine yaz\u0131n.", "error");
+                setContactFormStatus(`Mesaj g\u00f6nderilemedi: ${error.message || "Sunucu hatas\u0131"}. L\u00fctfen tekrar deneyin veya direkt quaoratr@gmail.com adresine yaz\u0131n.`, "error");
             } finally {
                 if (button) {
                     button.disabled = false;
