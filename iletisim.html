@@ -174,27 +174,37 @@
                 </div>
             </section>
 
-            <form action="https://formsubmit.co/quaoratr@gmail.com" method="POST" onsubmit="return prepareContactForm()" class="space-y-5">
+            <form id="contactForm" action="https://formsubmit.co/ajax/quaoratr@gmail.com" method="POST" onsubmit="return prepareContactForm(event)" class="rounded-[2rem] border border-white/25 bg-white/20 p-5 md:p-6 shadow-inner space-y-5">
                 <input type="hidden" name="_subject" value="Quaora İletişim Formu">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_template" value="table">
-                <input type="hidden" name="_next" value="https://quaora-web.vercel.app/iletisim.html?sent=1">
-                <div class="space-y-2">
-                    <label class="text-[9px] font-black uppercase tracking-[0.2em] ml-4 text-[#964b00]/70">Ad Soyad</label>
-                    <input type="text" id="ad" name="ad_soyad" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium" placeholder="İsminizi yazın">
-                </div>
-                
-                <div class="space-y-2">
-                    <label class="text-[9px] font-black uppercase tracking-[0.2em] ml-4 text-[#964b00]/70">Telefon</label>
-                    <input type="tel" id="tel" name="telefon" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium" placeholder="05XX XXX XX XX">
+                <input type="hidden" name="_url" value="https://quaora-web.vercel.app/iletisim.html">
+                <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off">
+                <div class="grid gap-4 md:grid-cols-2">
+                    <label class="block">
+                        <span class="block text-[9px] font-black uppercase tracking-[0.24em] text-[#964b00]/70 mb-2 ml-2">Ad Soyad</span>
+                        <input type="text" id="ad" name="name" required autocomplete="name" class="w-full bg-white/65 border border-white/40 rounded-[1.35rem] px-5 py-4 outline-none focus:bg-white focus:border-[#964b00]/45 focus:ring-4 focus:ring-[#964b00]/10 transition-all placeholder:text-gray-400 text-sm font-semibold text-gray-800 shadow-sm" placeholder="İsminizi yazın">
+                    </label>
+
+                    <label class="block">
+                        <span class="block text-[9px] font-black uppercase tracking-[0.24em] text-[#964b00]/70 mb-2 ml-2">Telefon</span>
+                        <input type="tel" id="tel" name="telefon" required autocomplete="tel" inputmode="tel" class="w-full bg-white/65 border border-white/40 rounded-[1.35rem] px-5 py-4 outline-none focus:bg-white focus:border-[#964b00]/45 focus:ring-4 focus:ring-[#964b00]/10 transition-all placeholder:text-gray-400 text-sm font-semibold text-gray-800 shadow-sm" placeholder="05XX XXX XX XX">
+                    </label>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-[9px] font-black uppercase tracking-[0.2em] ml-4 text-[#964b00]/70">Mesajınız</label>
-                    <textarea id="msg" name="mesaj" rows="4" required class="w-full bg-white/40 border border-[#964b00]/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium resize-none" placeholder="Size nasıl yardımcı olabiliriz?"></textarea>
-                </div>
+                <label class="block">
+                    <span class="block text-[9px] font-black uppercase tracking-[0.24em] text-[#964b00]/70 mb-2 ml-2">E-posta</span>
+                    <input type="email" id="email" name="email" required autocomplete="email" class="w-full bg-white/65 border border-white/40 rounded-[1.35rem] px-5 py-4 outline-none focus:bg-white focus:border-[#964b00]/45 focus:ring-4 focus:ring-[#964b00]/10 transition-all placeholder:text-gray-400 text-sm font-semibold text-gray-800 shadow-sm" placeholder="ornek@mail.com">
+                </label>
 
-                <button type="submit" class="w-full bg-[#964b00] text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95 text-xs mt-2">
+                <label class="block">
+                    <span class="block text-[9px] font-black uppercase tracking-[0.24em] text-[#964b00]/70 mb-2 ml-2">Mesajınız</span>
+                    <textarea id="msg" name="message" rows="5" required class="w-full bg-white/65 border border-white/40 rounded-[1.35rem] px-5 py-4 outline-none focus:bg-white focus:border-[#964b00]/45 focus:ring-4 focus:ring-[#964b00]/10 transition-all placeholder:text-gray-400 text-sm font-semibold text-gray-800 leading-7 resize-none shadow-sm" placeholder="Size nasıl yardımcı olabiliriz?"></textarea>
+                </label>
+
+                <p id="contactFormStatus" class="hidden rounded-2xl px-4 py-3 text-center text-[11px] font-bold leading-5"></p>
+
+                <button id="contactSubmitBtn" type="submit" class="w-full bg-[#964b00] text-white py-5 rounded-[1.35rem] font-black uppercase tracking-[0.26em] hover:bg-black hover:-translate-y-0.5 transition-all shadow-xl shadow-[#964b00]/20 active:scale-[0.98] text-xs mt-1">
                     MESAJI GÖNDER
                 </button>
             </form>
@@ -238,17 +248,66 @@
             if (arrow) arrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
         }
 
-        function prepareContactForm() {
+        function setContactFormStatus(message, type = "info") {
+            const status = document.getElementById('contactFormStatus');
+            if (!status) return;
+            status.textContent = message;
+            status.classList.remove('hidden', 'bg-green-50', 'text-green-700', 'bg-red-50', 'text-red-600', 'bg-[#FAE29C]/50', 'text-[#964b00]');
+            if (type === "success") {
+                status.classList.add('bg-green-50', 'text-green-700');
+            } else if (type === "error") {
+                status.classList.add('bg-red-50', 'text-red-600');
+            } else {
+                status.classList.add('bg-[#FAE29C]/50', 'text-[#964b00]');
+            }
+        }
+
+        async function prepareContactForm(event) {
+            if (event) event.preventDefault();
+
+            const form = document.getElementById('contactForm');
+            const button = document.getElementById('contactSubmitBtn');
             const ad = document.getElementById('ad').value.trim();
             const tel = document.getElementById('tel').value.trim();
+            const email = document.getElementById('email').value.trim();
             const msg = document.getElementById('msg').value.trim();
 
-            if(!ad || !tel || !msg) {
-                alert("Lütfen tüm alanları doldurun.");
+            if(!ad || !tel || !email || !msg) {
+                setContactFormStatus("L\u00fctfen t\u00fcm alanlar\u0131 doldurun.", "error");
                 return false;
             }
 
-            return true;
+            if (!form) return false;
+
+            try {
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = "G\u00d6NDER\u0130L\u0130YOR...";
+                    button.classList.add("opacity-70", "cursor-wait");
+                }
+                setContactFormStatus("Mesaj\u0131n\u0131z g\u00f6nderiliyor...", "info");
+
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    headers: { "Accept": "application/json" },
+                    body: new FormData(form)
+                });
+
+                if (!response.ok) throw new Error("Form servisi yan\u0131t vermedi.");
+
+                form.reset();
+                setContactFormStatus("Mesaj\u0131n\u0131z al\u0131nd\u0131. Mail gelmezse quaoratr@gmail.com gelen kutusundaki FormSubmit aktivasyon mailini onaylay\u0131n.", "success");
+            } catch (error) {
+                setContactFormStatus("Mesaj g\u00f6nderilemedi. L\u00fctfen tekrar deneyin veya direkt quaoratr@gmail.com adresine yaz\u0131n.", "error");
+            } finally {
+                if (button) {
+                    button.disabled = false;
+                    button.textContent = "MESAJI G\u00d6NDER";
+                    button.classList.remove("opacity-70", "cursor-wait");
+                }
+            }
+
+            return false;
         }
 
         if (new URLSearchParams(window.location.search).get('sent') === '1') {
