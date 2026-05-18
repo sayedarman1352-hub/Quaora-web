@@ -145,7 +145,35 @@
                 <div class="w-12 h-1 bg-[#964b00]/20 mx-auto mb-4"></div>
                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Sorularınız için yanınızdayız</p>
             </header>
-            
+
+            <section class="grid gap-4 mb-8">
+                <div class="bg-white/30 border border-white/20 rounded-3xl px-6 py-5 shadow-sm">
+                    <p class="text-[9px] font-black uppercase tracking-[0.28em] text-[#964b00]/60 mb-2">Adres</p>
+                    <p id="contactAddressText" class="text-sm font-semibold text-gray-800 leading-7 whitespace-pre-line">Adres bilgisi yak&#305;nda eklenecek.</p>
+                </div>
+                <div class="bg-white/30 border border-white/20 rounded-3xl px-6 py-5 shadow-sm">
+                    <p class="text-[9px] font-black uppercase tracking-[0.28em] text-[#964b00]/60 mb-2">&#304;leti&#351;im</p>
+                    <p id="contactCommunicationText" class="text-sm font-semibold text-gray-800 leading-7 whitespace-pre-line">&#304;leti&#351;im bilgisi yak&#305;nda eklenecek.</p>
+                </div>
+            </section>
+
+            <section id="contactAdminEditor" class="hidden mb-8 rounded-3xl border border-[#964b00]/15 bg-[#FAE29C]/35 p-5 shadow-sm">
+                <h4 class="text-[10px] font-black uppercase tracking-[0.28em] text-[#964b00] mb-4">Connection D&#252;zenle</h4>
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label for="contactAddressInput" class="text-[9px] font-black uppercase tracking-[0.2em] ml-2 text-[#964b00]/70">Adres</label>
+                        <textarea id="contactAddressInput" rows="3" class="w-full bg-white/50 border border-[#964b00]/10 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium resize-none" placeholder="Adres bilgisini yaz&#305;n"></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="contactCommunicationInput" class="text-[9px] font-black uppercase tracking-[0.2em] ml-2 text-[#964b00]/70">&#304;leti&#351;im</label>
+                        <textarea id="contactCommunicationInput" rows="3" class="w-full bg-white/50 border border-[#964b00]/10 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#964b00] transition-all placeholder:text-gray-400 text-sm font-medium resize-none" placeholder="Telefon, e-posta veya sosyal medya bilgisini yaz&#305;n"></textarea>
+                    </div>
+                    <button type="button" onclick="saveContactInfo()" class="w-full bg-[#964b00] text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95 text-[10px]">
+                        B&#304;LG&#304;LER&#304; KAYDET
+                    </button>
+                </div>
+            </section>
+
             <form action="https://formsubmit.co/quaoratr@gmail.com" method="POST" onsubmit="return prepareContactForm()" class="space-y-5">
                 <input type="hidden" name="_subject" value="Quaora İletişim Formu">
                 <input type="hidden" name="_captcha" value="false">
@@ -226,6 +254,76 @@
         if (new URLSearchParams(window.location.search).get('sent') === '1') {
             alert("Mesajınız bize ulaştı, en kısa sürede döneceğiz.");
         }
+    </script>
+    <script type="module">
+        import { initializeApp, getApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
+            authDomain: "quaora-web.firebaseapp.com",
+            projectId: "quaora-web",
+            storageBucket: "quaora-web.firebasestorage.app",
+            messagingSenderId: "69244174750",
+            appId: "1:69244174750:web:5c9e82172704bb39a2568f",
+            measurementId: "G-0V1BRZ8T51"
+        };
+
+        const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const contactDoc = doc(db, "page_settings", "contact_info");
+        const adminEmails = ["quaoratr@gmail.com", "sayedarman1352@gmail.com", "250508501@st.atlas.edu.tr"];
+        let activeIsAdmin = false;
+        let latestContactInfo = { address: "", communication: "" };
+
+        const getEl = (id) => document.getElementById(id);
+        const setContactText = (id, value, fallback) => {
+            const el = getEl(id);
+            if (el) el.textContent = value && value.trim() ? value.trim() : fallback;
+        };
+
+        const renderContactInfo = () => {
+            setContactText("contactAddressText", latestContactInfo.address, "Adres bilgisi yak\u0131nda eklenecek.");
+            setContactText("contactCommunicationText", latestContactInfo.communication, "\u0130leti\u015fim bilgisi yak\u0131nda eklenecek.");
+            const addressInput = getEl("contactAddressInput");
+            const communicationInput = getEl("contactCommunicationInput");
+            if (addressInput) addressInput.value = latestContactInfo.address || "";
+            if (communicationInput) communicationInput.value = latestContactInfo.communication || "";
+        };
+
+        onSnapshot(contactDoc, (snap) => {
+            latestContactInfo = snap.exists() ? {
+                address: snap.data().address || "",
+                communication: snap.data().communication || ""
+            } : { address: "", communication: "" };
+            renderContactInfo();
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            activeIsAdmin = !!user && adminEmails.includes((user.email || "").toLowerCase());
+            const editor = getEl("contactAdminEditor");
+            if (editor) editor.classList.toggle("hidden", !activeIsAdmin);
+            if (activeIsAdmin) renderContactInfo();
+        });
+
+        window.saveContactInfo = async () => {
+            if (!activeIsAdmin) return alert("Bu i\u015flem sadece admin taraf\u0131ndan yap\u0131labilir.");
+            const address = getEl("contactAddressInput")?.value.trim() || "";
+            const communication = getEl("contactCommunicationInput")?.value.trim() || "";
+
+            try {
+                await setDoc(contactDoc, {
+                    address,
+                    communication,
+                    updatedAt: Date.now()
+                }, { merge: true });
+                alert("Connection bilgileri g\u00fcncellendi.");
+            } catch (error) {
+                alert("Kay\u0131t s\u0131ras\u0131nda hata olu\u015ftu: " + error.message);
+            }
+        };
     </script>
     <script type="module" src="quaora-discounts.js"></script>
 <script>
