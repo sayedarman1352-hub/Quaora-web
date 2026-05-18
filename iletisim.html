@@ -174,11 +174,11 @@
                 </div>
             </section>
 
-            <form id="contactForm" action="https://formsubmit.co/ajax/quaoratr@gmail.com" method="POST" onsubmit="return prepareContactForm(event)" class="rounded-[2rem] border border-white/25 bg-white/20 p-5 md:p-6 shadow-inner space-y-5">
+            <form id="contactForm" action="/api/contact" method="POST" onsubmit="return prepareContactForm(event)" class="rounded-[2rem] border border-white/25 bg-white/20 p-5 md:p-6 shadow-inner space-y-5">
                 <input type="hidden" name="_subject" value="Quaora İletişim Formu">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_template" value="table">
-                <input type="hidden" name="_url" value="https://quaora-web.vercel.app/iletisim.html">
+                <input type="hidden" name="_url" value="https://www.quaora.com.tr/iletisim.html">
                 <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off">
                 <div class="grid gap-4 md:grid-cols-2">
                     <label class="block">
@@ -287,16 +287,22 @@
                 }
                 setContactFormStatus("Mesaj\u0131n\u0131z g\u00f6nderiliyor...", "info");
 
+                const payload = Object.fromEntries(new FormData(form).entries());
                 const response = await fetch(form.action, {
                     method: "POST",
-                    headers: { "Accept": "application/json" },
-                    body: new FormData(form)
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) throw new Error("Form servisi yan\u0131t vermedi.");
+                let result = {};
+                try { result = await response.json(); } catch (_) {}
+                if (!response.ok) throw new Error(result.reason || "Form servisi yan\u0131t vermedi.");
 
                 form.reset();
-                setContactFormStatus("Mesaj\u0131n\u0131z al\u0131nd\u0131. Mail gelmezse quaoratr@gmail.com gelen kutusundaki FormSubmit aktivasyon mailini onaylay\u0131n.", "success");
+                setContactFormStatus("Mesaj\u0131n\u0131z al\u0131nd\u0131. En k\u0131sa s\u00fcrede d\u00f6nece\u011fiz.", "success");
             } catch (error) {
                 setContactFormStatus("Mesaj g\u00f6nderilemedi. L\u00fctfen tekrar deneyin veya direkt quaoratr@gmail.com adresine yaz\u0131n.", "error");
             } finally {
