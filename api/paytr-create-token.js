@@ -37,8 +37,8 @@ module.exports = async function handler(req, res) {
     const no_installment = "0";
     const max_installment = "0";
     const currency = "TL";
-    const test_mode = process.env.PAYTR_TEST_MODE || "1";
-    const debug_on = process.env.PAYTR_DEBUG_ON || "1";
+    const test_mode = process.env.PAYTR_TEST_MODE || "0";
+    const debug_on = process.env.PAYTR_DEBUG_ON || "0";
     const timeout_limit = "30";
     const lang = "tr";
 
