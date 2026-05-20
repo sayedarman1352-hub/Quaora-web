@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>İndirim Kodları | QUAORA</title>
+  <link rel="stylesheet" href="quaora-tailwind.css">
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <link rel="stylesheet" href="quaora-responsive.css">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="//firestore.googleapis.com">
+  <script src="quaora-performance.js" defer></script>
+</head>
+<body class="min-h-screen bg-[#FAE29C] text-[#964b00]">
+  <main class="max-w-5xl mx-auto p-4 md:p-8">
+    <header class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-[#964b00]/15 pb-6">
+      <div>
+        <a href="index.html" class="text-xs font-black uppercase tracking-[0.24em] hover:text-black transition-colors">&larr; Admin Panel</a>
+        <h1 class="mt-4 text-3xl md:text-5xl font-black uppercase tracking-[0.08em]">İndirim Kodları</h1>
+        <p id="discountStatus" class="mt-2 text-sm font-bold text-[#964b00]/70">Admin kontrol ediliyor.</p>
+      </div>
+    </header>
+
+    <section id="lockedState" class="hidden mt-8 rounded-2xl bg-white border border-[#964b00]/10 p-6 shadow-lg">
+      <h2 class="text-xl font-black uppercase tracking-widest">Admin girişi gerekiyor</h2>
+      <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece quaoratr@gmail.com hesabı tarafından görüntülenebilir.</p>
+      <a href="index.html" class="mt-5 inline-flex bg-[#964b00] text-white rounded-xl px-5 py-3 text-xs font-black uppercase tracking-widest">Ana Sayfaya Dön</a>
+    </section>
+
+    <section id="discountApp" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-5">
+      <div class="rounded-2xl border border-[#964b00]/10 bg-white p-5 shadow-sm h-fit">
+        <h2 class="text-sm font-black uppercase tracking-[0.22em] mb-4">Kod Oluştur</h2>
+        <div class="grid grid-cols-2 gap-3">
+          <input id="adminDiscountCode" type="text" inputmode="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="Kod yaz veya boş bırak" class="col-span-2 bg-[#FAE29C]/30 border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold uppercase outline-none focus:border-[#964b00]">
+          <select id="adminDiscountType" class="bg-[#FAE29C]/30 border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+            <option value="percent">Yüzde</option>
+            <option value="fixed">TL</option>
+          </select>
+          <input id="adminDiscountValue" type="number" min="1" placeholder="Değer" class="bg-[#FAE29C]/30 border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+          <input id="adminDiscountMin" type="number" min="0" placeholder="Min sepet" class="bg-[#FAE29C]/30 border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+          <input id="adminDiscountMaxUses" type="number" min="0" placeholder="Max kullanım" class="bg-[#FAE29C]/30 border border-[#964b00]/20 rounded-xl px-3 py-3 text-[11px] font-bold outline-none focus:border-[#964b00]">
+        </div>
+        <button onclick="createAdminDiscountCode()" class="mt-4 w-full bg-[#964b00] text-white py-3 rounded-xl font-black tracking-widest uppercase text-[10px] hover:bg-black transition-all">Kodu Kaydet</button>
+      </div>
+
+      <div class="rounded-2xl border border-[#964b00]/10 bg-white p-5 shadow-sm">
+        <h2 class="text-sm font-black uppercase tracking-[0.22em] mb-4">Mevcut Kodlar</h2>
+        <div id="adminDiscountList" class="space-y-3">
+          <div class="text-center py-12 text-gray-400 italic text-sm">Kodlar yükleniyor.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
+      authDomain: "quaora-web.firebaseapp.com",
+      projectId: "quaora-web",
+      storageBucket: "quaora-web.firebasestorage.app",
+      messagingSenderId: "69244174750",
+      appId: "1:69244174750:web:5c9e82172704bb39a2568f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const el = (id) => document.getElementById(id);
+    let discountsLoaded = false;
+
+    onAuthStateChanged(auth, async (user) => {
+      const isAdmin = user?.email?.toLowerCase() === "quaoratr@gmail.com";
+      el('lockedState').classList.toggle('hidden', isAdmin);
+      el('discountApp').classList.toggle('hidden', !isAdmin);
+      el('discountStatus').textContent = isAdmin ? 'Kodlar yönetilebilir.' : (user ? 'Bu hesap admin değil.' : 'Giriş yapılmadı.');
+      if (isAdmin && !discountsLoaded) {
+        discountsLoaded = true;
+        await import('./quaora-discounts.js');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -14,6 +14,7 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const ADMIN_EMAILS = ["quaoratr@gmail.com"];
 
 let discountCodes = {};
 let unsubscribeCodes = null;
@@ -36,6 +37,8 @@ const readPromo = () => {
     return null;
   }
 };
+
+const isActiveAdmin = () => ADMIN_EMAILS.includes(auth.currentUser?.email?.toLowerCase() || "");
 
 const calculateDiscount = (subtotal, promo) => {
   if (!promo || promo.active === false || subtotal <= 0) return 0;
@@ -240,6 +243,7 @@ window.generateWelcomeDiscountCode = async (user) => {
 };
 
 window.createAdminDiscountCode = async () => {
+  if (!isActiveAdmin()) return alert("Bu işlem sadece admin tarafından yapılabilir.");
   const type = document.getElementById('adminDiscountType')?.value || 'percent';
   const value = Number(document.getElementById('adminDiscountValue')?.value || 0);
   const minSubtotal = Number(document.getElementById('adminDiscountMin')?.value || 0);
@@ -273,10 +277,12 @@ window.createAdminDiscountCode = async () => {
 };
 
 window.toggleAdminDiscountCode = async (code, active) => {
+  if (!isActiveAdmin()) return alert("Bu işlem sadece admin tarafından yapılabilir.");
   await setDoc(doc(db, "discount_codes", code), { active: !active, updatedAt: Date.now() }, { merge: true });
 };
 
 window.deleteAdminDiscountCode = async (code) => {
+  if (!isActiveAdmin()) return alert("Bu işlem sadece admin tarafından yapılabilir.");
   if (!confirm(`${code} kodu silinsin mi?`)) return;
   await deleteDoc(doc(db, "discount_codes", code));
 };
