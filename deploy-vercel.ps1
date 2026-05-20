@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+$PSNativeCommandUseErrorActionPreference = $true
 
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
@@ -23,8 +24,18 @@ if (-not $Npm) {
 
 Write-Host "Paketler kuruluyor..."
 & $Npm install
+if ($LASTEXITCODE -ne 0) {
+  throw "npm install basarisiz oldu."
+}
 
 Write-Host "Vercel production deploy basliyor..."
-& $Npm exec vercel -- --prod
+if ($env:VERCEL_TOKEN) {
+  & $Npm exec vercel -- --prod --token $env:VERCEL_TOKEN
+} else {
+  & $Npm exec vercel -- --prod
+}
+if ($LASTEXITCODE -ne 0) {
+  throw "Vercel production deploy basarisiz oldu. Vercel CLI icin 'vercel login' yap veya VERCEL_TOKEN ortam degiskenini ayarla."
+}
 
 Write-Host "Bitti. PayTR Bildirim URL: https://quaora.com.tr/api/paytr-callback" -ForegroundColor Green
