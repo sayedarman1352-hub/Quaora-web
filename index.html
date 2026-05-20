@@ -909,14 +909,16 @@
         const user = auth.currentUser;
         const list = getEl('ordersList');
         if (!user || !list) return;
-        const q = query(collection(db, "orders"), where("userId", "==", user.uid), orderBy("createdAt", "desc"));
-        onSnapshot(q, (snapshot) => {
+        const renderOrdersSnapshot = (snapshot) => {
             if (snapshot.empty) {
                 list.innerHTML = '<div class="text-center py-20 text-gray-400 italic text-sm">Henüz bir siparişiniz bulunmuyor.</div>';
                 return;
             }
-            list.innerHTML = snapshot.docs.map(orderDoc => {
-                const order = orderDoc.data();
+            const docs = snapshot.docs
+                .map(orderDoc => ({ orderDoc, order: orderDoc.data() }))
+                .sort((a, b) => Number(b.order.createdAt || 0) - Number(a.order.createdAt || 0));
+
+            list.innerHTML = docs.map(({ orderDoc, order }) => {
                 const created = order.createdAt ? new Date(order.createdAt).toLocaleString('tr-TR') : '';
                 const orderItems = getOrderItems(order);
                 const total = Number(order.total || orderItems.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0));
@@ -960,6 +962,20 @@
                     </div>
                 `;
             }).join('');
+        };
+
+        const fallbackQuery = () => {
+            const fallback = query(collection(db, "orders"), where("userId", "==", user.uid));
+            onSnapshot(fallback, renderOrdersSnapshot, (fallbackError) => {
+                console.error("Siparişler yüklenirken hata:", fallbackError);
+                list.innerHTML = '<div class="text-center py-20 text-red-500 italic text-sm">Siparişler yüklenemedi. Lütfen tekrar deneyin.</div>';
+            });
+        };
+
+        const q = query(collection(db, "orders"), where("userId", "==", user.uid), orderBy("createdAt", "desc"));
+        onSnapshot(q, renderOrdersSnapshot, (error) => {
+            console.warn("Sipariş sıralı sorgusu çalışmadı, basit sorguya geçiliyor:", error);
+            fallbackQuery();
         });
     };
 

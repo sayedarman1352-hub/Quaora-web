@@ -1,4 +1,21 @@
 (() => {
+  const injectVercelSpeedInsights = () => {
+    const isLocal = location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
+    if (isLocal || window.si || document.head.querySelector('script[src*="/_vercel/speed-insights/script.js"]')) return;
+
+    window.si = (...params) => {
+      window.siq = window.siq || [];
+      window.siq.push(params);
+    };
+
+    const script = document.createElement("script");
+    script.defer = true;
+    script.src = "/_vercel/speed-insights/script.js";
+    script.dataset.sdkn = "@vercel/speed-insights";
+    script.dataset.sdkv = "2.0.0";
+    document.head.appendChild(script);
+  };
+
   const tuneImage = (img) => {
     if (!img || img.dataset.quaoraPerfReady) return;
     img.dataset.quaoraPerfReady = "1";
@@ -14,6 +31,8 @@
   } else {
     tuneAllImages();
   }
+
+  injectVercelSpeedInsights();
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
