@@ -233,6 +233,13 @@
         </section>
 
         <section>
+            <h3 class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3">Sipari&#351; Paketleri</h3>
+            <div id="adminOrdersList" class="space-y-4">
+                <div class="text-center py-20 text-gray-400 italic text-sm">Hen&#252;z sipari&#351; bulunmuyor.</div>
+            </div>
+        </section>
+
+        <section>
             <h3 id="adminRefundTitle" class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3"></h3>
             <div id="adminNotificationsList" class="space-y-4">
                 <div class="text-center py-20 text-gray-400 italic text-sm"></div>
@@ -1051,8 +1058,65 @@
         if (panel) {
             panel.style.width = (window.innerWidth < 768) ? "100%" : "420px";
             if (overlay) overlay.classList.remove("hidden");
+            window.loadAdminOrders();
             window.loadAdminNotifications();
         }
+    };
+
+    window.loadAdminOrders = () => {
+        if (!activeIsAdmin) return;
+        const list = getEl('adminOrdersList');
+        if (!list) return;
+        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            if (snapshot.empty) {
+                list.innerHTML = '<div class="text-center py-20 text-gray-400 italic text-sm">Henüz sipariş bulunmuyor.</div>';
+                return;
+            }
+            list.innerHTML = snapshot.docs.map(orderDoc => {
+                const order = orderDoc.data();
+                const customer = order.customer || {};
+                const orderItems = getOrderItems(order);
+                const created = order.createdAt ? new Date(order.createdAt).toLocaleString('tr-TR') : '';
+                const total = Number(order.total || orderItems.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0));
+                const name = customer.name || order.userName || order.username || 'İsimsiz müşteri';
+                const email = customer.email || order.userEmail || '';
+                const phone = customer.phone || order.userPhone || '';
+                const address = customer.address || order.shippingAddress || order.address || '';
+                return `
+                    <div class="bg-gray-50 border border-black/5 rounded-2xl p-4 shadow-sm">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h4 class="font-black text-xs uppercase tracking-widest text-gray-800">Sipariş Paketi</h4>
+                                <p class="text-[10px] font-bold text-gray-400 mt-1">${escapeHtml(created)}</p>
+                            </div>
+                            <span class="shrink-0 text-[9px] font-black text-[#964b00] uppercase bg-[#FAE29C]/60 border border-[#964b00]/10 rounded-full px-3 py-1">${escapeHtml(order.status || 'Alındı')}</span>
+                        </div>
+                        <div class="mt-4 rounded-xl bg-white border border-[#964b00]/10 p-3 space-y-1 text-[11px] font-bold text-gray-700">
+                            <p><span class="text-[#964b00]">Ad:</span> ${escapeHtml(name)}</p>
+                            <p><span class="text-[#964b00]">E-posta:</span> ${escapeHtml(email)}</p>
+                            <p><span class="text-[#964b00]">Telefon:</span> ${escapeHtml(phone || 'Yok')}</p>
+                            <p><span class="text-[#964b00]">Adres:</span> ${escapeHtml(address || 'Yok')}</p>
+                        </div>
+                        <div class="mt-4 space-y-2">
+                            ${orderItems.map(item => `
+                                <div class="rounded-xl border border-[#964b00]/10 bg-white p-3">
+                                    <p class="text-xs font-black uppercase tracking-widest text-gray-800">${escapeHtml(item.productName || item.name || 'Ürün')}</p>
+                                    <p class="text-[11px] font-bold text-gray-500 mt-1">Beden: ${escapeHtml(item.size || 'Tek ürün')} | Adet: ${Number(item.qty || 1)} | ${money(Number(item.price || 0))}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="mt-4 flex justify-between border-t border-[#964b00]/10 pt-3 text-sm font-black">
+                            <span>Toplam</span>
+                            <span>${money(total)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }, (error) => {
+            console.error("Admin siparişleri yüklenemedi:", error);
+            list.innerHTML = '<div class="text-center py-20 text-red-500 italic text-sm">Siparişler yüklenemedi.</div>';
+        });
     };
 
     window.loadAdminNotifications = () => {

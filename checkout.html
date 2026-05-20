@@ -54,6 +54,7 @@
     const frameWrap = document.getElementById('paytrFrameWrap');
     const paytrFrame = document.getElementById('paytriframe');
     let isPaytrStarting = false;
+    let checkoutProfile = {};
 
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]'); } catch (e) { cart = []; }
@@ -65,6 +66,12 @@
 
     const money = (value) => '₺' + Number(value || 0).toLocaleString('tr-TR');
     const subtotal = () => cart.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0);
+    const escapeHtml = (value) => String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
 
     const normalizeCode = (code) => String(code || '').trim().toLocaleUpperCase('tr-TR').replace(/\s+/g, '').replace(/[^A-ZÇĞİÖŞÜ0-9_-]/g, '');
 
@@ -102,6 +109,11 @@
     const renderSummary = (discount, promo, message) => {
       const sub = subtotal();
       const total = Math.max(0, sub - discount);
+      const savedName = escapeHtml(checkoutProfile.username || "");
+      const savedPhone = escapeHtml(checkoutProfile.phone || "");
+      const savedAddress = escapeHtml(checkoutProfile.shippingAddress || checkoutProfile.address || "");
+      const savedCity = escapeHtml(checkoutProfile.city || "");
+      const savedDistrict = escapeHtml(checkoutProfile.district || "");
       content.innerHTML = `
         <div class="space-y-3">
           ${cart.map(item => `
@@ -121,6 +133,19 @@
           ${discount > 0 ? `<div class="flex justify-between text-sm font-black text-green-700"><span>Indirim (${promo.code})</span><span>-${money(discount)}</span></div>` : ''}
           ${message ? `<div class="text-xs font-bold text-red-600">${message}</div>` : ''}
           <div class="flex justify-between border-t pt-3 text-xl font-black"><span>Toplam</span><span>${money(total)}</span></div>
+        </div>
+        <div class="rounded-xl border border-[#964b00]/20 p-4 space-y-3 bg-white">
+          <div>
+            <h2 class="text-sm font-black uppercase tracking-widest">Teslimat Bilgileri</h2>
+            <p class="text-[11px] font-bold text-gray-500 mt-1">Adres bilgisi olmadan ödeme başlatılmaz.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <input id="checkoutName" type="text" autocomplete="name" value="${savedName}" placeholder="Ad Soyad" class="w-full rounded-xl border border-[#964b00]/20 px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+            <input id="checkoutPhone" type="tel" autocomplete="tel" value="${savedPhone}" placeholder="Telefon" class="w-full rounded-xl border border-[#964b00]/20 px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+            <input id="checkoutCity" type="text" autocomplete="address-level1" value="${savedCity}" placeholder="İl" class="w-full rounded-xl border border-[#964b00]/20 px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+            <input id="checkoutDistrict" type="text" autocomplete="address-level2" value="${savedDistrict}" placeholder="İlçe" class="w-full rounded-xl border border-[#964b00]/20 px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00]">
+          </div>
+          <textarea id="checkoutAddress" rows="4" autocomplete="street-address" placeholder="Açık adres" class="w-full rounded-xl border border-[#964b00]/20 px-4 py-3 text-sm font-bold outline-none focus:border-[#964b00] resize-none">${savedAddress}</textarea>
         </div>
         <div id="checkoutStatus" class="hidden rounded-xl p-3 text-sm font-bold"></div>
         <button id="startPaytrBtn" type="button" class="w-full bg-[#964b00] text-white py-4 rounded-xl font-black tracking-widest hover:bg-black transition-all uppercase text-sm disabled:opacity-60 disabled:cursor-not-allowed">PayTR ile ode</button>
@@ -191,6 +216,32 @@
       return data;
     };
 
+    const readCheckoutCustomer = (user, profile = {}) => {
+      const name = (document.getElementById('checkoutName')?.value || profile.username || user.email || '').trim();
+      const phone = (document.getElementById('checkoutPhone')?.value || profile.phone || '').trim();
+      const address = (document.getElementById('checkoutAddress')?.value || profile.shippingAddress || profile.address || '').trim();
+      const city = (document.getElementById('checkoutCity')?.value || profile.city || '').trim();
+      const district = (document.getElementById('checkoutDistrict')?.value || profile.district || '').trim();
+      const missing = [];
+      if (!name) missing.push('ad soyad');
+      if (!phone) missing.push('telefon');
+      if (!address) missing.push('adres');
+      if (missing.length) {
+        setCheckoutStatus(`Lutfen ${missing.join(', ')} bilgisini doldur.`, 'error');
+        return null;
+      }
+      const fullAddress = [address, district, city].filter(Boolean).join(' / ');
+      return {
+        name,
+        email: user.email || '',
+        phone,
+        address,
+        city,
+        district,
+        fullAddress
+      };
+    };
+
     const startPaytr = async (discount, promo) => {
       if (isPaytrStarting) return;
       isPaytrStarting = true;
@@ -212,9 +263,30 @@
           return;
         }
 
+        const profileSnap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
+        const profile = profileSnap?.exists() ? profileSnap.data() : checkoutProfile;
+        checkoutProfile = profile || {};
+        const customer = readCheckoutCustomer(user, checkoutProfile);
+        if (!customer) return;
+
         orderRef = await addDoc(collection(db, "orders"), {
           userId: user.uid,
           userEmail: user.email,
+          userName: customer.name,
+          userPhone: customer.phone,
+          shippingAddress: customer.fullAddress,
+          shippingAddressLine: customer.address,
+          shippingCity: customer.city,
+          shippingDistrict: customer.district,
+          customer: {
+            name: customer.name,
+            email: customer.email,
+            phone: customer.phone,
+            address: customer.fullAddress,
+            addressLine: customer.address,
+            city: customer.city,
+            district: customer.district
+          },
           items: cart.map(item => ({
             productId: item.id || "",
             collectionName: item.collectionName || "",
@@ -232,8 +304,6 @@
           createdAt: Date.now()
         });
 
-        const profileSnap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
-        const profile = profileSnap?.exists() ? profileSnap.data() : {};
         const basket = cart.map(item => ({
           name: item.name || "Quaora urun",
           price: Number(item.price || 0),
@@ -244,13 +314,22 @@
         const data = await requestPaytrToken({
           merchant_oid: orderRef.id,
           email: user.email,
-          user_name: profile.username || user.email || "Quaora Musterisi",
-          user_phone: profile.phone || "0000000000",
-          user_address: profile.address || "Quaora online siparis",
+          user_name: customer.name,
+          user_phone: customer.phone,
+          user_address: customer.fullAddress,
           payment_amount: Math.round(total * 100),
           basket
         });
 
+        updateDoc(doc(db, "users", user.uid), {
+          username: customer.name,
+          phone: customer.phone,
+          address: customer.fullAddress,
+          shippingAddress: customer.address,
+          city: customer.city,
+          district: customer.district,
+          updatedAt: Date.now()
+        }).catch(() => {});
         await markPromoUsed(promo, user);
         await updateDoc(orderRef, { paytrTokenCreated: true, updatedAt: Date.now() }).catch(() => {});
         localStorage.removeItem('quaora_cart');
@@ -272,6 +351,11 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (cart.length === 0) return renderEmpty();
+      checkoutProfile = {};
+      if (user) {
+        const profileSnap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
+        checkoutProfile = profileSnap?.exists() ? profileSnap.data() : {};
+      }
       const result = await getDiscount(user).catch(() => ({ discount: 0, promo: null, message: "Indirim kontrol edilemedi." }));
       renderSummary(result.discount, result.promo, result.message);
     });
