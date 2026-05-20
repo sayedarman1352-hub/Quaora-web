@@ -14,15 +14,19 @@ function setCors(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
+function cleanEnv(value) {
+  return String(value || "").trim();
+}
+
 module.exports = async function handler(req, res) {
   setCors(req, res);
   if (req.method === "OPTIONS") return res.status(204).send("");
   if (req.method !== "POST") return res.status(405).json({ status: "failed", reason: "method_not_allowed" });
 
   try {
-    const merchantId = process.env.PAYTR_MERCHANT_ID;
-    const merchantKey = process.env.PAYTR_MERCHANT_KEY;
-    const merchantSalt = process.env.PAYTR_MERCHANT_SALT;
+    const merchantId = cleanEnv(process.env.PAYTR_MERCHANT_ID);
+    const merchantKey = cleanEnv(process.env.PAYTR_MERCHANT_KEY);
+    const merchantSalt = cleanEnv(process.env.PAYTR_MERCHANT_SALT);
     if (!merchantId || !merchantKey || !merchantSalt) {
       return res.status(500).json({ status: "failed", reason: "PayTR environment variables eksik." });
     }
@@ -47,8 +51,8 @@ module.exports = async function handler(req, res) {
     const no_installment = "0";
     const max_installment = "0";
     const currency = "TL";
-    const test_mode = process.env.PAYTR_TEST_MODE || "0";
-    const debug_on = process.env.PAYTR_DEBUG_ON || "0";
+    const test_mode = cleanEnv(process.env.PAYTR_TEST_MODE || "0");
+    const debug_on = cleanEnv(process.env.PAYTR_DEBUG_ON || "1");
     const timeout_limit = "30";
     const lang = "tr";
 
