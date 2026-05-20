@@ -85,7 +85,12 @@ module.exports = async function handler(req, res) {
 
     const text = await paytrRes.text();
     let data;
-    try { data = JSON.parse(text); } catch { data = { status: "failed", reason: text || "PayTR cevap parse edilemedi." }; }
+    try {
+      data = JSON.parse(text);
+    } catch {
+      const preview = text ? text.slice(0, 240) : "bos cevap";
+      data = { status: "failed", reason: `PayTR cevap parse edilemedi. HTTP ${paytrRes.status}: ${preview}` };
+    }
 
     if (data.status !== "success") {
       return res.status(400).json({ status: "failed", reason: data.reason || "PayTR token alinamadi." });
