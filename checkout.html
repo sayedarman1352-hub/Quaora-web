@@ -154,8 +154,18 @@
       }).catch(() => {});
     };
 
+    const getPaytrEndpoint = () => {
+      if (location.protocol === "http:" || location.protocol === "https:") {
+        if (location.hostname === "quaora.com.tr" || location.hostname === "www.quaora.com.tr") {
+          return "https://www.quaora.com.tr/api/paytr-create-token";
+        }
+        return `${location.origin}/api/paytr-create-token`;
+      }
+      return "api/paytr-create-token";
+    };
+
     const requestPaytrToken = async (payload) => {
-      const endpoint = "api/paytr-create-token";
+      const endpoint = getPaytrEndpoint();
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -166,7 +176,8 @@
       try {
         data = JSON.parse(rawResponse);
       } catch (parseError) {
-        throw new Error("PayTR backend Vercel'de deploy edilmemis veya /api/paytr-create-token route'u calismiyor.");
+        const preview = rawResponse ? rawResponse.slice(0, 120) : "bos cevap";
+        throw new Error("PayTR backend JSON donmedi: " + preview);
       }
 
       if (!response.ok || data.status !== "success") {

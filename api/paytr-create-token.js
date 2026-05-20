@@ -6,7 +6,17 @@ function getClientIp(req) {
   return req.socket?.remoteAddress || "127.0.0.1";
 }
 
+function setCors(req, res) {
+  const allowedOrigins = ["https://quaora.com.tr", "https://www.quaora.com.tr"];
+  const origin = req.headers.origin;
+  res.setHeader("Access-Control-Allow-Origin", allowedOrigins.includes(origin) ? origin : "https://www.quaora.com.tr");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
 module.exports = async function handler(req, res) {
+  setCors(req, res);
+  if (req.method === "OPTIONS") return res.status(204).send("");
   if (req.method !== "POST") return res.status(405).json({ status: "failed", reason: "method_not_allowed" });
 
   try {
@@ -17,7 +27,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ status: "failed", reason: "PayTR environment variables eksik." });
     }
 
-    const body = req.body || {};
+    const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
     const merchant_oid = String(body.merchant_oid || "");
     const email = String(body.email || "");
     const payment_amount = String(Math.round(Number(body.payment_amount || 0)));
