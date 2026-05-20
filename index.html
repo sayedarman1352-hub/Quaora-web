@@ -447,7 +447,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs, onSnapshot, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs, onSnapshot, deleteDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -498,6 +498,8 @@
         "gozlukler.html",
         "plaj-aksesuarlari.html"
     ];
+    let availableRandomProductPages = [];
+    let availableRandomProductPagesPromise = null;
 
 
     const qText = (value) => decodeURIComponent(value);
@@ -562,9 +564,56 @@
         setValue('homeHeroButtonInput', data.buttonText);
     };
 
-    window.openRandomProductPage = () => {
-        const index = Math.floor(Math.random() * RANDOM_PRODUCT_PAGES.length);
-        window.location.href = RANDOM_PRODUCT_PAGES[index];
+    const setAvailableRandomProductPages = (pages) => {
+        availableRandomProductPages = [...new Set((pages || []).filter((page) => RANDOM_PRODUCT_PAGES.includes(page)))];
+        return availableRandomProductPages;
+    };
+
+    const loadAvailableRandomProductPages = async () => {
+        if (availableRandomProductPages.length) return availableRandomProductPages;
+        if (availableRandomProductPagesPromise) return availableRandomProductPagesPromise;
+
+        availableRandomProductPagesPromise = Promise.allSettled(
+            FAVORITE_COLLECTIONS.map(async ({ name, page }) => {
+                const snap = await getDocs(query(collection(db, name), limit(1)));
+                return snap.empty ? null : page;
+            })
+        ).then((results) => {
+            const pages = results
+                .filter((result) => result.status === 'fulfilled' && result.value)
+                .map((result) => result.value);
+            return setAvailableRandomProductPages(pages);
+        }).finally(() => {
+            availableRandomProductPagesPromise = null;
+        });
+
+        return availableRandomProductPagesPromise;
+    };
+
+    window.openRandomProductPage = async () => {
+        const button = getEl('homeHeroButton');
+        const previousText = button?.textContent || '';
+        try {
+            if (button) {
+                button.disabled = true;
+                button.textContent = 'Kontrol ediliyor';
+            }
+            const pages = await loadAvailableRandomProductPages();
+            if (!pages.length) {
+                alert("Şu an yönlendirilecek ürün bulunamadı.");
+                return;
+            }
+            const index = Math.floor(Math.random() * pages.length);
+            window.location.href = pages[index];
+        } catch (error) {
+            console.error('Ürün bulunan sayfalar kontrol edilemedi:', error);
+            alert("Ürün sayfaları kontrol edilemedi. Lütfen tekrar deneyin.");
+        } finally {
+            if (button) {
+                button.disabled = false;
+                button.textContent = previousText;
+            }
+        }
     };
 
     const loadHomeHeroSettings = () => {
@@ -758,8 +807,12 @@
                 })
             );
 
-            const products = snapshots
-                .flatMap((result) => result.status === 'fulfilled' ? result.value : [])
+            const allProducts = snapshots
+                .flatMap((result) => result.status === 'fulfilled' ? result.value : []);
+
+            setAvailableRandomProductPages(allProducts.map((product) => product.page));
+
+            const products = allProducts
                 .filter((product) => Array.isArray(product.images) && product.images.length > 0);
 
             renderHomeRandomProducts(shuffleItems(products).slice(0, 6));
