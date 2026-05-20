@@ -422,7 +422,7 @@
         }
 
         if (index > -1) { cart[index].qty += 1; } 
-        else { cart.push({ cartItemId, id, name, price, size, qty: 1, paymentLink: product.paymentLink || product.paymentUrl || product.payLink || '', image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '' }); }
+        else { cart.push({ cartItemId, id, name, price, size, qty: 1, collectionName: COLLECTION_NAME, paymentLink: product.paymentLink || product.paymentUrl || product.payLink || '', image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '' }); }
         window.updateCart(); window.toggleCart();
     };
 

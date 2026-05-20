@@ -201,6 +201,7 @@
           userEmail: user.email,
           items: cart.map(item => ({
             productId: item.id || "",
+            collectionName: item.collectionName || "",
             productName: item.name || "Urun",
             image: item.image || item.imageUrl || (Array.isArray(item.images) ? item.images[0] : "") || "",
             size: item.size || "",
