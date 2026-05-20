@@ -57,6 +57,10 @@
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]'); } catch (e) { cart = []; }
     cart = Array.isArray(cart) ? cart.filter(item => Number(item.price || 0) > 0) : [];
+    if (cart.length > 1) {
+      cart = [cart[cart.length - 1]];
+      localStorage.setItem('quaora_cart', JSON.stringify(cart));
+    }
 
     const money = (value) => '₺' + Number(value || 0).toLocaleString('tr-TR');
     const subtotal = () => cart.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0);

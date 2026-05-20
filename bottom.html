@@ -555,31 +555,23 @@
 
         const size = window.selectedSizes[id];
         if (!size) return alert("Lütfen sepete eklemeden önce bir beden seçin!");
-        
-        const pSizeStocks = product.sizeStocks || {};
-        const stockForSize = pSizeStocks[size] || 0;
-        const cartItemId = id + "_" + size; 
-        const index = cart.findIndex(i => i.cartItemId === cartItemId);
-        
-        let currentQty = index > -1 ? cart[index].qty : 0;
-        if (currentQty >= stockForSize) {
-            return alert(`Maalesef bu bedende daha fazla ürün ekleyemezsiniz! (Kalan Stok: ${stockForSize})`);
-        }
 
-        if (index > -1) {
-            cart[index].qty += 1;
-        } else {
-            cart.push({
-                cartItemId,
-                id,
-                name: product.name,
-                price: Number(product.salePrice || 0),
-                size,
-                qty: 1,
-                collectionName: COLLECTION_NAME,
-                paymentLink: product.paymentLink || product.paymentUrl || product.payLink || ''
-            });
-        }
+        const sizeStocks = product.sizeStocks || {};
+        const stockForSize = Number(sizeStocks[size] || 0);
+        if (stockForSize <= 0) return alert("Bu beden tükendi.");
+
+        cart = [{
+            cartItemId: id + "_" + size,
+            id,
+            name: product.name,
+            price: Number(product.salePrice || 0),
+            size,
+            qty: 1,
+            collectionName: COLLECTION_NAME,
+            paymentLink: product.paymentLink || product.paymentUrl || product.payLink || '',
+            image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''
+        }];
+
         window.updateCart();
         window.toggleCart();
     };
