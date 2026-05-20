@@ -1,9 +1,15 @@
-const CACHE_NAME = "quaora-static-v3";
+const CACHE_NAME = "quaora-static-v4";
 const STATIC_ASSETS = [
+  "/quaora-tailwind.css",
   "/quaora-responsive.css",
   "/quaora-performance.js",
   "/quaora-discounts.js"
 ];
+const CACHEABLE_ORIGINS = new Set([
+  "https://cdn.tailwindcss.com",
+  "https://fonts.googleapis.com",
+  "https://fonts.gstatic.com"
+]);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)).catch(() => null));
@@ -34,7 +40,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   // Static dosyalar cache-first.
-  if (/\.(css|js|png|jpg|jpeg|webp|gif|svg|ico)$/i.test(url.pathname)) {
+  if (/\.(css|js|png|jpg|jpeg|webp|gif|svg|ico)$/i.test(url.pathname) || CACHEABLE_ORIGINS.has(url.origin)) {
     event.respondWith(caches.match(req).then((cached) => cached || fetch(req).then((res) => {
       const copy = res.clone();
       caches.open(CACHE_NAME).then((cache) => cache.put(req, copy)).catch(() => null);
