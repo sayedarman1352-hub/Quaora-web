@@ -78,6 +78,35 @@
       </section>
 
       <section class="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+            <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Bugünkü Ziyaretçi</p>
+            <strong id="todayVisitors" class="block mt-3 text-3xl font-black text-[#964b00]">0</strong>
+            <span id="todayViews" class="text-xs font-bold text-gray-500">0 görüntüleme</span>
+          </div>
+          <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+            <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Aylık Ziyaretçi</p>
+            <strong id="monthVisitors" class="block mt-3 text-3xl font-black text-[#964b00]">0</strong>
+            <span id="monthViews" class="text-xs font-bold text-gray-500">0 görüntüleme</span>
+          </div>
+          <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+            <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Filtre Ziyaretçi</p>
+            <strong id="rangeVisitors" class="block mt-3 text-3xl font-black text-[#964b00]">0</strong>
+            <span id="rangeViews" class="text-xs font-bold text-gray-500">0 görüntüleme</span>
+          </div>
+          <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+            <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Ortalama</p>
+            <strong id="avgVisitors" class="block mt-3 text-3xl font-black text-[#964b00]">0</strong>
+            <span class="text-xs font-bold text-gray-500">günlük ziyaretçi</span>
+          </div>
+        </div>
+        <aside class="bg-white border border-[#964b00]/10 rounded-2xl shadow-sm p-5 h-fit">
+          <h2 class="text-sm font-black uppercase tracking-[0.22em] mb-4">Ziyaret Detayı</h2>
+          <div id="visitDetails" class="space-y-3"></div>
+        </aside>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-5">
         <div class="bg-white border border-[#964b00]/10 rounded-2xl shadow-sm overflow-hidden">
           <div class="p-5 border-b border-[#964b00]/10">
             <h2 class="text-sm font-black uppercase tracking-[0.22em]">Satılan Ürünler</h2>
@@ -112,6 +141,7 @@
     const db = getFirestore(app);
     const el = (id) => document.getElementById(id);
     let allOrders = [];
+    let allVisits = [];
 
     const money = (value) => `₺${Number(value || 0).toLocaleString('tr-TR')}`;
     const escapeHtml = (value) => String(value ?? '')
@@ -153,6 +183,13 @@
       return acc;
     }, { orders: 0, revenue: 0, qty: 0 });
 
+    const summarizeVisits = (visits) => visits.reduce((acc, visit) => {
+      acc.days += 1;
+      acc.visitors += Number(visit.uniqueVisitors || 0);
+      acc.views += Number(visit.totalViews || 0);
+      return acc;
+    }, { days: 0, visitors: 0, views: 0 });
+
     const setText = (id, value) => {
       const node = el(id);
       if (node) node.textContent = value;
@@ -180,6 +217,68 @@
         ].join(' ').toLocaleLowerCase('tr-TR');
         return haystack.includes(term);
       });
+    };
+
+    const getFilteredVisits = () => {
+      const start = el('startDate')?.value;
+      const end = el('endDate')?.value;
+      return allVisits.filter((visit) => {
+        const key = visit.dateKey || '';
+        if (start && key < start) return false;
+        if (end && key > end) return false;
+        return true;
+      });
+    };
+
+    const renderVisitDetails = (visits) => {
+      const box = el('visitDetails');
+      if (!box) return;
+      if (!visits.length) {
+        box.innerHTML = '<div class="text-sm font-bold text-gray-400">Ziyaret verisi yok.</div>';
+        return;
+      }
+
+      box.innerHTML = visits.slice(0, 14).map((visit) => {
+        const pages = Object.entries(visit.pageViews || {})
+          .sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))
+          .slice(0, 3)
+          .map(([key, count]) => {
+            const label = visit.pageLabels?.[key] || key.replace(/^_+/, '/').replace(/_/g, '/');
+            return `<span class="block text-[10px] font-bold text-gray-500">${escapeHtml(label)}: ${Number(count || 0)}</span>`;
+          }).join('');
+        return `
+          <div class="rounded-xl bg-[#FAE29C]/25 border border-[#964b00]/10 p-3">
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-xs font-black uppercase tracking-widest text-gray-800">${escapeHtml(visit.dateKey || '')}</p>
+              <p class="text-xs font-black text-[#964b00]">${Number(visit.uniqueVisitors || 0)} kişi</p>
+            </div>
+            <p class="mt-1 text-[11px] font-bold text-gray-500">${Number(visit.totalViews || 0)} sayfa görüntüleme</p>
+            <div class="mt-2">${pages}</div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    const renderVisitDashboard = () => {
+      const now = Date.now();
+      const today = dateKey(now);
+      const month = monthKey(now);
+      const todayVisit = allVisits.find(visit => visit.dateKey === today);
+      const monthVisits = allVisits.filter(visit => (visit.monthKey || visit.dateKey?.slice(0, 7)) === month);
+      const rangeVisits = getFilteredVisits();
+      const todaySummary = summarizeVisits(todayVisit ? [todayVisit] : []);
+      const monthSummary = summarizeVisits(monthVisits);
+      const rangeSummary = summarizeVisits(rangeVisits);
+      const average = rangeSummary.days ? Math.round(rangeSummary.visitors / rangeSummary.days) : 0;
+
+      setText('todayVisitors', String(todaySummary.visitors));
+      setText('todayViews', `${todaySummary.views} görüntüleme`);
+      setText('monthVisitors', String(monthSummary.visitors));
+      setText('monthViews', `${monthSummary.views} görüntüleme`);
+      setText('rangeVisitors', String(rangeSummary.visitors));
+      setText('rangeViews', `${rangeSummary.views} görüntüleme`);
+      setText('avgVisitors', String(average));
+      renderVisitDetails(rangeVisits);
     };
 
     const renderSales = (orders) => {
@@ -267,18 +366,30 @@
       setText('rangeOrders', `${rangeSummary.orders} sipariş`);
       setText('rangeQty', String(rangeSummary.qty));
       setText('totalRevenue', `Toplam ${money(allSummary.revenue)}`);
+      renderVisitDashboard();
       renderSales(rangeOrders);
       renderProductSummary(rangeOrders);
     };
 
     const loadOrders = async () => {
-      setText('accountingStatus', 'Siparişler yükleniyor.');
       const snapshot = await getDocs(collection(db, "orders"));
       allOrders = snapshot.docs
         .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
         .filter(isPaidOrder)
         .sort((a, b) => getSoldAt(b) - getSoldAt(a));
-      setText('accountingStatus', `${allOrders.length} onaylı sipariş listelendi.`);
+    };
+
+    const loadVisits = async () => {
+      const snapshot = await getDocs(collection(db, "site_visits"));
+      allVisits = snapshot.docs
+        .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+        .sort((a, b) => String(b.dateKey || b.id).localeCompare(String(a.dateKey || a.id)));
+    };
+
+    const loadDashboardData = async () => {
+      setText('accountingStatus', 'Muhasebe verileri yükleniyor.');
+      await Promise.all([loadOrders(), loadVisits()]);
+      setText('accountingStatus', `${allOrders.length} onaylı sipariş ve ${allVisits.length} ziyaret günü listelendi.`);
       renderDashboard();
     };
 
@@ -310,7 +421,7 @@
       el('todayBtn')?.addEventListener('click', setToday);
       el('monthBtn')?.addEventListener('click', setMonth);
       el('allBtn')?.addEventListener('click', setAll);
-      el('refreshBtn')?.addEventListener('click', loadOrders);
+      el('refreshBtn')?.addEventListener('click', loadDashboardData);
       el('monthFilter').value = monthKey();
       setToday();
     };
@@ -324,9 +435,9 @@
         return;
       }
       bindFilters();
-      await loadOrders().catch(error => {
+      await loadDashboardData().catch(error => {
         console.error(error);
-        setText('accountingStatus', 'Siparişler yüklenemedi.');
+        setText('accountingStatus', 'Muhasebe verileri yüklenemedi.');
       });
     });
   </script>

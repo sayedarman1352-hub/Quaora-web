@@ -16,6 +16,41 @@
     document.head.appendChild(script);
   };
 
+  const trackDailyVisit = async () => {
+    const isLocal = location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
+    const excludedPages = new Set(["/muhasebe.html", "/siparisler.html", "/indirimler.html"]);
+    if (isLocal || excludedPages.has(location.pathname)) return;
+
+    try {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      const dateKey = `${year}-${month}-${day}`;
+      const monthKey = `${year}-${month}`;
+      const pageKey = (location.pathname || "/").replace(/[^a-z0-9]/gi, "_") || "_home";
+      const uniqueKey = `quaora_visit_${dateKey}`;
+      const isUniqueToday = localStorage.getItem(uniqueKey) !== "1";
+      if (isUniqueToday) localStorage.setItem(uniqueKey, "1");
+
+      const endpoint = `${location.origin}/api/track-visit`;
+      await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          dateKey,
+          monthKey,
+          pageKey,
+          path: location.pathname || "/",
+          isUniqueToday
+        })
+      });
+    } catch (error) {
+      console.warn("Quaora ziyaret sayacı kaydedilemedi.", error);
+    }
+  };
+
   const tuneImage = (img) => {
     if (!img || img.dataset.quaoraPerfReady) return;
     img.dataset.quaoraPerfReady = "1";
@@ -48,14 +83,15 @@
 
   // Sayfalar arası hızlı geri dönüş için en temel sayfaları arka planda ısıt.
   window.addEventListener("load", () => {
-    if (!("requestIdleCallback" in window)) return;
-    requestIdleCallback(() => {
+    const runAfterIdle = window.requestIdleCallback || ((callback) => setTimeout(callback, 1800));
+    runAfterIdle(() => {
       ["/", "/tops.html", "/bottom.html", "/outlet.html", "/yeni-gelenler.html"].forEach((href) => {
         const link = document.createElement("link");
         link.rel = "prefetch";
         link.href = href;
         document.head.appendChild(link);
       });
+      trackDailyVisit();
     }, { timeout: 2500 });
   }, { once: true });
 })();
