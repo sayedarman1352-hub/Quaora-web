@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Muhasebe | QUAORA</title>
+  <link rel="stylesheet" href="quaora-tailwind.css">
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <link rel="stylesheet" href="quaora-responsive.css">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="//firestore.googleapis.com">
+  <script src="quaora-performance.js" defer></script>
+</head>
+<body class="min-h-screen bg-[#FAE29C] text-[#964b00]">
+  <main class="max-w-7xl mx-auto p-4 md:p-8">
+    <header class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-[#964b00]/15 pb-6">
+      <div>
+        <a href="index.html" class="text-xs font-black uppercase tracking-[0.24em] hover:text-black transition-colors">&larr; Admin Panel</a>
+        <h1 class="mt-4 text-3xl md:text-5xl font-black uppercase tracking-[0.08em] text-[#964b00]">Muhasebe</h1>
+        <p id="accountingStatus" class="mt-2 text-sm font-bold text-[#964b00]/70">Siparişler yükleniyor.</p>
+      </div>
+      <button id="refreshBtn" type="button" class="bg-[#964b00] text-white rounded-xl px-5 py-3 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors">Yenile</button>
+    </header>
+
+    <section id="lockedState" class="hidden mt-8 rounded-2xl bg-white border border-[#964b00]/10 p-6 shadow-lg">
+      <h2 class="text-xl font-black uppercase tracking-widest">Admin girişi gerekiyor</h2>
+      <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece quaoratr@gmail.com hesabı tarafından görüntülenebilir.</p>
+      <a href="index.html" class="mt-5 inline-flex bg-[#964b00] text-white rounded-xl px-5 py-3 text-xs font-black uppercase tracking-widest">Ana Sayfaya Dön</a>
+    </section>
+
+    <section id="accountingApp" class="hidden mt-8 space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Başlangıç</span>
+          <input id="startDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
+        </label>
+        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Bitiş</span>
+          <input id="endDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
+        </label>
+        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Ay</span>
+          <input id="monthFilter" type="month" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
+        </label>
+        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Arama</span>
+          <input id="searchInput" type="search" placeholder="Ürün, e-posta, beden" class="mt-2 w-full bg-transparent text-sm font-black outline-none placeholder:text-[#964b00]/35">
+        </label>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <button id="todayBtn" type="button" class="bg-white border border-[#964b00]/15 rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#964b00] hover:text-white transition-colors">Bugün</button>
+        <button id="monthBtn" type="button" class="bg-white border border-[#964b00]/15 rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#964b00] hover:text-white transition-colors">Bu Ay</button>
+        <button id="allBtn" type="button" class="bg-white border border-[#964b00]/15 rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-[#964b00] hover:text-white transition-colors">Tümü</button>
+      </div>
+
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+          <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Bugünkü Ciro</p>
+          <strong id="todayRevenue" class="block mt-3 text-3xl font-black text-[#964b00]">₺0</strong>
+          <span id="todayOrders" class="text-xs font-bold text-gray-500">0 sipariş</span>
+        </div>
+        <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+          <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Aylık Ciro</p>
+          <strong id="monthRevenue" class="block mt-3 text-3xl font-black text-[#964b00]">₺0</strong>
+          <span id="monthOrders" class="text-xs font-bold text-gray-500">0 sipariş</span>
+        </div>
+        <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+          <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Filtre Cirosu</p>
+          <strong id="rangeRevenue" class="block mt-3 text-3xl font-black text-[#964b00]">₺0</strong>
+          <span id="rangeOrders" class="text-xs font-bold text-gray-500">0 sipariş</span>
+        </div>
+        <div class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
+          <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/55">Satılan Ürün</p>
+          <strong id="rangeQty" class="block mt-3 text-3xl font-black text-[#964b00]">0</strong>
+          <span id="totalRevenue" class="text-xs font-bold text-gray-500">Toplam ₺0</span>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-5">
+        <div class="bg-white border border-[#964b00]/10 rounded-2xl shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-[#964b00]/10">
+            <h2 class="text-sm font-black uppercase tracking-[0.22em]">Satılan Ürünler</h2>
+          </div>
+          <div id="salesList" class="divide-y divide-[#964b00]/10"></div>
+        </div>
+        <aside class="bg-white border border-[#964b00]/10 rounded-2xl shadow-sm p-5 h-fit">
+          <h2 class="text-sm font-black uppercase tracking-[0.22em] mb-4">Ürün Özeti</h2>
+          <div id="productSummary" class="space-y-3"></div>
+        </aside>
+      </section>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
+      authDomain: "quaora-web.firebaseapp.com",
+      projectId: "quaora-web",
+      storageBucket: "quaora-web.firebasestorage.app",
+      messagingSenderId: "69244174750",
+      appId: "1:69244174750:web:5c9e82172704bb39a2568f"
+    };
+
+    const ADMIN_EMAIL = "quaoratr@gmail.com";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const el = (id) => document.getElementById(id);
+    let allOrders = [];
+
+    const money = (value) => `₺${Number(value || 0).toLocaleString('tr-TR')}`;
+    const escapeHtml = (value) => String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
+    const dateKey = (timestamp = Date.now()) => {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const monthKey = (timestamp = Date.now()) => dateKey(timestamp).slice(0, 7);
+    const startOfDay = (value) => new Date(`${value}T00:00:00`).getTime();
+    const endOfDay = (value) => new Date(`${value}T23:59:59.999`).getTime();
+    const getSoldAt = (order) => Number(order.paidAt || order.stockProcessedAt || order.createdAt || 0);
+    const isPaidOrder = (order) => order.paymentStatus === "success" || order.stockProcessed === true || String(order.status || '').toLocaleLowerCase('tr-TR').includes('onay');
+
+    const getOrderItems = (order) => {
+      if (Array.isArray(order.items) && order.items.length) return order.items;
+      return [{
+        productName: order.productName || order.name || 'Ürün',
+        size: order.size || '',
+        qty: order.qty || 1,
+        price: order.price || order.total || 0
+      }];
+    };
+
+    const summarize = (orders) => orders.reduce((acc, order) => {
+      const items = getOrderItems(order);
+      acc.orders += 1;
+      acc.revenue += Number(order.total || items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0));
+      acc.qty += items.reduce((sum, item) => sum + Number(item.qty || 1), 0);
+      return acc;
+    }, { orders: 0, revenue: 0, qty: 0 });
+
+    const setText = (id, value) => {
+      const node = el(id);
+      if (node) node.textContent = value;
+    };
+
+    const getFilteredOrders = () => {
+      const start = el('startDate')?.value;
+      const end = el('endDate')?.value;
+      const term = (el('searchInput')?.value || '').trim().toLocaleLowerCase('tr-TR');
+      const min = start ? startOfDay(start) : 0;
+      const max = end ? endOfDay(end) : Number.MAX_SAFE_INTEGER;
+
+      return allOrders.filter((order) => {
+        const soldAt = getSoldAt(order);
+        if (soldAt < min || soldAt > max) return false;
+        if (!term) return true;
+        const customer = order.customer || {};
+        const haystack = [
+          customer.name,
+          customer.email,
+          customer.phone,
+          customer.address,
+          order.userEmail,
+          ...getOrderItems(order).flatMap(item => [item.productName, item.name, item.size])
+        ].join(' ').toLocaleLowerCase('tr-TR');
+        return haystack.includes(term);
+      });
+    };
+
+    const renderSales = (orders) => {
+      const list = el('salesList');
+      if (!list) return;
+      if (!orders.length) {
+        list.innerHTML = '<div class="p-8 text-center text-sm font-bold text-gray-400">Bu filtrede satış bulunmadı.</div>';
+        return;
+      }
+
+      list.innerHTML = orders.map((order) => {
+        const customer = order.customer || {};
+        const soldAt = getSoldAt(order);
+        const items = getOrderItems(order);
+        const total = Number(order.total || items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0));
+        return `
+          <article class="p-5">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">${new Date(soldAt).toLocaleString('tr-TR')}</p>
+                <h3 class="mt-1 text-sm font-black uppercase tracking-widest text-gray-900">${escapeHtml(customer.name || order.userName || 'Müşteri')}</h3>
+                <p class="text-xs font-bold text-gray-500">${escapeHtml(customer.email || order.userEmail || '')} ${customer.phone ? ' | ' + escapeHtml(customer.phone) : ''}</p>
+              </div>
+              <strong class="text-xl font-black text-[#964b00]">${money(total)}</strong>
+            </div>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2">
+              ${items.map(item => `
+                <div class="rounded-xl bg-[#FAE29C]/25 border border-[#964b00]/10 p-3">
+                  <p class="text-xs font-black uppercase tracking-widest text-gray-800">${escapeHtml(item.productName || item.name || 'Ürün')}</p>
+                  <p class="mt-1 text-[11px] font-bold text-gray-500">Beden: ${escapeHtml(item.size || 'Tek ürün')} | Adet: ${Number(item.qty || 1)} | ${money(Number(item.price || 0))}</p>
+                </div>
+              `).join('')}
+            </div>
+          </article>
+        `;
+      }).join('');
+    };
+
+    const renderProductSummary = (orders) => {
+      const box = el('productSummary');
+      if (!box) return;
+      const rows = new Map();
+      orders.forEach(order => {
+        getOrderItems(order).forEach(item => {
+          const key = `${item.productName || item.name || 'Ürün'} / ${item.size || 'Tek ürün'}`;
+          const current = rows.get(key) || { qty: 0, revenue: 0 };
+          const qty = Number(item.qty || 1);
+          current.qty += qty;
+          current.revenue += Number(item.price || 0) * qty;
+          rows.set(key, current);
+        });
+      });
+
+      const sorted = [...rows.entries()].sort((a, b) => b[1].revenue - a[1].revenue);
+      if (!sorted.length) {
+        box.innerHTML = '<div class="text-sm font-bold text-gray-400">Özet yok.</div>';
+        return;
+      }
+
+      box.innerHTML = sorted.map(([name, data]) => `
+        <div class="rounded-xl bg-[#FAE29C]/25 border border-[#964b00]/10 p-3">
+          <p class="text-xs font-black uppercase tracking-widest text-gray-800">${escapeHtml(name)}</p>
+          <p class="mt-1 text-[11px] font-bold text-gray-500">${data.qty} adet | ${money(data.revenue)}</p>
+        </div>
+      `).join('');
+    };
+
+    const renderDashboard = () => {
+      const now = Date.now();
+      const today = dateKey(now);
+      const month = monthKey(now);
+      const todayOrders = allOrders.filter(order => dateKey(getSoldAt(order)) === today);
+      const monthOrders = allOrders.filter(order => monthKey(getSoldAt(order)) === month);
+      const rangeOrders = getFilteredOrders();
+      const allSummary = summarize(allOrders);
+      const todaySummary = summarize(todayOrders);
+      const monthSummary = summarize(monthOrders);
+      const rangeSummary = summarize(rangeOrders);
+
+      setText('todayRevenue', money(todaySummary.revenue));
+      setText('todayOrders', `${todaySummary.orders} sipariş`);
+      setText('monthRevenue', money(monthSummary.revenue));
+      setText('monthOrders', `${monthSummary.orders} sipariş`);
+      setText('rangeRevenue', money(rangeSummary.revenue));
+      setText('rangeOrders', `${rangeSummary.orders} sipariş`);
+      setText('rangeQty', String(rangeSummary.qty));
+      setText('totalRevenue', `Toplam ${money(allSummary.revenue)}`);
+      renderSales(rangeOrders);
+      renderProductSummary(rangeOrders);
+    };
+
+    const loadOrders = async () => {
+      setText('accountingStatus', 'Siparişler yükleniyor.');
+      const snapshot = await getDocs(collection(db, "orders"));
+      allOrders = snapshot.docs
+        .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+        .filter(isPaidOrder)
+        .sort((a, b) => getSoldAt(b) - getSoldAt(a));
+      setText('accountingStatus', `${allOrders.length} onaylı sipariş listelendi.`);
+      renderDashboard();
+    };
+
+    const setToday = () => {
+      const today = dateKey();
+      el('startDate').value = today;
+      el('endDate').value = today;
+      renderDashboard();
+    };
+
+    const setMonth = () => {
+      const month = el('monthFilter').value || monthKey();
+      el('monthFilter').value = month;
+      el('startDate').value = `${month}-01`;
+      const end = new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0);
+      el('endDate').value = dateKey(end.getTime());
+      renderDashboard();
+    };
+
+    const setAll = () => {
+      el('startDate').value = '';
+      el('endDate').value = '';
+      renderDashboard();
+    };
+
+    const bindFilters = () => {
+      ['startDate', 'endDate', 'searchInput'].forEach(id => el(id)?.addEventListener('input', renderDashboard));
+      el('monthFilter')?.addEventListener('input', setMonth);
+      el('todayBtn')?.addEventListener('click', setToday);
+      el('monthBtn')?.addEventListener('click', setMonth);
+      el('allBtn')?.addEventListener('click', setAll);
+      el('refreshBtn')?.addEventListener('click', loadOrders);
+      el('monthFilter').value = monthKey();
+      setToday();
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      const isAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL;
+      el('lockedState').classList.toggle('hidden', isAdmin);
+      el('accountingApp').classList.toggle('hidden', !isAdmin);
+      if (!isAdmin) {
+        setText('accountingStatus', user ? 'Bu hesap admin değil.' : 'Giriş yapılmadı.');
+        return;
+      }
+      bindFilters();
+      await loadOrders().catch(error => {
+        console.error(error);
+        setText('accountingStatus', 'Siparişler yüklenemedi.');
+      });
+    });
+  </script>
+</body>
+</html>

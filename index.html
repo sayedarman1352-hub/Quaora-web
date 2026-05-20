@@ -199,6 +199,12 @@
         <button onclick="closeAllPanels()" class="text-xl hover:rotate-90 transition-transform">✕</button>
     </div>
     <div class="p-6 space-y-6 overflow-y-auto flex-grow">
+        <section class="rounded-2xl border border-[#964b00]/10 bg-[#964b00] p-4 text-white">
+            <h3 class="text-[11px] font-black uppercase tracking-[0.25em] mb-2">Muhasebe</h3>
+            <p class="text-[11px] font-bold text-white/75 mb-3">Günlük, aylık ciro ve tarih bazlı satılan ürünler.</p>
+            <a href="muhasebe.html" class="block w-full bg-white text-[#964b00] py-3 rounded-xl font-black tracking-widest uppercase text-[10px] text-center hover:bg-[#FAE29C] transition-all">Muhasebe Panelini Aç</a>
+        </section>
+
         <section class="rounded-2xl border border-[#964b00]/10 bg-[#FAE29C]/20 p-4">
             <h3 class="text-[11px] font-black text-[#964b00] uppercase tracking-[0.25em] mb-3">Ana Sayfa Yaz&#305;lar&#305;</h3>
             <div class="space-y-2">
@@ -981,7 +987,8 @@
                 .sort((a, b) => Number(b.order.createdAt || 0) - Number(a.order.createdAt || 0));
 
             list.innerHTML = docs.map(({ orderDoc, order }) => {
-                const created = order.createdAt ? new Date(order.createdAt).toLocaleString('tr-TR') : '';
+                const soldAt = Number(order.paidAt || order.stockProcessedAt || order.createdAt || 0);
+                const created = soldAt ? new Date(soldAt).toLocaleString('tr-TR') : '';
                 const orderItems = getOrderItems(order);
                 const total = Number(order.total || orderItems.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0));
                 return `

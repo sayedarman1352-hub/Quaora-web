@@ -83,6 +83,31 @@ function normalizeQty(value) {
   return Number.isFinite(qty) && qty > 0 ? Math.floor(qty) : 1;
 }
 
+function getIstanbulDateParts(timestamp = Date.now()) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Istanbul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(new Date(timestamp)).map(part => [part.type, part.value])
+  );
+  return {
+    dateKey: `${parts.year}-${parts.month}-${parts.day}`,
+    monthKey: `${parts.year}-${parts.month}`
+  };
+}
+
+function paymentTimeFields(timestamp = Date.now()) {
+  const parts = getIstanbulDateParts(timestamp);
+  return {
+    paidAt: timestamp,
+    paidAtIso: new Date(timestamp).toISOString(),
+    paidDateKey: parts.dateKey,
+    paidMonthKey: parts.monthKey
+  };
+}
+
 async function resolveProductRef(db, item) {
   const productId = String(item.productId || item.id || "").trim();
   if (!productId) return null;
@@ -123,10 +148,12 @@ async function confirmOrderAndDecreaseStock(merchantOid, paytrStatus, totalAmoun
 
   const order = orderSnap.data() || {};
   if (order.stockProcessed === true) {
+    const paidFields = order.paidAt ? {} : paymentTimeFields();
     await orderRef.update({
       status: "Ödeme onaylandı",
       paymentStatus: "success",
       paytrTotalAmount: Number(totalAmount || 0),
+      ...paidFields,
       updatedAt: Date.now()
     });
     return;
@@ -154,10 +181,12 @@ async function confirmOrderAndDecreaseStock(merchantOid, paytrStatus, totalAmoun
 
     const freshOrderData = freshOrder.data() || {};
     if (freshOrderData.stockProcessed === true) {
+      const paidFields = freshOrderData.paidAt ? {} : paymentTimeFields();
       transaction.update(orderRef, {
         status: "Ödeme onaylandı",
         paymentStatus: "success",
         paytrTotalAmount: Number(totalAmount || 0),
+        ...paidFields,
         updatedAt: Date.now()
       });
       return;
@@ -201,13 +230,15 @@ async function confirmOrderAndDecreaseStock(merchantOid, paytrStatus, totalAmoun
       }
     }
 
+    const paidAt = Date.now();
     transaction.update(orderRef, {
       status: "Ödeme onaylandı",
       paymentStatus: "success",
       paytrTotalAmount: Number(totalAmount || 0),
       stockProcessed: true,
-      stockProcessedAt: Date.now(),
-      updatedAt: Date.now()
+      stockProcessedAt: paidAt,
+      ...paymentTimeFields(paidAt),
+      updatedAt: paidAt
     });
   });
 }
