@@ -126,7 +126,7 @@ async function resolveProductRef(db, item) {
   return null;
 }
 
-async function confirmOrderAndDecreaseStock(merchantOid, paytrStatus, totalAmount) {
+async function confirmOrderAndDecreaseStock(merchantOid, paytrStatus, totalAmount, failedReasonCode = "", failedReasonMsg = "") {
   const db = getDb();
   const orderRef = db.collection("orders").doc(merchantOid);
   const orderSnap = await orderRef.get();
@@ -141,6 +141,8 @@ async function confirmOrderAndDecreaseStock(merchantOid, paytrStatus, totalAmoun
       status: "Ödeme başarısız",
       paymentStatus: paytrStatus,
       paytrTotalAmount: Number(totalAmount || 0),
+      paytrFailReasonCode: failedReasonCode,
+      paytrFailReasonMsg: failedReasonMsg,
       updatedAt: Date.now()
     });
     return;
@@ -258,6 +260,8 @@ module.exports = async function handler(req, res) {
     const status = post.status || "";
     const totalAmount = post.total_amount || "";
     const paytrHash = post.hash || "";
+    const failedReasonCode = post.failed_reason_code || post.reason_code || "";
+    const failedReasonMsg = post.failed_reason_msg || post.failed_reason || post.reason || "";
 
     const calculatedHash = crypto
       .createHmac("sha256", merchantKey)
@@ -266,8 +270,8 @@ module.exports = async function handler(req, res) {
 
     if (calculatedHash !== paytrHash) return res.status(403).send("PAYTR notification failed: bad hash");
 
-    await confirmOrderAndDecreaseStock(merchantOid, status, totalAmount);
-    console.log("PAYTR callback OK", { merchantOid, status, totalAmount });
+    await confirmOrderAndDecreaseStock(merchantOid, status, totalAmount, failedReasonCode, failedReasonMsg);
+    console.log("PAYTR callback OK", { merchantOid, status, totalAmount, failedReasonCode, failedReasonMsg });
     return res.status(200).send("OK");
   } catch (error) {
     console.error("PAYTR callback hata:", error);

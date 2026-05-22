@@ -389,7 +389,9 @@
           updatedAt: Date.now()
         }).catch(() => {});
         await markPromoUsed(promo, user);
-        await updateDoc(orderRef, { paytrTokenCreated: true, updatedAt: Date.now() }).catch(() => {});
+        if (user && orderRef?.path) {
+          await updateDoc(orderRef, { paytrTokenCreated: true, updatedAt: Date.now() }).catch(() => {});
+        }
         localStorage.removeItem('quaora_cart');
         localStorage.removeItem('quaora_promo');
         paytrFrame.src = `https://www.paytr.com/odeme/guvenli/${data.token}`;

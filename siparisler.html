@@ -164,6 +164,7 @@
               <p><span class="text-[#964b00]">E-posta:</span> ${escapeHtml(customer.email || order.userEmail || '')}</p>
               <p><span class="text-[#964b00]">Telefon:</span> ${escapeHtml(customer.phone || order.userPhone || 'Yok')}</p>
               <p><span class="text-[#964b00]">Adres:</span> ${escapeHtml(customer.address || order.shippingAddress || order.address || 'Yok')}</p>
+              ${order.paytrFailReasonMsg || order.paytrFailReasonCode ? `<p class="text-red-600"><span class="font-black">PayTR hata:</span> ${escapeHtml(order.paytrFailReasonMsg || order.paytrFailReasonCode)}</p>` : ''}
             </div>
             <div class="mt-4 space-y-2">
               ${items.map(item => `
