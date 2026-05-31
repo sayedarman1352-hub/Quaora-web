@@ -1,4 +1,4 @@
-const CACHE_NAME = "quaora-static-v4";
+const CACHE_NAME = "quaora-static-v5";
 const STATIC_ASSETS = [
   "/quaora-tailwind.css",
   "/quaora-responsive.css",

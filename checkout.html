@@ -59,10 +59,28 @@
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('quaora_cart') || '[]'); } catch (e) { cart = []; }
     cart = Array.isArray(cart) ? cart.filter(item => Number(item.price || 0) > 0) : [];
-    if (cart.length > 1) {
-      cart = [cart[cart.length - 1]];
-      localStorage.setItem('quaora_cart', JSON.stringify(cart));
-    }
+    cart = cart.reduce((items, item, index) => {
+      const id = item.id || item.productId || item.name || `item_${index}`;
+      const size = item.size || item.selectedSize || "";
+      const key = item.cartItemId || `${id}_${size || "STD"}`;
+      const normalized = {
+        ...item,
+        id,
+        name: item.name || item.productName || "Urun",
+        size,
+        qty: Math.max(1, Number(item.qty || item.quantity || 1)),
+        price: Number(item.price || 0),
+        cartItemId: key
+      };
+      const existing = items.find(existingItem => existingItem.cartItemId === key);
+      if (existing) {
+        existing.qty += normalized.qty;
+      } else {
+        items.push(normalized);
+      }
+      return items;
+    }, []);
+    localStorage.setItem('quaora_cart', JSON.stringify(cart));
 
     const money = (value) => '₺' + Number(value || 0).toLocaleString('tr-TR');
     const subtotal = () => cart.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.qty || 1)), 0);

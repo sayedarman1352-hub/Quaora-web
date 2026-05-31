@@ -348,9 +348,7 @@ const sharedCartCount = () => readCart().reduce((sum, item) => sum + Math.max(1,
 
 const sharedCartBadgeText = () => {
   const count = sharedCartCount();
-  if (count <= 0) return '0';
-  if (count === 1) return '1';
-  return '1+';
+  return String(Math.max(0, count));
 };
 
 const updateSharedCartBadges = () => {
@@ -363,6 +361,42 @@ const updateSharedCartBadges = () => {
 const itemKeyMatches = (item, key) => {
   const k = String(key || '');
   return String(item.cartItemId || '') === k || String(item.id || '') === k || String(item.name || '') === k || `${item.id}_${item.size || 'STD'}` === k;
+};
+
+const escapeJsString = (value) => String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+const getStockForCartItem = (item) => {
+  const allProducts = Array.isArray(window.allProducts) ? window.allProducts : [];
+  const product = allProducts.find((p) => String(p.id) === String(item.id));
+  if (!product) return Infinity;
+  const sizeStocks = product.sizeStocks || {};
+  if (item.size && Object.prototype.hasOwnProperty.call(sizeStocks, item.size)) {
+    return Number(sizeStocks[item.size] || 0);
+  }
+  if (product.stock !== undefined) return Number(product.stock || 0);
+  return Infinity;
+};
+
+const sharedUpdateCartQty = (key, delta) => {
+  const cart = readCart().map((item, index) => normalizeCartItem(item, index));
+  const index = cart.findIndex((item) => itemKeyMatches(item, key));
+  if (index < 0) return;
+
+  const item = cart[index];
+  const nextQty = Number(item.qty || 1) + Number(delta || 0);
+  if (nextQty <= 0) {
+    cart.splice(index, 1);
+  } else {
+    const stock = getStockForCartItem(item);
+    if (Number.isFinite(stock) && nextQty > stock) {
+      alert(`Maalesef bu urunden daha fazla ekleyemezsiniz! (Kalan Stok: ${stock})`);
+      return;
+    }
+    item.qty = nextQty;
+  }
+
+  writeCart(cart);
+  renderSharedCart();
 };
 
 const openCartPanelIfPossible = () => {
@@ -409,6 +443,11 @@ const renderSharedCart = () => {
           <h4 class="font-bold uppercase text-[10px] md:text-[11px] tracking-tight text-gray-800 line-clamp-2">${item.name}</h4>
           <p class="text-[9px] md:text-[10px] font-bold text-gray-500 mt-1">${sizeHtml}Adet: ${item.qty}</p>
           <p class="text-[#964b00] font-black text-xs md:text-sm italic mt-1">${money(lineTotal)}</p>
+          <div class="mt-2 inline-flex items-center overflow-hidden rounded-full border border-[#964b00]/20 bg-white">
+            <button type="button" onclick="updateCartQty('${escapeJsString(item.cartItemId)}', -1)" class="w-8 h-8 text-sm font-black text-[#964b00] hover:bg-[#964b00] hover:text-white transition" aria-label="Adedi azalt">-</button>
+            <span class="min-w-8 text-center text-[11px] font-black text-gray-800">${item.qty}</span>
+            <button type="button" onclick="updateCartQty('${escapeJsString(item.cartItemId)}', 1)" class="w-8 h-8 text-sm font-black text-[#964b00] hover:bg-[#964b00] hover:text-white transition" aria-label="Adedi arttir">+</button>
+          </div>
         </div>
         <button onclick="removeFromCart('${String(item.cartItemId).replace(/'/g, "\\'")}')" class="text-red-500 font-bold px-2 hover:scale-110 transition" aria-label="Sepetten kaldır">✕</button>
       </div>
@@ -497,6 +536,7 @@ const sharedAddToCart = (...args) => {
 const installSharedCartSystem = () => {
   window.renderCart = renderSharedCart;
   window.removeFromCart = sharedRemoveFromCart;
+  window.updateCartQty = sharedUpdateCartQty;
   window.addToCart = sharedAddToCart;
   window.updateSharedCartBadges = updateSharedCartBadges;
   window.updateQuaoraCartBadge = updateSharedCartBadges;
