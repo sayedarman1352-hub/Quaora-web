@@ -12,33 +12,33 @@
   <script src="quaora-performance.js" defer></script>
 </head>
 <body class="min-h-screen bg-[#FAE29C] text-[#964b00]">
-  <main class="max-w-6xl mx-auto p-4 md:p-8">
-    <header class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-[#964b00]/15 pb-6">
+  <main class="mx-auto max-w-7xl p-4 md:p-8">
+    <header class="flex flex-col gap-4 border-b border-[#964b00]/15 pb-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <a href="index.html" class="text-xs font-black uppercase tracking-[0.24em] hover:text-black transition-colors">&larr; Admin Panel</a>
-        <h1 class="mt-4 text-3xl md:text-5xl font-black uppercase tracking-[0.08em]">Siparişler</h1>
+        <a href="index.html" class="text-xs font-black uppercase tracking-[0.24em] transition-colors hover:text-black">&larr; Admin Panel</a>
+        <h1 class="mt-4 text-3xl font-black uppercase tracking-[0.08em] md:text-5xl">Siparişler</h1>
         <p id="ordersStatus" class="mt-2 text-sm font-bold text-[#964b00]/70">Siparişler yükleniyor.</p>
       </div>
-      <button id="refreshBtn" type="button" class="bg-[#964b00] text-white rounded-xl px-5 py-3 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors">Yenile</button>
+      <button id="refreshBtn" type="button" class="rounded-xl bg-[#964b00] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-black">Yenile</button>
     </header>
 
-    <section id="lockedState" class="hidden mt-8 rounded-2xl bg-white border border-[#964b00]/10 p-6 shadow-lg">
+    <section id="lockedState" class="mt-8 hidden rounded-2xl border border-[#964b00]/10 bg-white p-6 shadow-lg">
       <h2 class="text-xl font-black uppercase tracking-widest">Admin girişi gerekiyor</h2>
       <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece quaoratr@gmail.com hesabı tarafından görüntülenebilir.</p>
-      <a href="index.html" class="mt-5 inline-flex bg-[#964b00] text-white rounded-xl px-5 py-3 text-xs font-black uppercase tracking-widest">Ana Sayfaya Dön</a>
+      <a href="index.html" class="mt-5 inline-flex rounded-xl bg-[#964b00] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Ana Sayfaya Dön</a>
     </section>
 
-    <section id="ordersApp" class="hidden mt-8 space-y-5">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+    <section id="ordersApp" class="mt-8 hidden space-y-5">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
+        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Başlangıç</span>
           <input id="startDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
         </label>
-        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Bitiş</span>
           <input id="endDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
         </label>
-        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Durum</span>
           <select id="statusFilter" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
             <option value="">Tümü</option>
@@ -47,20 +47,26 @@
             <option value="failed">Başarısız</option>
           </select>
         </label>
-        <label class="bg-white border border-[#964b00]/10 rounded-2xl p-4 shadow-sm">
+        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Arama</span>
           <input id="searchInput" type="search" placeholder="Müşteri, ürün, beden" class="mt-2 w-full bg-transparent text-sm font-black outline-none placeholder:text-[#964b00]/35">
         </label>
       </div>
 
-      <div id="ordersList" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+      <div class="hidden grid-cols-[1.2fr_1fr_2fr_1fr] gap-3 px-4 text-[10px] font-black uppercase tracking-[0.24em] text-[#964b00]/60 md:grid">
+        <span>Ad</span>
+        <span>Numara</span>
+        <span>Aldığı ürün</span>
+        <span>Beden</span>
+      </div>
+      <div id="ordersList" class="space-y-2"></div>
     </section>
   </main>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, doc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
@@ -76,166 +82,143 @@
     const db = getFirestore(app);
     const el = (id) => document.getElementById(id);
     let allOrders = [];
-    let activeAdminEmail = "";
+    let filtersBound = false;
 
-    const money = (value) => `₺${Number(value || 0).toLocaleString('tr-TR')}`;
-    const escapeHtml = (value) => String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+    const escapeHtml = (value) => String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
 
     const getOrderItems = (order) => {
       if (Array.isArray(order.items) && order.items.length) return order.items;
       return [{
-        productName: order.productName || order.name || 'Ürün',
-        size: order.size || '',
+        productName: order.productName || order.name || "Ürün",
+        size: order.size || "",
         qty: order.qty || 1,
         price: order.price || order.total || 0
       }];
     };
 
+    const getCustomerName = (order) => {
+      const customer = order.customer || {};
+      return customer.name || order.userName || order.name || "İsimsiz müşteri";
+    };
+
+    const getCustomerPhone = (order) => {
+      const customer = order.customer || {};
+      return customer.phone || order.userPhone || order.phone || "Yok";
+    };
+
+    const summarizeProducts = (items) => items
+      .map((item) => `${item.productName || item.name || "Ürün"}${Number(item.qty || 1) > 1 ? ` x${Number(item.qty || 1)}` : ""}`)
+      .join(", ");
+
+    const summarizeSizes = (items) => items
+      .map((item) => item.size || item.selectedSize || "Tek ürün")
+      .join(", ");
+
     const getOrderTime = (order) => Number(order.paidAt || order.stockProcessedAt || order.createdAt || 0);
     const startOfDay = (value) => value ? new Date(`${value}T00:00:00`).getTime() : 0;
     const endOfDay = (value) => value ? new Date(`${value}T23:59:59.999`).getTime() : Number.MAX_SAFE_INTEGER;
+    const detailHref = (order) => `siparis-detay.html?id=${encodeURIComponent(order.id)}`;
+
     const statusGroup = (order) => {
-      if (order.paymentStatus === 'success' || order.stockProcessed === true) return 'success';
-      if (String(order.paymentStatus || order.status || '').toLowerCase().includes('fail') || String(order.status || '').toLocaleLowerCase('tr-TR').includes('başarısız')) return 'failed';
-      return 'pending';
+      const payment = String(order.paymentStatus || "").toLowerCase();
+      const status = String(order.status || "").toLocaleLowerCase("tr-TR");
+      if (payment === "success" || order.stockProcessed === true) return "success";
+      if (payment.includes("fail") || status.includes("fail") || status.includes("başarısız")) return "failed";
+      return "pending";
     };
 
     const filterOrders = () => {
-      const min = startOfDay(el('startDate')?.value);
-      const max = endOfDay(el('endDate')?.value);
-      const status = el('statusFilter')?.value || '';
-      const term = (el('searchInput')?.value || '').trim().toLocaleLowerCase('tr-TR');
+      const min = startOfDay(el("startDate")?.value);
+      const max = endOfDay(el("endDate")?.value);
+      const status = el("statusFilter")?.value || "";
+      const term = (el("searchInput")?.value || "").trim().toLocaleLowerCase("tr-TR");
 
       return allOrders.filter((order) => {
         const time = getOrderTime(order);
         if (time < min || time > max) return false;
         if (status && statusGroup(order) !== status) return false;
         if (!term) return true;
+
         const customer = order.customer || {};
         const haystack = [
-          customer.name,
+          getCustomerName(order),
+          getCustomerPhone(order),
           customer.email,
-          customer.phone,
           customer.address,
           order.userEmail,
           order.status,
-          ...getOrderItems(order).flatMap(item => [item.productName, item.name, item.size])
-        ].join(' ').toLocaleLowerCase('tr-TR');
+          ...getOrderItems(order).flatMap((item) => [item.productName, item.name, item.size])
+        ].join(" ").toLocaleLowerCase("tr-TR");
         return haystack.includes(term);
       });
     };
 
     const renderOrders = () => {
-      const list = el('ordersList');
-      const orders = filterOrders();
-      el('ordersStatus').textContent = `${orders.length} sipariş gösteriliyor.`;
+      const list = el("ordersList");
+      const orders = filterOrders().sort((a, b) => getCustomerName(a).localeCompare(getCustomerName(b), "tr"));
+      el("ordersStatus").textContent = `${orders.length} sipariş gösteriliyor.`;
+
       if (!orders.length) {
-        list.innerHTML = '<div class="lg:col-span-2 p-8 text-center bg-white rounded-2xl border border-[#964b00]/10 text-sm font-bold text-gray-400">Sipariş bulunamadı.</div>';
+        list.innerHTML = '<div class="rounded-2xl border border-[#964b00]/10 bg-white p-8 text-center text-sm font-bold text-gray-400">Sipariş bulunamadı.</div>';
         return;
       }
 
       list.innerHTML = orders.map((order) => {
-        const customer = order.customer || {};
         const items = getOrderItems(order);
-        const total = Number(order.total || items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0));
-        const time = getOrderTime(order);
         const isPrepared = order.adminPrepared === true;
+        const rowState = isPrepared
+          ? "border-green-500/50 bg-green-50 text-green-950"
+          : "border-[#964b00]/10 bg-white text-gray-900 hover:border-[#964b00]/35";
+
         return `
-          <article class="bg-white border border-[#964b00]/10 rounded-2xl p-5 shadow-sm">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <h2 class="text-sm font-black uppercase tracking-widest text-gray-900">Sipariş Paketi</h2>
-                <p class="text-[10px] font-bold text-gray-400 mt-1">${time ? new Date(time).toLocaleString('tr-TR') : ''}</p>
-              </div>
-              <div class="shrink-0 flex flex-col items-end gap-2">
-                <button type="button" onclick="togglePreparedStatus('${order.id}', ${isPrepared ? 'false' : 'true'})" class="${isPrepared ? 'bg-green-600 border-green-700' : 'bg-red-600 border-red-700'} text-white border rounded-full px-3 py-2 text-[10px] font-black uppercase tracking-widest shadow-sm hover:scale-[1.03] transition-transform">
-                  ${isPrepared ? '✓ Yapıldı' : '✕ Yapılmadı'}
-                </button>
-                <span class="text-[9px] font-black text-[#964b00] uppercase bg-[#FAE29C]/60 border border-[#964b00]/10 rounded-full px-3 py-1">${escapeHtml(order.status || 'Alındı')}</span>
-              </div>
-            </div>
-            <div class="mt-4 rounded-xl bg-[#FAE29C]/20 border border-[#964b00]/10 p-3 space-y-1 text-[11px] font-bold text-gray-700">
-              <p><span class="text-[#964b00]">Ad:</span> ${escapeHtml(customer.name || order.userName || 'İsimsiz müşteri')}</p>
-              <p><span class="text-[#964b00]">E-posta:</span> ${escapeHtml(customer.email || order.userEmail || '')}</p>
-              <p><span class="text-[#964b00]">Telefon:</span> ${escapeHtml(customer.phone || order.userPhone || 'Yok')}</p>
-              <p><span class="text-[#964b00]">Adres:</span> ${escapeHtml(customer.address || order.shippingAddress || order.address || 'Yok')}</p>
-              ${order.paytrFailReasonMsg || order.paytrFailReasonCode ? `<p class="text-red-600"><span class="font-black">PayTR hata:</span> ${escapeHtml(order.paytrFailReasonMsg || order.paytrFailReasonCode)}</p>` : ''}
-            </div>
-            <div class="mt-4 space-y-2">
-              ${items.map(item => `
-                <div class="rounded-xl border border-[#964b00]/10 bg-white p-3">
-                  <p class="text-xs font-black uppercase tracking-widest text-gray-800">${escapeHtml(item.productName || item.name || 'Ürün')}</p>
-                  <p class="text-[11px] font-bold text-gray-500 mt-1">Beden: ${escapeHtml(item.size || 'Tek ürün')} | Adet: ${Number(item.qty || 1)} | ${money(Number(item.price || 0))}</p>
-                </div>
-              `).join('')}
-            </div>
-            <div class="mt-4 flex justify-between border-t border-[#964b00]/10 pt-3 text-sm font-black">
-              <span>Toplam</span>
-              <span>${money(total)}</span>
-            </div>
-          </article>
+          <a href="${detailHref(order)}" class="grid grid-cols-1 items-center gap-2 rounded-xl border ${rowState} px-4 py-3 shadow-sm transition-colors md:grid-cols-[1.2fr_1fr_2fr_1fr] md:gap-3">
+            <span class="min-w-0 truncate text-sm font-black uppercase tracking-[0.08em]">${escapeHtml(getCustomerName(order))}</span>
+            <span class="min-w-0 truncate text-xs font-bold">${escapeHtml(getCustomerPhone(order))}</span>
+            <span class="min-w-0 truncate text-xs font-bold">${escapeHtml(summarizeProducts(items))}</span>
+            <span class="min-w-0 truncate text-xs font-black">${escapeHtml(summarizeSizes(items))}</span>
+          </a>
         `;
-      }).join('');
-    };
-
-    window.togglePreparedStatus = async (orderId, nextValue) => {
-      const order = allOrders.find(item => item.id === orderId);
-      if (!order) return;
-
-      const previousValue = order.adminPrepared === true;
-      const timestamp = Date.now();
-      order.adminPrepared = nextValue;
-      order.adminPreparedAt = nextValue ? timestamp : null;
-      order.adminPreparedBy = nextValue ? activeAdminEmail : "";
-      renderOrders();
-
-      try {
-        await updateDoc(doc(db, "orders", orderId), {
-          adminPrepared: nextValue,
-          adminPreparedAt: nextValue ? timestamp : null,
-          adminPreparedBy: nextValue ? activeAdminEmail : "",
-          updatedAt: Date.now()
-        });
-      } catch (error) {
-        console.error(error);
-        order.adminPrepared = previousValue;
-        renderOrders();
-        alert("Sipariş işareti kaydedilemedi.");
-      }
+      }).join("");
     };
 
     const loadOrders = async () => {
-      el('ordersStatus').textContent = 'Siparişler yükleniyor.';
+      el("ordersStatus").textContent = "Siparişler yükleniyor.";
       const snapshot = await getDocs(collection(db, "orders"));
-      allOrders = snapshot.docs
-        .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
-        .sort((a, b) => getOrderTime(b) - getOrderTime(a));
+      allOrders = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
       renderOrders();
     };
 
     const bindFilters = () => {
-      ['startDate', 'endDate', 'statusFilter', 'searchInput'].forEach(id => el(id)?.addEventListener('input', renderOrders));
-      el('refreshBtn')?.addEventListener('click', loadOrders);
+      if (filtersBound) return;
+      filtersBound = true;
+      ["startDate", "endDate", "statusFilter", "searchInput"].forEach((id) => el(id)?.addEventListener("input", renderOrders));
+      el("refreshBtn")?.addEventListener("click", loadOrders);
+      window.addEventListener("pageshow", () => {
+        if (!el("ordersApp")?.classList.contains("hidden")) loadOrders().catch(() => {});
+      });
+      window.addEventListener("focus", () => {
+        if (!el("ordersApp")?.classList.contains("hidden")) loadOrders().catch(() => {});
+      });
     };
 
     onAuthStateChanged(auth, async (user) => {
       const isAdmin = user?.email?.toLowerCase() === "quaoratr@gmail.com";
-      activeAdminEmail = isAdmin ? user.email : "";
-      el('lockedState').classList.toggle('hidden', isAdmin);
-      el('ordersApp').classList.toggle('hidden', !isAdmin);
+      el("lockedState").classList.toggle("hidden", isAdmin);
+      el("ordersApp").classList.toggle("hidden", !isAdmin);
       if (!isAdmin) {
-        el('ordersStatus').textContent = user ? 'Bu hesap admin değil.' : 'Giriş yapılmadı.';
+        el("ordersStatus").textContent = user ? "Bu hesap admin değil." : "Giriş yapılmadı.";
         return;
       }
+
       bindFilters();
-      await loadOrders().catch(error => {
+      await loadOrders().catch((error) => {
         console.error(error);
-        el('ordersStatus').textContent = 'Siparişler yüklenemedi.';
+        el("ordersStatus").textContent = "Siparişler yüklenemedi.";
       });
     });
   </script>
