@@ -11,7 +11,7 @@
   <link rel="dns-prefetch" href="//firestore.googleapis.com">
   <script src="quaora-performance.js" defer></script>
 </head>
-<body class="min-h-screen bg-[#f6f1e8] text-[#2f2418]">
+<body class="min-h-screen bg-[#FAE29C] text-[#2f2418]">
   <main class="mx-auto max-w-7xl p-4 md:p-8">
     <header class="flex flex-col gap-4 border-b border-[#d8c7b0] pb-6 md:flex-row md:items-end md:justify-between">
       <div>
@@ -22,7 +22,7 @@
       <button id="refreshBtn" type="button" class="rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#2f2418]">Yenile</button>
     </header>
 
-    <section id="lockedState" class="mt-8 hidden rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-6 shadow-sm">
+    <section id="lockedState" class="mt-8 hidden rounded-lg border border-[#e1d4c1] bg-white p-6 shadow-sm">
       <h2 class="text-xl font-black uppercase tracking-widest">Admin girişi gerekiyor</h2>
       <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece quaoratr@gmail.com hesabı tarafından görüntülenebilir.</p>
       <a href="index.html" class="mt-5 inline-flex rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Ana Sayfaya Dön</a>
@@ -30,15 +30,15 @@
 
     <section id="ordersApp" class="mt-8 hidden space-y-5">
       <div class="grid grid-cols-1 gap-3 md:grid-cols-5">
-        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+        <label class="rounded-lg border border-[#e1d4c1] bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Başlangıç</span>
           <input id="startDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
         </label>
-        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+        <label class="rounded-lg border border-[#e1d4c1] bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Bitiş</span>
           <input id="endDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
         </label>
-        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+        <label class="rounded-lg border border-[#e1d4c1] bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Durum</span>
           <select id="statusFilter" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
             <option value="">Tümü</option>
@@ -47,7 +47,7 @@
             <option value="failed">Başarısız</option>
           </select>
         </label>
-        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+        <label class="rounded-lg border border-[#e1d4c1] bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Sıralama</span>
           <select id="sortSelect" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
             <option value="nameAsc">Ad A-Z</option>
@@ -58,7 +58,7 @@
             <option value="preparedFirst">Yeşiller üstte</option>
           </select>
         </label>
-        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+        <label class="rounded-lg border border-[#e1d4c1] bg-white p-4 shadow-sm">
           <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Arama</span>
           <input id="searchInput" type="search" placeholder="Müşteri, ürün, beden" class="mt-2 w-full bg-transparent text-sm font-black outline-none placeholder:text-[#a99a88]">
         </label>
@@ -191,7 +191,7 @@
       el("ordersStatus").textContent = `${orders.length} sipariş gösteriliyor.`;
 
       if (!orders.length) {
-        list.innerHTML = '<div class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-8 text-center text-sm font-bold text-[#9b8a78]">Sipariş bulunamadı.</div>';
+        list.innerHTML = '<div class="rounded-lg border border-[#e1d4c1] bg-white p-8 text-center text-sm font-bold text-[#9b8a78]">Sipariş bulunamadı.</div>';
         return;
       }
 
@@ -200,7 +200,7 @@
         const isPrepared = order.adminPrepared === true;
         const rowState = isPrepared
           ? "border-[#079455] bg-[#d1fadf] text-[#064e3b] ring-1 ring-[#12b76a]/35 hover:border-[#067647]"
-          : "border-[#e1d4c1] bg-[#fffdf8] text-[#2f2418] hover:border-[#9b6a3a] hover:bg-white";
+          : "border-[#e1d4c1] bg-white text-[#2f2418] hover:border-[#9b6a3a]";
 
         return `
           <a href="${detailHref(order)}" class="grid grid-cols-1 items-center gap-2 rounded-lg border ${rowState} px-4 py-3 shadow-sm transition-colors md:grid-cols-[1.2fr_1fr_2fr_1fr] md:gap-3">
