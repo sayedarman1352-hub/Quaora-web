@@ -11,35 +11,35 @@
   <link rel="dns-prefetch" href="//firestore.googleapis.com">
   <script src="quaora-performance.js" defer></script>
 </head>
-<body class="min-h-screen bg-[#FAE29C] text-[#964b00]">
+<body class="min-h-screen bg-[#f6f1e8] text-[#2f2418]">
   <main class="mx-auto max-w-7xl p-4 md:p-8">
-    <header class="flex flex-col gap-4 border-b border-[#964b00]/15 pb-6 md:flex-row md:items-end md:justify-between">
+    <header class="flex flex-col gap-4 border-b border-[#d8c7b0] pb-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <a href="index.html" class="text-xs font-black uppercase tracking-[0.24em] transition-colors hover:text-black">&larr; Admin Panel</a>
+        <a href="index.html" class="text-xs font-black uppercase tracking-[0.24em] text-[#7a4a22] transition-colors hover:text-[#2f2418]">&larr; Admin Panel</a>
         <h1 class="mt-4 text-3xl font-black uppercase tracking-[0.08em] md:text-5xl">Siparişler</h1>
-        <p id="ordersStatus" class="mt-2 text-sm font-bold text-[#964b00]/70">Siparişler yükleniyor.</p>
+        <p id="ordersStatus" class="mt-2 text-sm font-bold text-[#7b6b5a]">Siparişler yükleniyor.</p>
       </div>
-      <button id="refreshBtn" type="button" class="rounded-xl bg-[#964b00] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-black">Yenile</button>
+      <button id="refreshBtn" type="button" class="rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#2f2418]">Yenile</button>
     </header>
 
-    <section id="lockedState" class="mt-8 hidden rounded-2xl border border-[#964b00]/10 bg-white p-6 shadow-lg">
+    <section id="lockedState" class="mt-8 hidden rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-6 shadow-sm">
       <h2 class="text-xl font-black uppercase tracking-widest">Admin girişi gerekiyor</h2>
       <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece quaoratr@gmail.com hesabı tarafından görüntülenebilir.</p>
-      <a href="index.html" class="mt-5 inline-flex rounded-xl bg-[#964b00] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Ana Sayfaya Dön</a>
+      <a href="index.html" class="mt-5 inline-flex rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Ana Sayfaya Dön</a>
     </section>
 
     <section id="ordersApp" class="mt-8 hidden space-y-5">
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
-        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
-          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Başlangıç</span>
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-5">
+        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Başlangıç</span>
           <input id="startDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
         </label>
-        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
-          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Bitiş</span>
+        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Bitiş</span>
           <input id="endDate" type="date" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
         </label>
-        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
-          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Durum</span>
+        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Durum</span>
           <select id="statusFilter" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
             <option value="">Tümü</option>
             <option value="success">Onaylanan</option>
@@ -47,13 +47,24 @@
             <option value="failed">Başarısız</option>
           </select>
         </label>
-        <label class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
-          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">Arama</span>
-          <input id="searchInput" type="search" placeholder="Müşteri, ürün, beden" class="mt-2 w-full bg-transparent text-sm font-black outline-none placeholder:text-[#964b00]/35">
+        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Sıralama</span>
+          <select id="sortSelect" class="mt-2 w-full bg-transparent text-sm font-black outline-none">
+            <option value="nameAsc">Ad A-Z</option>
+            <option value="nameDesc">Ad Z-A</option>
+            <option value="newest">Yeni siparişler</option>
+            <option value="oldest">Eski siparişler</option>
+            <option value="pendingFirst">Bekleyen üstte</option>
+            <option value="preparedFirst">Yeşiller üstte</option>
+          </select>
+        </label>
+        <label class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-4 shadow-sm">
+          <span class="block text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">Arama</span>
+          <input id="searchInput" type="search" placeholder="Müşteri, ürün, beden" class="mt-2 w-full bg-transparent text-sm font-black outline-none placeholder:text-[#a99a88]">
         </label>
       </div>
 
-      <div class="hidden grid-cols-[1.2fr_1fr_2fr_1fr] gap-3 px-4 text-[10px] font-black uppercase tracking-[0.24em] text-[#964b00]/60 md:grid">
+      <div class="hidden grid-cols-[1.2fr_1fr_2fr_1fr] gap-3 px-4 text-[10px] font-black uppercase tracking-[0.24em] text-[#7b6b5a] md:grid">
         <span>Ad</span>
         <span>Numara</span>
         <span>Aldığı ürün</span>
@@ -158,13 +169,29 @@
       });
     };
 
+    const sortOrders = (orders) => {
+      const sortValue = el("sortSelect")?.value || "nameAsc";
+      const byName = (a, b) => getCustomerName(a).localeCompare(getCustomerName(b), "tr");
+      const byTimeDesc = (a, b) => getOrderTime(b) - getOrderTime(a);
+      const byPrepared = (a, b) => Number(a.adminPrepared === true) - Number(b.adminPrepared === true);
+
+      return [...orders].sort((a, b) => {
+        if (sortValue === "nameDesc") return byName(b, a);
+        if (sortValue === "newest") return byTimeDesc(a, b);
+        if (sortValue === "oldest") return getOrderTime(a) - getOrderTime(b);
+        if (sortValue === "pendingFirst") return byPrepared(a, b) || byName(a, b);
+        if (sortValue === "preparedFirst") return byPrepared(b, a) || byName(a, b);
+        return byName(a, b);
+      });
+    };
+
     const renderOrders = () => {
       const list = el("ordersList");
-      const orders = filterOrders().sort((a, b) => getCustomerName(a).localeCompare(getCustomerName(b), "tr"));
+      const orders = sortOrders(filterOrders());
       el("ordersStatus").textContent = `${orders.length} sipariş gösteriliyor.`;
 
       if (!orders.length) {
-        list.innerHTML = '<div class="rounded-2xl border border-[#964b00]/10 bg-white p-8 text-center text-sm font-bold text-gray-400">Sipariş bulunamadı.</div>';
+        list.innerHTML = '<div class="rounded-lg border border-[#e1d4c1] bg-[#fffdf8] p-8 text-center text-sm font-bold text-[#9b8a78]">Sipariş bulunamadı.</div>';
         return;
       }
 
@@ -172,11 +199,11 @@
         const items = getOrderItems(order);
         const isPrepared = order.adminPrepared === true;
         const rowState = isPrepared
-          ? "border-green-500/50 bg-green-50 text-green-950"
-          : "border-[#964b00]/10 bg-white text-gray-900 hover:border-[#964b00]/35";
+          ? "border-[#079455] bg-[#d1fadf] text-[#064e3b] ring-1 ring-[#12b76a]/35 hover:border-[#067647]"
+          : "border-[#e1d4c1] bg-[#fffdf8] text-[#2f2418] hover:border-[#9b6a3a] hover:bg-white";
 
         return `
-          <a href="${detailHref(order)}" class="grid grid-cols-1 items-center gap-2 rounded-xl border ${rowState} px-4 py-3 shadow-sm transition-colors md:grid-cols-[1.2fr_1fr_2fr_1fr] md:gap-3">
+          <a href="${detailHref(order)}" class="grid grid-cols-1 items-center gap-2 rounded-lg border ${rowState} px-4 py-3 shadow-sm transition-colors md:grid-cols-[1.2fr_1fr_2fr_1fr] md:gap-3">
             <span class="min-w-0 truncate text-sm font-black uppercase tracking-[0.08em]">${escapeHtml(getCustomerName(order))}</span>
             <span class="min-w-0 truncate text-xs font-bold">${escapeHtml(getCustomerPhone(order))}</span>
             <span class="min-w-0 truncate text-xs font-bold">${escapeHtml(summarizeProducts(items))}</span>
@@ -196,7 +223,7 @@
     const bindFilters = () => {
       if (filtersBound) return;
       filtersBound = true;
-      ["startDate", "endDate", "statusFilter", "searchInput"].forEach((id) => el(id)?.addEventListener("input", renderOrders));
+      ["startDate", "endDate", "statusFilter", "sortSelect", "searchInput"].forEach((id) => el(id)?.addEventListener("input", renderOrders));
       el("refreshBtn")?.addEventListener("click", loadOrders);
       window.addEventListener("pageshow", () => {
         if (!el("ordersApp")?.classList.contains("hidden")) loadOrders().catch(() => {});

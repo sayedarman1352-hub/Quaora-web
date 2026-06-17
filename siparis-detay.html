@@ -11,31 +11,31 @@
   <link rel="dns-prefetch" href="//firestore.googleapis.com">
   <script src="quaora-performance.js" defer></script>
 </head>
-<body class="min-h-screen bg-[#FAE29C] text-[#964b00]">
+<body class="min-h-screen bg-white text-[#2f2418]">
   <main class="mx-auto max-w-5xl p-4 md:p-8">
-    <header class="flex flex-col gap-4 border-b border-[#964b00]/15 pb-6 md:flex-row md:items-end md:justify-between">
+    <header class="flex flex-col gap-4 border-b border-[#e5e0d8] pb-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <a href="siparisler.html" class="text-xs font-black uppercase tracking-[0.24em] transition-colors hover:text-black">&larr; Siparişler</a>
+        <a href="siparisler.html" class="text-xs font-black uppercase tracking-[0.24em] text-[#7a4a22] transition-colors hover:text-[#2f2418]">&larr; Siparişler</a>
         <h1 class="mt-4 text-3xl font-black uppercase tracking-[0.08em] md:text-5xl">Sipariş Detayı</h1>
-        <p id="detailStatus" class="mt-2 text-sm font-bold text-[#964b00]/70">Sipariş yükleniyor.</p>
+        <p id="detailStatus" class="mt-2 text-sm font-bold text-[#7b6b5a]">Sipariş yükleniyor.</p>
       </div>
       <div id="preparedBadge" class="hidden rounded-full border px-4 py-2 text-xs font-black uppercase tracking-widest"></div>
     </header>
 
-    <section id="lockedState" class="mt-8 hidden rounded-2xl border border-[#964b00]/10 bg-white p-6 shadow-lg">
+    <section id="lockedState" class="mt-8 hidden rounded-lg border border-[#e5e0d8] bg-white p-6 shadow-sm">
       <h2 class="text-xl font-black uppercase tracking-widest">Admin girişi gerekiyor</h2>
       <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece quaoratr@gmail.com hesabı tarafından görüntülenebilir.</p>
-      <a href="index.html" class="mt-5 inline-flex rounded-xl bg-[#964b00] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Ana Sayfaya Dön</a>
+      <a href="index.html" class="mt-5 inline-flex rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Ana Sayfaya Dön</a>
     </section>
 
     <section id="detailApp" class="mt-8 hidden space-y-5">
       <div id="orderSummary" class="space-y-5"></div>
-      <div class="flex flex-col gap-3 rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-3 rounded-lg border border-[#e5e0d8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 class="text-sm font-black uppercase tracking-widest text-gray-900">Admin kontrol</h2>
+          <h2 class="text-sm font-black uppercase tracking-widest text-[#2f2418]">Admin kontrol</h2>
           <p id="adminPreparedText" class="mt-1 text-xs font-bold text-gray-500">Sipariş bilgileri henüz alınmadı.</p>
         </div>
-        <button id="preparedBtn" type="button" class="rounded-xl bg-[#964b00] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-black">Bilgileri aldım</button>
+        <button id="preparedBtn" type="button" class="rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#2f2418]">Bilgileri aldım</button>
       </div>
     </section>
   </main>
@@ -94,27 +94,27 @@
 
     const getOrderTime = (order) => Number(order.paidAt || order.stockProcessedAt || order.createdAt || 0);
     const infoRow = (label, value) => `
-      <div class="rounded-xl border border-[#964b00]/10 bg-[#FAE29C]/20 p-3">
-        <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#964b00]/60">${label}</p>
-        <p class="mt-1 break-words text-sm font-bold text-gray-800">${escapeHtml(value || "Yok")}</p>
+      <div class="rounded-lg border border-[#e5e0d8] bg-white p-3 shadow-sm">
+        <p class="text-[10px] font-black uppercase tracking-[0.22em] text-[#7b6b5a]">${label}</p>
+        <p class="mt-1 break-words text-sm font-bold text-[#2f2418]">${escapeHtml(value || "Yok")}</p>
       </div>
     `;
 
     const updatePreparedUi = () => {
       const prepared = currentOrder?.adminPrepared === true;
       const badge = el("preparedBadge");
-      badge.classList.remove("hidden", "border-green-500/50", "bg-green-50", "text-green-800", "border-red-500/40", "bg-red-50", "text-red-800");
+      badge.classList.remove("hidden", "border-[#079455]", "bg-[#d1fadf]", "text-[#064e3b]", "border-amber-300", "bg-amber-50", "text-amber-800");
       badge.classList.add(...(prepared
-        ? ["border-green-500/50", "bg-green-50", "text-green-800"]
-        : ["border-red-500/40", "bg-red-50", "text-red-800"]));
+        ? ["border-[#079455]", "bg-[#d1fadf]", "text-[#064e3b]"]
+        : ["border-amber-300", "bg-amber-50", "text-amber-800"]));
       badge.textContent = prepared ? "Bilgiler alındı" : "Bekliyor";
       el("adminPreparedText").textContent = prepared
         ? `Bu sipariş ${currentOrder.adminPreparedBy || "admin"} tarafından işaretlendi.`
         : "Sipariş bilgileri henüz alınmadı.";
       el("preparedBtn").textContent = prepared ? "Tekrar bekleyen yap" : "Bilgileri aldım";
       el("preparedBtn").className = prepared
-        ? "rounded-xl bg-red-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-black"
-        : "rounded-xl bg-[#964b00] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-black";
+        ? "rounded-lg bg-[#9f3a32] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#2f2418]"
+        : "rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#2f2418]";
     };
 
     const renderOrder = () => {
@@ -137,15 +137,15 @@
           ${infoRow("İl / İlçe", [customer.city, customer.district].filter(Boolean).join(" / "))}
         </div>
 
-        <div class="rounded-2xl border border-[#964b00]/10 bg-white p-4 shadow-sm">
-          <h2 class="text-sm font-black uppercase tracking-widest text-gray-900">Ürünler</h2>
+        <div class="rounded-lg border border-[#e5e0d8] bg-white p-4 shadow-sm">
+          <h2 class="text-sm font-black uppercase tracking-widest text-[#2f2418]">Ürünler</h2>
           <div class="mt-3 space-y-2">
             ${items.map((item) => `
-              <div class="grid grid-cols-1 gap-2 rounded-xl border border-[#964b00]/10 bg-[#FAE29C]/20 p-3 md:grid-cols-[2fr_1fr_0.7fr_1fr] md:items-center">
-                <span class="text-sm font-black uppercase tracking-[0.08em] text-gray-900">${escapeHtml(item.productName || item.name || "Ürün")}</span>
+              <div class="grid grid-cols-1 gap-2 rounded-lg border border-[#e5e0d8] bg-[#f8fafc] p-3 md:grid-cols-[2fr_1fr_0.7fr_1fr] md:items-center">
+                <span class="text-sm font-black uppercase tracking-[0.08em] text-[#2f2418]">${escapeHtml(item.productName || item.name || "Ürün")}</span>
                 <span class="text-xs font-bold text-gray-600">Beden: ${escapeHtml(item.size || item.selectedSize || "Tek ürün")}</span>
                 <span class="text-xs font-bold text-gray-600">Adet: ${Number(item.qty || 1)}</span>
-                <span class="text-sm font-black text-[#964b00]">${money(Number(item.price || 0) * Number(item.qty || 1))}</span>
+                <span class="text-sm font-black text-[#7a4a22]">${money(Number(item.price || 0) * Number(item.qty || 1))}</span>
               </div>
             `).join("")}
           </div>
