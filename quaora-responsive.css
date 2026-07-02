@@ -139,3 +139,376 @@ button, input, select, textarea { min-width: 0; }
     .policy-content section { margin-bottom: 1.25rem; }
     .policy-content h4 { font-size: 1.1rem; }
 }
+
+/* QUAORA premium customer theme */
+:root {
+    --q-cream: #fbf6ee;
+    --q-paper: #fffaf2;
+    --q-sand: #e7d1b0;
+    --q-gold: #b98b48;
+    --q-brown: #5b3b24;
+    --q-brown-soft: #8b6849;
+    --q-ink: #2c211a;
+    --q-muted: #7a6555;
+    --q-line: rgba(91,59,36,.18);
+    --q-shadow: 0 18px 45px rgba(82,51,25,.12);
+}
+
+body {
+    color: var(--q-ink);
+    background:
+        radial-gradient(circle at 15% 0%, rgba(233,205,157,.46), transparent 32%),
+        radial-gradient(circle at 92% 12%, rgba(255,255,255,.76), transparent 28%),
+        linear-gradient(180deg, var(--q-cream), #fffefd 54%, var(--q-paper)) !important;
+}
+
+body > nav.flex {
+    min-height: 72px;
+    padding: 0 18px !important;
+    background: rgba(251,246,238,.86) !important;
+    border-bottom: 1px solid var(--q-line);
+    box-shadow: none !important;
+    backdrop-filter: blur(18px);
+}
+
+body > nav h1,
+body > nav .serif {
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif);
+    letter-spacing: .16em !important;
+}
+
+body > nav button,
+body > nav span,
+body > nav p {
+    color: var(--q-brown) !important;
+}
+
+body > nav button span.block {
+    background: var(--q-brown) !important;
+}
+
+#cartCount,
+[data-cart-count] {
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+    border: 1px solid rgba(255,255,255,.75);
+}
+
+#menuOverlay {
+    background: rgba(44,33,26,.22) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+#sideMenu,
+#cartPanel,
+#profileSidePanel,
+#favoritesSidePanel,
+#ordersSidePanel {
+    background: var(--q-paper) !important;
+    color: var(--q-ink);
+    border-color: var(--q-line) !important;
+    box-shadow: var(--q-shadow) !important;
+}
+
+#sideMenu h2,
+#cartPanel h2,
+#profileSidePanel h2,
+#favoritesSidePanel h2,
+#ordersSidePanel h2 {
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif);
+    letter-spacing: .08em !important;
+}
+
+#sideMenu a,
+#sideMenu button,
+#profileSidePanel button,
+#favoritesSidePanel button,
+#ordersSidePanel button {
+    color: var(--q-brown) !important;
+}
+
+#sideMenu nav > a,
+#sideMenu nav button {
+    border-radius: 999px;
+    padding: .58rem .75rem;
+}
+
+#sideMenu nav > a:hover,
+#sideMenu nav button:hover {
+    background: rgba(91,59,36,.07);
+    transform: translateX(4px);
+}
+
+#sideMenu [id$="Items"] {
+    border-left-color: var(--q-line) !important;
+}
+
+#sideMenu [id$="Items"] a {
+    color: var(--q-muted) !important;
+}
+
+#sideMenu hr {
+    border-color: var(--q-line) !important;
+}
+
+#cartPanel .border-t,
+#cartPanel .border-b,
+#profileSidePanel .border-b,
+#favoritesSidePanel .border-b,
+#ordersSidePanel .border-b {
+    border-color: var(--q-line) !important;
+}
+
+#cartItems > div,
+#favoritesList > div,
+#ordersList > div,
+#profileSidePanel .grid button,
+#profileSidePanel .rounded-2xl,
+#quaoraDiscountBox {
+    border-color: var(--q-line) !important;
+    background: rgba(255,255,255,.74) !important;
+    box-shadow: 0 12px 28px rgba(91,59,36,.06);
+}
+
+#cartPanel button[onclick*="siparisVer"],
+#cartPanel button[onclick*="applyQuaoraDiscountCode"],
+#profileSidePanel button[onclick*="saveProfile"],
+.auth-modal-box button,
+#authModal button[class*="bg-[#964b00]"],
+#authModal button[class*="bg-black"] {
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+    border-color: var(--q-brown) !important;
+}
+
+#cartTotal,
+#quaoraSubtotal,
+#quaoraDiscount,
+#sideMenu .text-\[\#964b00\],
+#cartPanel .text-\[\#964b00\],
+#profileSidePanel .text-\[\#964b00\] {
+    color: var(--q-brown) !important;
+}
+
+.glass-card {
+    overflow: hidden;
+    border: 1px solid var(--q-line) !important;
+    background: rgba(255,255,255,.70) !important;
+    box-shadow: 0 12px 30px rgba(91,59,36,.07) !important;
+    backdrop-filter: none !important;
+    transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(91,59,36,.3) !important;
+    box-shadow: 0 18px 44px rgba(91,59,36,.12) !important;
+}
+
+.glass-card > div:first-of-type {
+    background: #ead8bd !important;
+}
+
+.glass-card > div:last-child {
+    background: rgba(255,255,255,.92) !important;
+}
+
+.glass-card h3 {
+    color: var(--q-brown) !important;
+    letter-spacing: .08em !important;
+}
+
+.glass-card .text-red-600,
+.glass-card .text-\[\#964b00\] {
+    color: var(--q-brown) !important;
+}
+
+.glass-card button[onclick*="addToCart"],
+.glass-card button[onclick*="showDescription"] {
+    border-radius: 999px !important;
+}
+
+.glass-card button[onclick*="addToCart"] {
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+}
+
+.glass-card button[onclick*="showDescription"] {
+    background: var(--q-paper) !important;
+    color: var(--q-brown) !important;
+    border-color: var(--q-line) !important;
+}
+
+button[class*="size-btn-"] {
+    border-color: var(--q-line) !important;
+    background: rgba(255,255,255,.82) !important;
+    color: var(--q-ink) !important;
+    border-radius: 999px !important;
+}
+
+button[class*="size-btn-"]:hover {
+    border-color: var(--q-brown) !important;
+}
+
+.discount-tag {
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+    border-radius: 999px !important;
+}
+
+.modal-overlay {
+    background: rgba(44,33,26,.55) !important;
+    backdrop-filter: blur(16px) !important;
+}
+
+.auth-modal-box,
+#authModal > div,
+#bgAdminModal > div,
+#sliderAdminModal > div {
+    border: 1px solid rgba(255,255,255,.72) !important;
+    background: rgba(255,250,242,.94) !important;
+    box-shadow: var(--q-shadow) !important;
+}
+
+.auth-modal-box input,
+#authModal input,
+#authModal textarea,
+#authModal select,
+#cartPanel input,
+#profileSidePanel input,
+#profileSidePanel textarea {
+    border: 1px solid var(--q-line) !important;
+    background: #fff !important;
+    color: var(--q-ink) !important;
+}
+
+.policy-content h4,
+.footer-brand {
+    color: var(--q-brown) !important;
+}
+
+.policy-content a,
+.footer-col h4 {
+    color: var(--q-brown) !important;
+}
+
+footer {
+    background: var(--q-paper) !important;
+    border-top-color: var(--q-line) !important;
+}
+
+body > main {
+    color: var(--q-ink);
+}
+
+body > main > header h2,
+body > main h1,
+body > main h2.serif,
+#page-title {
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif);
+    font-style: normal !important;
+    letter-spacing: -.03em !important;
+    text-shadow: none !important;
+}
+
+#page-subtitle,
+body > main > header p,
+.section-kicker {
+    color: var(--q-muted) !important;
+    background: rgba(255,255,255,.62) !important;
+    border-color: var(--q-line) !important;
+}
+
+#productGrid,
+#newProductsGrid,
+#homeRandomProductsGrid {
+    align-items: stretch;
+}
+
+#productGrid {
+    gap: .9rem !important;
+}
+
+#newProductsGrid {
+    gap: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    #productGrid {
+        gap: 1.15rem !important;
+    }
+
+    #newProductsGrid {
+        gap: 1.25rem !important;
+    }
+}
+
+#newProductsGrid .glass-card {
+    padding: 0 !important;
+    border-radius: 1.35rem !important;
+}
+
+#newProductsGrid .glass-card > div:first-of-type {
+    border-radius: 0 !important;
+}
+
+#newProductsGrid .glass-card [class*="h-[400px]"] {
+    height: auto !important;
+    aspect-ratio: 3 / 4;
+}
+
+#newProductsGrid .glass-card .bg-black {
+    background: rgba(91,59,36,.85) !important;
+    color: var(--q-paper) !important;
+}
+
+#newProductsGrid .glass-card button[class*="bg-[#964b00]"],
+#newProductsGrid .glass-card button[class*="bg-black"] {
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+    border-radius: 999px !important;
+}
+
+main .bg-white,
+main .bg-white\/90,
+main .bg-white\/80,
+main .bg-white\/70 {
+    border-color: var(--q-line);
+}
+
+main input,
+main textarea,
+main select {
+    border-color: var(--q-line) !important;
+    background: #fff !important;
+}
+
+main button[class*="bg-[#964b00]"],
+main a[class*="bg-[#964b00]"] {
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+}
+
+main button[class*="text-[#964b00]"],
+main a[class*="text-[#964b00]"] {
+    color: var(--q-brown) !important;
+}
+
+.policy-content {
+    background: rgba(255,255,255,.56);
+    border-radius: 1.5rem;
+}
+
+#contactForm,
+form[action],
+main form {
+    border-color: var(--q-line) !important;
+}
+
+footer p,
+footer a {
+    color: var(--q-muted) !important;
+}
