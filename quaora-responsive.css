@@ -253,6 +253,89 @@ body > nav button span.block {
     border-color: var(--q-line) !important;
 }
 
+#sideMenu .py-8:has(a[href*="instagram"]),
+#sideMenu .py-8:has(a[href*="tiktok"]) {
+    margin-top: 1rem !important;
+    padding: 1rem !important;
+    border: 1px solid var(--q-line);
+    border-radius: 24px;
+    background: rgba(255,250,242,.72);
+    box-shadow: 0 16px 34px rgba(91,59,36,.08);
+}
+
+#sideMenu .py-8:has(a[href*="instagram"]) > div,
+#sideMenu .py-8:has(a[href*="tiktok"]) > div {
+    padding-left: 0 !important;
+    gap: .65rem !important;
+}
+
+#sideMenu p:has(+ div a[href*="instagram"]),
+#sideMenu p:has(+ div a[href*="tiktok"]) {
+    margin: 0 0 .75rem !important;
+    border-left: 0 !important;
+    padding-left: 0 !important;
+    color: var(--q-muted) !important;
+    letter-spacing: .24em !important;
+    font-size: 0 !important;
+}
+
+#sideMenu p:has(+ div a[href*="instagram"])::after,
+#sideMenu p:has(+ div a[href*="tiktok"])::after {
+    content: "SATI\015E KANALLARI";
+    font-size: .68rem;
+}
+
+#sideMenu a[href*="instagram"],
+#sideMenu a[href*="tiktok"],
+footer a[href*="instagram"],
+footer a[href*="tiktok"],
+main a[href*="instagram"],
+main a[href*="tiktok"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: .7rem;
+    width: min(100%, 230px) !important;
+    border: 1px solid var(--q-line);
+    border-radius: 999px;
+    background: rgba(255,255,255,.72);
+    color: var(--q-brown) !important;
+    padding: .72rem .95rem;
+    box-shadow: 0 10px 24px rgba(91,59,36,.06);
+    text-decoration: none !important;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+#sideMenu a[href*="instagram"]::after,
+#sideMenu a[href*="tiktok"]::after,
+footer a[href*="instagram"]::after,
+footer a[href*="tiktok"]::after,
+main a[href*="instagram"]::after,
+main a[href*="tiktok"]::after {
+    content: "\2192";
+    font-size: .9rem;
+    line-height: 1;
+}
+
+#sideMenu a[href*="instagram"]:hover,
+#sideMenu a[href*="tiktok"]:hover,
+footer a[href*="instagram"]:hover,
+footer a[href*="tiktok"]:hover,
+main a[href*="instagram"]:hover,
+main a[href*="tiktok"]:hover {
+    transform: translateY(-2px);
+    border-color: var(--q-brown);
+    background: #fff;
+}
+
+#sideMenu a[href*="instagram"] {
+    background: linear-gradient(135deg, rgba(255,255,255,.86), rgba(231,209,176,.38));
+}
+
+#sideMenu a[href*="tiktok"] {
+    background: linear-gradient(135deg, rgba(255,255,255,.86), rgba(185,139,72,.20));
+}
+
 #cartPanel .border-t,
 #cartPanel .border-b,
 #profileSidePanel .border-b,
