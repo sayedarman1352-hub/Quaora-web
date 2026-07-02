@@ -109,6 +109,410 @@
             letter-spacing: -0.045em;
             text-transform: uppercase;
         }
+
+        :root{
+            --cream:#fbf6ee;
+            --paper:#fffaf2;
+            --sand:#e7d1b0;
+            --gold:#b98b48;
+            --brown:#5b3b24;
+            --brown-soft:#8b6849;
+            --ink:#2c211a;
+            --muted:#7a6555;
+            --line:rgba(91,59,36,.18);
+            --shadow:0 18px 45px rgba(82,51,25,.12);
+        }
+
+        body {
+            font-family: 'Poppins', system-ui, sans-serif;
+            color: var(--ink);
+            background: linear-gradient(180deg, var(--cream), #fffefd 54%, var(--paper));
+            overflow-x: hidden;
+        }
+
+        body > nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            min-height: 72px;
+            padding: 0 18px;
+            background: rgba(251,246,238,.86) !important;
+            border-bottom: 1px solid var(--line);
+            box-shadow: none !important;
+            backdrop-filter: blur(18px);
+        }
+
+        body > nav h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.55rem, 3vw, 1.9rem);
+            letter-spacing: .16em;
+            color: var(--brown);
+        }
+
+        body > nav span,
+        body > nav button {
+            color: var(--brown);
+        }
+
+        #cartCount {
+            background: var(--brown) !important;
+            color: #fffaf2 !important;
+        }
+
+        body > nav button span.block {
+            background: var(--brown) !important;
+        }
+
+        #bg-slider-wrap {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        #bg-slideshow {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 1s cubic-bezier(.4,0,.2,1);
+        }
+
+        .bg-slide-item {
+            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hero-slide-btn {
+            position: absolute;
+            top: 50%;
+            z-index: 5;
+            width: 46px;
+            height: 46px;
+            place-items: center;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.45);
+            background: rgba(255,255,255,.18);
+            color: #fffaf2;
+            font-weight: 900;
+            backdrop-filter: blur(12px);
+            transform: translateY(-50%);
+            transition: .22s ease;
+        }
+
+        .hero-slide-btn:hover {
+            background: rgba(255,255,255,.32);
+            transform: translateY(-50%) scale(1.04);
+        }
+
+        .hero-slide-prev { left: 18px; }
+        .hero-slide-next { right: 18px; }
+
+        .home-hero-overlay {
+            max-width: 1240px;
+            min-height: auto;
+            display: block;
+            margin: 0 auto;
+            padding: 26px 16px 30px;
+            text-shadow: none;
+        }
+
+        .home-hero-overlay::before { display: none; }
+
+        .home-hero-card {
+            position: relative;
+            min-height: 610px;
+            overflow: hidden;
+            isolation: isolate;
+            border-radius: 34px;
+            background: #ddd;
+            box-shadow: var(--shadow);
+        }
+
+        .home-hero-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                linear-gradient(180deg, rgba(44,33,26,.02) 0%, rgba(44,33,26,.22) 46%, rgba(44,33,26,.54) 100%),
+                linear-gradient(90deg, rgba(255,248,236,.65), transparent 62%);
+        }
+
+        .home-hero-copy {
+            position: absolute;
+            inset: auto 18px 22px 18px;
+            z-index: 3;
+            padding: 0 !important;
+            max-width: 760px;
+        }
+
+        #homeHeroEyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            width: fit-content;
+            border: 1px solid rgba(255,255,255,.45);
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,.13);
+            backdrop-filter: blur(12px);
+            color: #fffaf2 !important;
+        }
+
+        #homeHeroEyebrow::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #f2c879;
+            box-shadow: 0 0 0 5px rgba(242,200,121,.18);
+        }
+
+        .home-hero-title {
+            font-family: 'Playfair Display', serif !important;
+            font-size: clamp(50px, 13vw, 122px) !important;
+            line-height: .82 !important;
+            letter-spacing: -.055em !important;
+            max-width: 850px;
+            color: #fffaf2 !important;
+            text-transform: uppercase;
+        }
+
+        #homeHeroSubtitle {
+            max-width: 560px;
+            color: rgba(255,250,242,.88) !important;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        #homeHeroNote {
+            color: rgba(255,250,242,.76) !important;
+        }
+
+        #homeHeroButton {
+            border: none;
+            border-radius: 999px;
+            background: #fffaf2 !important;
+            color: var(--brown) !important;
+            padding: 15px 20px !important;
+            box-shadow: 0 18px 34px rgba(0,0,0,.16);
+            transition: .22s ease;
+        }
+
+        #homeHeroButton:hover {
+            transform: translateY(-2px);
+            background: #fff !important;
+        }
+
+        .drop-badge{
+            position:absolute;
+            z-index:4;
+            top:18px;
+            right:18px;
+            width:138px;
+            height:138px;
+            border-radius:50%;
+            background:rgba(255,250,242,.84);
+            border:1px solid rgba(255,255,255,.7);
+            display:grid;
+            place-items:center;
+            text-align:center;
+            color:var(--brown);
+            box-shadow:0 18px 40px rgba(0,0,0,.13);
+            backdrop-filter:blur(14px);
+        }
+
+        .drop-badge strong{
+            font-family:'Playfair Display',serif;
+            font-size:34px;
+            line-height:.85;
+        }
+
+        .drop-badge span{
+            display:block;
+            margin-top:7px;
+            font-size:10px;
+            letter-spacing:.16em;
+            font-weight:900;
+        }
+
+        .home-products-section {
+            padding: 38px 16px;
+            background: transparent !important;
+        }
+
+        .home-products-section > div {
+            max-width: 1240px !important;
+        }
+
+        .home-products-section .serif {
+            font-family: 'Playfair Display', serif;
+            color: var(--brown) !important;
+            font-style: normal !important;
+            letter-spacing: -.04em;
+        }
+
+        #homeRandomProductsGrid {
+            gap: 12px;
+        }
+
+        .home-product-card {
+            display: block;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 1.35rem;
+            background: rgba(255,255,255,.7);
+            box-shadow: 0 12px 30px rgba(91,59,36,.07);
+            transition: .24s ease;
+        }
+
+        .home-product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 44px rgba(91,59,36,.12);
+        }
+
+        .home-product-media {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 3 / 4;
+            background: #ead8bd;
+        }
+
+        .home-product-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s ease;
+        }
+
+        .home-product-card:hover .home-product-media img {
+            transform: scale(1.055);
+        }
+
+        .home-product-tag {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            border-radius: 999px;
+            background: rgba(91,59,36,.85);
+            color: #fff7ea;
+            padding: 8px 12px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .home-product-info {
+            padding: 12px;
+        }
+
+        .home-product-title {
+            min-height: 2.5rem;
+            color: var(--brown);
+            font-size: 11px;
+            font-weight: 900;
+            line-height: 1.45;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .home-product-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .home-product-price {
+            color: var(--brown);
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .home-product-action {
+            border-radius: 999px;
+            background: var(--brown);
+            color: #fffaf2;
+            padding: 9px 12px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        #admin-bg-btn {
+            background: var(--brown) !important;
+            color: #fffaf2 !important;
+        }
+
+        @media (min-width: 760px) {
+            .home-hero-overlay {
+                padding: 34px 22px 44px;
+            }
+
+            .home-hero-card {
+                min-height: 720px;
+                border-radius: 42px;
+            }
+
+            .home-hero-copy {
+                left: 42px;
+                right: 42px;
+                bottom: 54px;
+            }
+
+            .drop-badge {
+                top: 30px;
+                right: 34px;
+                width: 164px;
+                height: 164px;
+            }
+
+            .drop-badge strong { font-size: 42px; }
+
+            .home-products-section {
+                padding: 54px 22px;
+            }
+
+            #homeRandomProductsGrid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 18px;
+            }
+
+            .home-product-info {
+                padding: 16px;
+            }
+
+            .home-product-title {
+                min-height: 3rem;
+                font-size: 15px;
+                line-height: 1.45;
+            }
+
+            .home-product-price {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 759px) {
+            .home-hero-card {
+                min-height: 610px;
+            }
+
+            .drop-badge {
+                width: 112px;
+                height: 112px;
+            }
+        }
         
     </style>
     <link rel="stylesheet" href="quaora-responsive.css">
@@ -121,14 +525,6 @@
 <script src="quaora-performance.js" defer></script>
 </head>
 <body>
-    <div id="bg-slider-wrap">
-    <div id="bg-slideshow">
-        </div>
-    
-    <button onclick="changeBgSlide(-1)" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-0 text-white bg-black/20 hover:bg-black/50 p-2 md:p-4 rounded-full backdrop-blur-sm transition-all hidden md:block">❮</button>
-    <button onclick="changeBgSlide(1)" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-0 text-white bg-black/20 hover:bg-black/50 p-2 md:p-4 rounded-full backdrop-blur-sm transition-all hidden md:block">❯</button>
-</div>
-
 <button id="admin-bg-btn" onclick="openBgAdmin()" class="hidden fixed bottom-4 right-4 z-50 bg-[#964b00] text-white px-4 py-2 rounded-full shadow-xl font-bold text-xs hover:bg-black transition-colors" aria-label="Yönetici aracı"></button>
 
 <div id="bgAdminModal" class="hidden fixed inset-0 z-[3000] bg-black/80 backdrop-blur-md items-center justify-center p-4">
@@ -386,17 +782,27 @@
     </button>
 </nav>
 
-<section class="home-hero-overlay relative z-10 flex px-3 md:px-5 lg:px-7 pointer-events-none">
-    <div class="home-hero-copy w-full max-w-2xl pb-16 md:pb-24 pr-4 md:pr-10 pointer-events-auto">
+<section class="home-hero-overlay relative z-10 pointer-events-none">
+    <div class="home-hero-card pointer-events-auto">
+        <div id="bg-slider-wrap">
+            <div id="bg-slideshow"></div>
+            <button onclick="changeBgSlide(-1)" class="hero-slide-btn hero-slide-prev hidden md:grid" aria-label="Önceki görsel">❮</button>
+            <button onclick="changeBgSlide(1)" class="hero-slide-btn hero-slide-next hidden md:grid" aria-label="Sonraki görsel">❯</button>
+        </div>
+        <div class="drop-badge" aria-hidden="true">
+            <div><strong>SS<br>26</strong><span>NEW DROP</span></div>
+        </div>
+    <div class="home-hero-copy w-full max-w-2xl pb-16 md:pb-24 pr-4 md:pr-10">
         <p id="homeHeroEyebrow" class="text-[10px] md:text-xs font-black uppercase tracking-[0.42em] text-white/85 mb-4">QUAORA SWIMWEAR</p>
         <h2 id="homeHeroTitle" class="home-hero-title text-white text-5xl md:text-7xl lg:text-[7.6rem] leading-[0.82] mb-6">QUALITY &amp; AURA</h2>
         <p id="homeHeroSubtitle" class="max-w-xl text-white/90 text-sm md:text-base font-semibold leading-7 md:leading-8 mb-4">Denizden ilham alan, giyildi&#287;inde kendini belli eden par&#231;alar.</p>
         <p id="homeHeroNote" class="max-w-lg text-white/75 text-[11px] md:text-xs font-bold uppercase tracking-[0.22em] leading-6 mb-8">Yeni sezon se&#231;kilerini ke&#351;fet, sana en yak&#305;n QUAORA par&#231;as&#305;n&#305; bul.</p>
         <button id="homeHeroButton" onclick="openRandomProductPage()" class="bg-[#FAE29C] text-[#964b00] px-6 py-3 rounded-full font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-white hover:text-black hover:-translate-y-0.5 transition-all active:scale-95">&Uuml;r&uuml;nleri &#304;ncele</button>
     </div>
+    </div>
 </section>
 
-<section class="relative z-10 bg-[#FAE29C]/95 px-4 py-10 md:px-10 md:py-16">
+<section class="home-products-section relative z-10">
     <div class="mx-auto max-w-5xl">
         <div class="mb-7 md:mb-10">
             <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#964b00]/60 mb-2">QUAORA SELECTION</p>
@@ -759,7 +1165,7 @@
         if (!grid) return;
 
         if (!products.length) {
-            grid.innerHTML = '<div class="col-span-2 py-10 text-center text-xs font-bold uppercase tracking-[0.24em] text-[#964b00]/60">Hen\u00fcz g\u00f6sterilecek \u00fcr\u00fcn bulunamad\u0131.</div>';
+            grid.innerHTML = '<div class="col-span-2 py-10 text-center text-xs font-bold uppercase tracking-[0.24em] text-[#5b3b24]/60">Hen\u00fcz g\u00f6sterilecek \u00fcr\u00fcn bulunamad\u0131.</div>';
             return;
         }
 
@@ -769,14 +1175,17 @@
             const page = escapeHtml(product.page || 'yeni-gelenler.html');
             const price = Number(product.salePrice || product.price || 0);
             return `
-                <a href="${page}" class="group block bg-white/65 border border-white/50 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-1 overflow-hidden rounded-[1.25rem] md:rounded-[1.75rem]">
-                    <div class="aspect-[4/5] md:aspect-[3/4] bg-[#e8c58d] overflow-hidden">
-                        <img src="${escapeHtml(image)}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <a href="${page}" class="home-product-card">
+                    <div class="home-product-media">
+                        <img src="${escapeHtml(image)}" alt="${title}">
+                        <span class="home-product-tag">QUAORA</span>
                     </div>
-                    <div class="p-3 md:p-5">
-                        <p class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.24em] text-[#964b00]/50 mb-1">QUAORA</p>
-                        <h3 class="text-[11px] md:text-base font-black uppercase tracking-[0.08em] text-gray-900 leading-5 md:leading-6 min-h-[2.5rem] md:min-h-[3rem]">${title}</h3>
-                        ${price > 0 ? `<p class="mt-2 text-sm md:text-xl font-black text-[#964b00]">${money(price)}</p>` : '<p class="mt-2 text-[10px] md:text-xs font-bold uppercase tracking-[0.18em] text-[#964b00]/60">Detaylar</p>'}
+                    <div class="home-product-info">
+                        <h3 class="home-product-title">${title}</h3>
+                        <div class="home-product-bottom">
+                            ${price > 0 ? `<p class="home-product-price">${money(price)}</p>` : '<p class="home-product-price">Detaylar</p>'}
+                            <span class="home-product-action">İncele</span>
+                        </div>
                     </div>
                 </a>
             `;
@@ -1300,7 +1709,7 @@
         const slider = getEl('bg-slideshow');
         if (!slider) return;
         if (bgImages.length === 0) {
-            slider.innerHTML = `<div class="bg-slide-item" style="background-image: url('image/seniseviom.jpeg'); width: 100vw; height: 100vh; flex-shrink: 0; background-size: cover; background-position: center; background-repeat: no-repeat;"></div>`;
+            slider.innerHTML = `<div class="bg-slide-item" style="background-image: url('image/seniseviom.jpeg');"></div>`;
             return;
         }
 
