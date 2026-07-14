@@ -130,6 +130,116 @@
             overflow-x: hidden;
         }
 
+        body.home-loading {
+            overflow: hidden;
+        }
+
+        .home-loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background: var(--cream);
+            opacity: 1;
+            visibility: visible;
+            transition: opacity .55s ease, visibility .55s ease;
+        }
+
+        .home-loading-screen.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .home-loading-copy {
+            position: relative;
+            z-index: 2;
+            margin-top: -8vh;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .home-loading-brand {
+            margin: 0;
+            color: var(--brown);
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.1rem, 10vw, 6.2rem);
+            font-weight: 600;
+            line-height: .9;
+            letter-spacing: .12em;
+        }
+
+        .home-loading-label {
+            margin: 1.15rem 0 0;
+            color: var(--brown-soft);
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+        }
+
+        .home-loading-dot {
+            display: inline-block;
+            width: .42rem;
+            height: .42rem;
+            margin-right: .65rem;
+            border-radius: 50%;
+            background: var(--gold);
+            box-shadow: 0 0 0 6px rgba(185,139,72,.12);
+            animation: homeLoadingPulse 1.25s ease-in-out infinite;
+        }
+
+        .home-loading-waves {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: clamp(150px, 27vh, 270px);
+            overflow: hidden;
+        }
+
+        .home-loading-wave {
+            position: absolute;
+            right: auto;
+            bottom: -1px;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            max-width: none;
+            animation: homeWaveFlow 4.8s linear infinite;
+            will-change: transform;
+        }
+
+        .home-loading-wave-back {
+            bottom: 22px;
+            color: rgba(231,209,176,.72);
+            animation-duration: 7.2s;
+            animation-direction: reverse;
+        }
+
+        .home-loading-wave-front {
+            color: var(--brown);
+        }
+
+        @keyframes homeWaveFlow {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-50%, 0, 0); }
+        }
+
+        @keyframes homeLoadingPulse {
+            0%, 100% { opacity: .45; transform: scale(.82); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .home-loading-wave,
+            .home-loading-dot {
+                animation-duration: 12s;
+            }
+        }
+
         body > nav {
             position: sticky;
             top: 0;
@@ -524,7 +634,30 @@
 <link rel="dns-prefetch" href="//www.paytr.com">
 <script src="quaora-performance.js" defer></script>
 </head>
-<body>
+<body class="home-loading">
+<div id="homeLoadingScreen" class="home-loading-screen" role="status" aria-live="polite" aria-label="&Uuml;r&uuml;nler y&uuml;kleniyor">
+    <div class="home-loading-copy">
+        <p class="home-loading-brand">QUAORA</p>
+        <p class="home-loading-label"><span class="home-loading-dot" aria-hidden="true"></span>Yaz se&ccedil;kisi haz&#305;rlan&#305;yor</p>
+    </div>
+    <div class="home-loading-waves" aria-hidden="true">
+        <svg class="home-loading-wave home-loading-wave-back" viewBox="0 0 2400 220" preserveAspectRatio="none">
+            <path fill="currentColor" d="M0 118C200 28 400 208 600 118C800 28 1000 208 1200 118C1400 28 1600 208 1800 118C2000 28 2200 208 2400 118V220H0Z"></path>
+        </svg>
+        <svg class="home-loading-wave home-loading-wave-front" viewBox="0 0 2400 220" preserveAspectRatio="none">
+            <path fill="currentColor" d="M0 138C200 58 400 218 600 138C800 58 1000 218 1200 138C1400 58 1600 218 1800 138C2000 58 2200 218 2400 138V220H0Z"></path>
+        </svg>
+    </div>
+</div>
+<script>
+window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
+    var loader = document.getElementById('homeLoadingScreen');
+    document.body.classList.remove('home-loading');
+    if (!loader) return;
+    loader.classList.add('is-hidden');
+    window.setTimeout(function () { loader.remove(); }, 650);
+}, 9000);
+</script>
 <button id="admin-bg-btn" onclick="openBgAdmin()" class="hidden fixed bottom-4 right-4 z-50 bg-[#964b00] text-white px-4 py-2 rounded-full shadow-xl font-bold text-xs hover:bg-black transition-colors" aria-label="Yönetici aracı"></button>
 
 <div id="bgAdminModal" class="hidden fixed inset-0 z-[3000] bg-black/80 backdrop-blur-md items-center justify-center p-4">
@@ -867,6 +1000,36 @@
     let activeUser = null;
     let activeIsAdmin = false;
 
+    let homeLoaderClosed = false;
+    const closeHomeLoader = () => {
+        if (homeLoaderClosed) return;
+        homeLoaderClosed = true;
+        window.clearTimeout(window.__quaoraHomeLoaderSafety);
+        const loader = getEl('homeLoadingScreen');
+        document.body.classList.remove('home-loading');
+        if (!loader) return;
+        loader.classList.add('is-hidden');
+        window.setTimeout(() => loader.remove(), 650);
+    };
+
+    const closeHomeLoaderWhenProductsReady = (grid) => {
+        const images = Array.from(grid?.querySelectorAll('img') || []).slice(0, 2);
+        if (!images.length) {
+            window.setTimeout(closeHomeLoader, 220);
+            return;
+        }
+
+        const waits = images.map((image) => {
+            if (image.complete) return Promise.resolve();
+            return new Promise((resolve) => {
+                image.addEventListener('load', resolve, { once: true });
+                image.addEventListener('error', resolve, { once: true });
+            });
+        });
+
+        Promise.all(waits).then(() => requestAnimationFrame(() => requestAnimationFrame(closeHomeLoader)));
+    };
+
     const HOME_HERO_DOC = "home_hero";
     const HOME_HERO_DEFAULTS = {
         eyebrow: "QUAORA SWIMWEAR",
@@ -1166,6 +1329,7 @@
 
         if (!products.length) {
             grid.innerHTML = '<div class="col-span-2 py-10 text-center text-xs font-bold uppercase tracking-[0.24em] text-[#5b3b24]/60">Hen\u00fcz g\u00f6sterilecek \u00fcr\u00fcn bulunamad\u0131.</div>';
+            closeHomeLoaderWhenProductsReady(grid);
             return;
         }
 
@@ -1190,6 +1354,7 @@
                 </a>
             `;
         }).join('');
+        closeHomeLoaderWhenProductsReady(grid);
     };
 
     const loadHomeRandomProducts = async () => {
