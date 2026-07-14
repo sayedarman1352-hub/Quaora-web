@@ -1336,10 +1336,15 @@ window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
         grid.innerHTML = products.map((product) => {
             const image = Array.isArray(product.images) && product.images[0] ? product.images[0] : 'image/placeholder.jpeg';
             const title = escapeHtml(product.name || '\u00dcr\u00fcn');
-            const page = escapeHtml(product.page || 'yeni-gelenler.html');
+            const detailParams = new URLSearchParams({
+                collection: product.collectionName || '',
+                id: product.id || '',
+                from: product.page || 'index.html'
+            });
+            const detailPage = `urun.html?${detailParams.toString()}`;
             const price = Number(product.salePrice || product.price || 0);
             return `
-                <a href="${page}" class="home-product-card">
+                <a href="${detailPage}" class="home-product-card" aria-label="${title} detaylarını aç">
                     <div class="home-product-media">
                         <img src="${escapeHtml(image)}" alt="${title}">
                         <span class="home-product-tag">QUAORA</span>
@@ -1367,9 +1372,9 @@ window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
                     const snap = await getDocs(collection(db, name));
                     return snap.docs.map((docSnap) => ({
                         id: docSnap.id,
+                        ...docSnap.data(),
                         collectionName: name,
-                        page,
-                        ...docSnap.data()
+                        page
                     }));
                 })
             );
@@ -1477,9 +1482,9 @@ window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
                 snapshot.docs.forEach(docSnap => {
                     favoriteProductMap.set(`${name}:${docSnap.id}`, {
                         id: docSnap.id,
+                        ...docSnap.data(),
                         page,
-                        collectionName: name,
-                        ...docSnap.data()
+                        collectionName: name
                     });
                 });
                 favoriteProducts = Array.from(favoriteProductMap.values());

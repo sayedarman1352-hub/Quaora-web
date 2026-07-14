@@ -36,6 +36,7 @@
 <link rel="dns-prefetch" href="//firestore.googleapis.com">
 <link rel="dns-prefetch" href="//www.paytr.com">
 <script src="quaora-performance.js" defer></script>
+<script src="quaora-product-links.js?v=20260714-1" defer></script>
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -370,7 +371,7 @@
             ` : "";
 
             return `
-                <div class="group glass-card p-4 rounded-[2.5rem] shadow-2xl transition-all hover:-translate-y-2 relative">
+                <article data-product-id="${product.id}" class="group glass-card p-4 rounded-[2.5rem] shadow-2xl transition-all hover:-translate-y-2 relative">
                     ${adminControls}
                     <div class="overflow-hidden bg-gray-200 relative rounded-[2rem] h-[400px]">
                         <div class="absolute top-4 right-4 bg-black text-white text-[10px] font-black px-3 py-1 rounded-full z-10 uppercase tracking-widest">VİTRİN</div>
@@ -380,7 +381,7 @@
                         <h4 class="font-bold text-gray-900 uppercase text-xs italic tracking-tighter">${product.name || "Yeni Ürün"}</h4>
                         ${product.description ? `<p class="text-[10px] text-gray-600 mt-1 max-w-[220px]">${product.description}</p>` : ""}
                     </div>
-                </div>
+                </article>
             `;
         }).join('');
     };
