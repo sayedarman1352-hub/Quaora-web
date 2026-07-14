@@ -595,3 +595,584 @@ footer p,
 footer a {
     color: var(--q-muted) !important;
 }
+
+/* Index design language across customer-facing pages */
+body > main.max-w-7xl,
+body > main:has(#policyContent),
+body > main:has(#contactForm) {
+    width: 100%;
+    padding-top: 3.25rem !important;
+    padding-bottom: 4.5rem !important;
+}
+
+body > main.max-w-7xl {
+    max-width: 1240px !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+body > main.max-w-7xl > header,
+body > main.max-w-7xl > div:first-child:has(#page-title),
+body > main.max-w-7xl > div:first-child:has(h2) {
+    margin-bottom: 1.75rem !important;
+    text-align: left !important;
+}
+
+#page-title,
+#policyTitle,
+body > main:has(#contactForm) header h3 {
+    margin: 0 !important;
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif) !important;
+    font-size: clamp(2.4rem, 6vw, 4.6rem) !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+    line-height: .96 !important;
+    letter-spacing: -.035em !important;
+    text-transform: none !important;
+}
+
+#page-subtitle,
+#policySubtitle,
+body > main:has(#contactForm) header p {
+    display: inline-flex !important;
+    width: fit-content;
+    margin-top: .85rem !important;
+    padding: .5rem .78rem !important;
+    border: 1px solid var(--q-line) !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,.68) !important;
+    color: var(--q-muted) !important;
+    font-size: .64rem !important;
+    font-weight: 700 !important;
+    font-style: normal !important;
+    letter-spacing: .14em !important;
+    line-height: 1.2 !important;
+    text-transform: uppercase !important;
+}
+
+#productGrid,
+#newProductsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: .8rem !important;
+}
+
+#productGrid .glass-card,
+#newProductsGrid .glass-card {
+    min-width: 0;
+    border-radius: 1.35rem !important;
+    background: rgba(255,255,255,.78) !important;
+    box-shadow: 0 12px 30px rgba(91,59,36,.07) !important;
+}
+
+#productGrid .glass-card > div:first-of-type,
+#newProductsGrid .glass-card > div:first-of-type {
+    height: auto !important;
+    aspect-ratio: 3 / 4;
+    background: #ead8bd !important;
+}
+
+#productGrid .glass-card > div:first-of-type img,
+#newProductsGrid .glass-card > div:first-of-type img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .45s ease;
+}
+
+#productGrid .glass-card:hover > div:first-of-type img,
+#newProductsGrid .glass-card:hover > div:first-of-type img {
+    transform: scale(1.045);
+}
+
+#productGrid .glass-card > div:last-child,
+#newProductsGrid .glass-card > div:last-child {
+    padding: .85rem !important;
+    background: rgba(255,255,255,.95) !important;
+}
+
+#productGrid .glass-card h3,
+#newProductsGrid .glass-card h3 {
+    min-height: 2.55em;
+    margin-bottom: .45rem !important;
+    color: var(--q-brown) !important;
+    font-size: .78rem !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    letter-spacing: .04em !important;
+}
+
+#productGrid .glass-card button,
+#newProductsGrid .glass-card button {
+    min-height: 2.35rem;
+}
+
+#productGrid .glass-card button[onclick*="addToCart"],
+#newProductsGrid .glass-card button[onclick*="addToCart"] {
+    border-radius: 999px !important;
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+    box-shadow: 0 10px 22px rgba(91,59,36,.16) !important;
+}
+
+#productGrid .glass-card button[onclick*="showDescription"],
+#newProductsGrid .glass-card button[onclick*="showDescription"] {
+    border-radius: 999px !important;
+    border-color: var(--q-line) !important;
+    background: var(--q-paper) !important;
+    color: var(--q-brown) !important;
+    box-shadow: none !important;
+}
+
+#productGrid .glass-card button[onclick*="toggleFavorite"],
+#newProductsGrid .glass-card button[onclick*="toggleFavorite"] {
+    min-height: 0;
+    border: 1px solid rgba(255,255,255,.82);
+    background: rgba(255,255,255,.78) !important;
+    color: var(--q-brown) !important;
+}
+
+#productGrid .glass-card button[onclick*="scrollSlider"],
+#newProductsGrid .glass-card button[onclick*="scrollSlider"] {
+    min-height: 0;
+    border: 1px solid rgba(255,255,255,.8);
+    background: rgba(255,255,255,.8) !important;
+    color: var(--q-brown) !important;
+}
+
+#productGrid .glass-card button[class*="size-btn-"],
+#newProductsGrid .glass-card button[class*="size-btn-"] {
+    min-width: 2.15rem !important;
+    min-height: 2.15rem !important;
+    padding: .35rem .5rem !important;
+    border-radius: 999px !important;
+    box-shadow: none !important;
+}
+
+#productGrid .glass-card .discount-tag,
+#newProductsGrid .glass-card .discount-tag {
+    border: 1px solid rgba(255,255,255,.25);
+    background: rgba(91,59,36,.88) !important;
+    color: var(--q-paper) !important;
+    letter-spacing: .06em;
+}
+
+#descModal {
+    background: rgba(44,33,26,.56) !important;
+    backdrop-filter: blur(14px) !important;
+}
+
+#descModalContent {
+    border: 1px solid rgba(255,255,255,.72) !important;
+    border-radius: 1.5rem !important;
+    background: var(--q-paper) !important;
+    color: var(--q-ink) !important;
+    box-shadow: var(--q-shadow) !important;
+}
+
+#descModalTitle {
+    border-color: var(--q-line) !important;
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif) !important;
+    font-size: 1.8rem !important;
+    font-weight: 600 !important;
+    line-height: 1.05 !important;
+    letter-spacing: -.02em !important;
+    text-transform: none !important;
+}
+
+#descModalText {
+    color: var(--q-muted) !important;
+    line-height: 1.75 !important;
+}
+
+body > main:has(#contactForm) {
+    align-items: flex-start !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+body > main:has(#contactForm) > .glass-card {
+    max-width: 760px !important;
+    padding: 1.25rem !important;
+    border-radius: 1.75rem !important;
+    background: rgba(255,255,255,.72) !important;
+}
+
+body > main:has(#contactForm) header {
+    margin-bottom: 1.5rem !important;
+    text-align: left !important;
+}
+
+body > main:has(#contactForm) header > div {
+    display: none;
+}
+
+body > main:has(#contactForm) section.grid > div {
+    border: 1px solid var(--q-line) !important;
+    border-radius: 1rem !important;
+    background: #fff !important;
+    box-shadow: 0 10px 24px rgba(91,59,36,.05) !important;
+}
+
+#contactAddressText,
+#contactCommunicationText {
+    color: var(--q-ink) !important;
+    font-weight: 500 !important;
+}
+
+#contactForm {
+    padding: 1rem !important;
+    border: 1px solid var(--q-line) !important;
+    border-radius: 1.25rem !important;
+    background: rgba(255,250,242,.72) !important;
+    box-shadow: none !important;
+}
+
+#contactForm label > span {
+    margin-left: 0 !important;
+    color: var(--q-brown-soft) !important;
+    letter-spacing: .16em !important;
+}
+
+#contactForm input,
+#contactForm textarea,
+#contactAdminEditor textarea {
+    border: 1px solid var(--q-line) !important;
+    border-radius: .85rem !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+#contactForm input:focus,
+#contactForm textarea:focus,
+#contactAdminEditor textarea:focus,
+#checkoutContent input:focus,
+#checkoutContent textarea:focus {
+    border-color: var(--q-gold) !important;
+    box-shadow: 0 0 0 3px rgba(185,139,72,.12) !important;
+    outline: none !important;
+}
+
+#contactSubmitBtn {
+    min-height: 3.25rem;
+    border-radius: 999px !important;
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+}
+
+body > main:has(#policyContent) {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+body > main:has(#policyContent) > div {
+    max-width: 900px !important;
+}
+
+body > main:has(#policyContent) header {
+    margin-bottom: 1.75rem !important;
+    text-align: left !important;
+}
+
+#policyContent {
+    padding: clamp(1.25rem, 4vw, 2.5rem) !important;
+    border: 1px solid var(--q-line) !important;
+    border-radius: 1.5rem !important;
+    background: rgba(255,255,255,.78) !important;
+    box-shadow: 0 18px 45px rgba(82,51,25,.09) !important;
+}
+
+#policyContent section {
+    padding-bottom: 1.35rem;
+    border-bottom: 1px solid var(--q-line);
+}
+
+#policyContent section:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+#policyContent h4 {
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif) !important;
+    font-size: 1.35rem !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+}
+
+#policyContent p,
+#policyContent li {
+    color: var(--q-muted) !important;
+    font-weight: 400 !important;
+}
+
+body > main.quaora-fade-up.bg-white {
+    border: 1px solid var(--q-line) !important;
+    border-radius: 1.5rem !important;
+    background: rgba(255,255,255,.82) !important;
+    color: var(--q-ink) !important;
+    box-shadow: var(--q-shadow) !important;
+}
+
+body > main.quaora-fade-up.bg-white > a:first-child {
+    color: var(--q-brown) !important;
+}
+
+body > main.quaora-fade-up.bg-white > h1 {
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif) !important;
+    font-size: clamp(2.35rem, 6vw, 4rem) !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    letter-spacing: -.035em !important;
+}
+
+#checkoutContent > div {
+    border-color: var(--q-line) !important;
+}
+
+#checkoutContent > div:first-child > div,
+#checkoutContent > div:nth-child(2),
+#checkoutContent > div:nth-child(3) {
+    border: 1px solid var(--q-line) !important;
+    border-radius: 1rem !important;
+    background: #fff !important;
+    box-shadow: 0 10px 24px rgba(91,59,36,.05);
+}
+
+#checkoutContent input,
+#checkoutContent textarea {
+    border-radius: .85rem !important;
+    background: #fff !important;
+}
+
+#startPaytrBtn,
+#checkoutContent > a[class*="bg-[#964b00]"] {
+    min-height: 3.25rem;
+    border-radius: 999px !important;
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+}
+
+#checkoutPolicyLinks,
+#paymentPolicyLinks {
+    border-color: var(--q-line) !important;
+}
+
+#checkoutPolicyLinks a,
+#paymentPolicyLinks a {
+    color: var(--q-brown-soft) !important;
+}
+
+#paytrFrameWrap > div {
+    border-color: var(--q-line) !important;
+    background: var(--q-paper) !important;
+    color: var(--q-muted) !important;
+}
+
+body > main:has(#ordersApp),
+body > main:has(#detailApp),
+body > main:has(#accountingApp),
+body > main:has(#discountApp) {
+    width: 100%;
+    padding-top: 2rem !important;
+    padding-bottom: 4rem !important;
+    color: var(--q-ink) !important;
+}
+
+body > main:has(#ordersApp) > header,
+body > main:has(#detailApp) > header,
+body > main:has(#accountingApp) > header,
+body > main:has(#discountApp) > header {
+    border-color: var(--q-line) !important;
+}
+
+body > main:has(#ordersApp) > header h1,
+body > main:has(#detailApp) > header h1,
+body > main:has(#accountingApp) > header h1,
+body > main:has(#discountApp) > header h1 {
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif) !important;
+    font-size: clamp(2.3rem, 5vw, 4rem) !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    letter-spacing: -.03em !important;
+    text-transform: none !important;
+}
+
+body > main:has(#ordersApp) > header a,
+body > main:has(#detailApp) > header a,
+body > main:has(#accountingApp) > header a,
+body > main:has(#discountApp) > header a {
+    color: var(--q-brown-soft) !important;
+}
+
+#ordersApp label,
+#accountingApp label,
+#discountApp > div,
+#detailApp .bg-white,
+#accountingApp .bg-white,
+#lockedState {
+    border-color: var(--q-line) !important;
+    border-radius: 1rem !important;
+    background: #fff !important;
+    box-shadow: 0 10px 26px rgba(91,59,36,.06) !important;
+}
+
+#ordersApp label > span,
+#accountingApp label > span,
+#discountApp h2,
+#accountingApp h2,
+#detailApp h2 {
+    color: var(--q-brown-soft) !important;
+}
+
+#ordersApp input,
+#ordersApp select,
+#accountingApp input,
+#accountingApp select,
+#discountApp input,
+#discountApp select {
+    border-color: var(--q-line) !important;
+    border-radius: .75rem !important;
+    background: #fff !important;
+    color: var(--q-ink) !important;
+}
+
+#ordersList > a {
+    border-radius: .85rem !important;
+    box-shadow: 0 8px 20px rgba(91,59,36,.05) !important;
+}
+
+#orderSummary > div,
+#detailApp > div:last-child {
+    border-color: var(--q-line) !important;
+}
+
+#todayRevenue,
+#monthRevenue,
+#rangeRevenue,
+#rangeQty,
+#todayVisitors,
+#monthVisitors,
+#rangeVisitors,
+#avgVisitors {
+    color: var(--q-brown) !important;
+    font-family: var(--quaora-font-serif) !important;
+    font-weight: 600 !important;
+}
+
+#refreshBtn,
+#preparedBtn,
+#discountApp button[class*="bg-[#964b00]"] {
+    border-radius: 999px !important;
+    background: var(--q-brown) !important;
+    color: var(--q-paper) !important;
+}
+
+footer {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    border-top: 1px solid var(--q-line) !important;
+    background: rgba(255,250,242,.88) !important;
+}
+
+footer p {
+    color: var(--q-brown-soft) !important;
+    letter-spacing: .18em !important;
+}
+
+@media (min-width: 768px) {
+    body > main.max-w-7xl,
+    body > main:has(#policyContent),
+    body > main:has(#contactForm) {
+        padding-top: 4.5rem !important;
+        padding-bottom: 6rem !important;
+    }
+
+    body > main.max-w-7xl {
+        padding-left: 1.4rem !important;
+        padding-right: 1.4rem !important;
+    }
+
+    #productGrid,
+    #newProductsGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 1.15rem !important;
+    }
+
+    #productGrid .glass-card > div:last-child,
+    #newProductsGrid .glass-card > div:last-child {
+        padding: 1.1rem !important;
+    }
+
+    #productGrid .glass-card h3,
+    #newProductsGrid .glass-card h3 {
+        font-size: .92rem !important;
+    }
+
+    body > main:has(#contactForm) > .glass-card {
+        padding: 2rem !important;
+    }
+
+    #contactForm {
+        padding: 1.5rem !important;
+    }
+}
+
+@media (min-width: 1100px) {
+    #productGrid,
+    #newProductsGrid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 1.25rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body > nav.flex {
+        min-height: 64px;
+        padding-left: .8rem !important;
+        padding-right: .8rem !important;
+    }
+
+    body > nav h1,
+    body > nav .serif {
+        font-size: 1.35rem !important;
+    }
+
+    #productGrid,
+    #newProductsGrid {
+        gap: .55rem !important;
+    }
+
+    #productGrid .glass-card,
+    #newProductsGrid .glass-card {
+        border-radius: 1rem !important;
+    }
+
+    #productGrid .glass-card > div:last-child,
+    #newProductsGrid .glass-card > div:last-child {
+        padding: .65rem !important;
+    }
+
+    #productGrid .glass-card h3,
+    #newProductsGrid .glass-card h3 {
+        font-size: .68rem !important;
+    }
+
+    #productGrid .glass-card button[onclick*="showDescription"],
+    #productGrid .glass-card button[onclick*="addToCart"],
+    #newProductsGrid .glass-card button[onclick*="showDescription"],
+    #newProductsGrid .glass-card button[onclick*="addToCart"] {
+        min-height: 2.55rem;
+        padding-left: .45rem !important;
+        padding-right: .45rem !important;
+        letter-spacing: .04em !important;
+    }
+
+    body > main.quaora-fade-up.bg-white {
+        padding: 1.1rem !important;
+        border-radius: 1.15rem !important;
+    }
+}
