@@ -1176,3 +1176,600 @@ footer p {
         border-radius: 1.15rem !important;
     }
 }
+
+/* QUAORA editorial theme: coastal minimalism in cream, white and black */
+:root {
+    --cream: #f4f1ea;
+    --paper: #ffffff;
+    --sand: #ded8cc;
+    --gold: #8b8173;
+    --brown: #111111;
+    --brown-soft: #68645e;
+    --ink: #111111;
+    --muted: #706d68;
+    --line: rgba(17,17,17,.14);
+    --shadow: 0 16px 36px rgba(17,17,17,.08);
+    --q-cream: #f4f1ea;
+    --q-paper: #ffffff;
+    --q-sand: #ded8cc;
+    --q-gold: #8b8173;
+    --q-brown: #111111;
+    --q-brown-soft: #68645e;
+    --q-ink: #111111;
+    --q-muted: #706d68;
+    --q-line: rgba(17,17,17,.14);
+    --q-shadow: 0 16px 36px rgba(17,17,17,.08);
+}
+
+body {
+    background: #fff !important;
+    color: var(--q-ink) !important;
+}
+
+body > nav.flex,
+body > nav.sticky {
+    min-height: 72px;
+    padding: 0 1.25rem !important;
+    border-bottom: 1px solid var(--q-line) !important;
+    background: rgba(255,255,255,.96) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(16px);
+}
+
+body > nav h1,
+body > nav .serif,
+body > nav button,
+body > nav span,
+body > nav p {
+    color: #111 !important;
+}
+
+body > nav h1,
+body > nav .serif {
+    font-weight: 600 !important;
+    letter-spacing: .12em !important;
+}
+
+body > nav button span.block {
+    height: 2px !important;
+    background: #111 !important;
+}
+
+#cartCount,
+[data-cart-count] {
+    border-color: #fff !important;
+    background: #111 !important;
+    color: #fff !important;
+}
+
+#sideMenu,
+#cartPanel,
+#profileSidePanel,
+#favoritesSidePanel,
+#ordersSidePanel {
+    border-color: var(--q-line) !important;
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: 20px 0 55px rgba(17,17,17,.13) !important;
+}
+
+#sideMenu h2,
+#cartPanel h2,
+#profileSidePanel h2,
+#favoritesSidePanel h2,
+#ordersSidePanel h2 {
+    color: #111 !important;
+    font-family: var(--quaora-font-body) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+}
+
+#sideMenu nav > a,
+#sideMenu nav button {
+    border-radius: 0 !important;
+    color: #111 !important;
+}
+
+#sideMenu nav > a:hover,
+#sideMenu nav button:hover {
+    background: var(--q-cream) !important;
+    transform: translateX(3px);
+}
+
+#sideMenu .py-8:has(a[href*="instagram"]),
+#sideMenu .py-8:has(a[href*="tiktok"]) {
+    border: 0 !important;
+    border-top: 1px solid var(--q-line) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#sideMenu a[href*="instagram"],
+#sideMenu a[href*="tiktok"],
+footer a[href*="instagram"],
+footer a[href*="tiktok"],
+main a[href*="instagram"],
+main a[href*="tiktok"] {
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+}
+
+.home-hero-overlay {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.home-hero-card {
+    min-height: clamp(560px, 76svh, 790px) !important;
+    border-radius: 0 !important;
+    background: #e7e3db !important;
+    box-shadow: none !important;
+}
+
+.home-hero-card::before {
+    background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.2) 48%, transparent 76%) !important;
+}
+
+.home-hero-copy {
+    right: 1.5rem !important;
+    bottom: clamp(2rem, 7vh, 5rem) !important;
+    left: clamp(1.5rem, 5vw, 5rem) !important;
+    max-width: 680px !important;
+}
+
+#homeHeroEyebrow {
+    margin-bottom: 1.2rem !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    font-size: .68rem !important;
+    letter-spacing: .18em !important;
+    backdrop-filter: none !important;
+}
+
+#homeHeroEyebrow::before {
+    display: none !important;
+}
+
+.home-hero-title {
+    max-width: 650px !important;
+    margin-bottom: 1.25rem !important;
+    font-family: var(--quaora-font-body) !important;
+    font-size: clamp(3rem, 8vw, 6.5rem) !important;
+    font-weight: 500 !important;
+    line-height: .92 !important;
+    letter-spacing: 0 !important;
+}
+
+#homeHeroSubtitle {
+    max-width: 520px !important;
+    margin-bottom: .75rem !important;
+    font-size: clamp(.9rem, 1.4vw, 1.05rem) !important;
+    font-weight: 400 !important;
+    line-height: 1.65 !important;
+}
+
+#homeHeroNote {
+    max-width: 520px !important;
+    margin-bottom: 1.75rem !important;
+    font-size: .64rem !important;
+    font-weight: 600 !important;
+    letter-spacing: .13em !important;
+}
+
+#homeHeroButton {
+    min-height: 44px;
+    padding: .8rem 1.3rem !important;
+    border: 1px solid #111 !important;
+    border-radius: 2px !important;
+    background: #111 !important;
+    color: #fff !important;
+    box-shadow: none !important;
+    font-size: .66rem !important;
+    letter-spacing: .14em !important;
+}
+
+#homeHeroButton:hover {
+    border-color: #fff !important;
+    background: #fff !important;
+    color: #111 !important;
+}
+
+.drop-badge {
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+    width: auto !important;
+    height: auto !important;
+    padding: .7rem .8rem !important;
+    border: 1px solid rgba(255,255,255,.56) !important;
+    border-radius: 0 !important;
+    background: rgba(255,255,255,.88) !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    animation: none !important;
+    backdrop-filter: blur(10px);
+}
+
+.drop-badge strong {
+    font-family: var(--quaora-font-body) !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+}
+
+.drop-badge span {
+    margin-top: .35rem !important;
+    font-size: .5rem !important;
+    letter-spacing: .12em !important;
+}
+
+.home-products-section {
+    padding: 4.5rem 1.25rem 5.5rem !important;
+    background: #fff !important;
+}
+
+.home-products-section > div {
+    max-width: 1440px !important;
+}
+
+.home-products-section .mb-7,
+.home-products-section .md\:mb-10 {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--q-line);
+}
+
+.home-products-section .mb-7 > p {
+    margin: 0 !important;
+    color: var(--q-muted) !important;
+    font-size: .62rem !important;
+    letter-spacing: .16em !important;
+}
+
+.home-products-section h2.serif {
+    margin: 0 !important;
+    color: #111 !important;
+    font-family: var(--quaora-font-body) !important;
+    font-size: clamp(1.4rem, 3vw, 2.2rem) !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    text-transform: uppercase;
+}
+
+#homeRandomProductsGrid {
+    gap: 2.6rem .85rem !important;
+}
+
+.home-product-card {
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.home-product-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.home-product-media {
+    border-radius: 0 !important;
+    background: var(--q-cream) !important;
+}
+
+.home-product-info {
+    padding: .9rem 0 0 !important;
+}
+
+.home-product-title {
+    min-height: 0 !important;
+    color: #111 !important;
+    font-size: .72rem !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    letter-spacing: .04em !important;
+}
+
+.home-product-bottom {
+    margin-top: .6rem !important;
+}
+
+.home-product-price {
+    color: #111 !important;
+    font-size: .78rem !important;
+    font-weight: 500 !important;
+}
+
+.home-product-action {
+    padding: 0 0 .16rem !important;
+    border-bottom: 1px solid #111;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #111 !important;
+    font-size: .58rem !important;
+    letter-spacing: .1em !important;
+}
+
+.home-product-tag {
+    right: .6rem !important;
+    bottom: .6rem !important;
+    left: auto !important;
+    padding: .4rem .5rem !important;
+    border-radius: 0 !important;
+    background: rgba(255,255,255,.9) !important;
+    color: #111 !important;
+    font-size: .52rem !important;
+    letter-spacing: .1em !important;
+}
+
+.home-loading-screen {
+    background: var(--q-cream) !important;
+}
+
+.home-loading-brand,
+.home-loading-label {
+    color: #111 !important;
+}
+
+.home-loading-dot {
+    background: #111 !important;
+    box-shadow: 0 0 0 6px rgba(17,17,17,.08) !important;
+}
+
+.home-loading-wave-back {
+    color: #ddd6ca !important;
+}
+
+.home-loading-wave-front {
+    color: #111 !important;
+}
+
+#page-title,
+#policyTitle,
+body > main:has(#contactForm) header h3,
+body > main.quaora-fade-up.bg-white > h1 {
+    color: #111 !important;
+    font-family: var(--quaora-font-body) !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+}
+
+#page-subtitle,
+#policySubtitle,
+body > main:has(#contactForm) header p {
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--q-muted) !important;
+}
+
+#productGrid,
+#newProductsGrid {
+    column-gap: .85rem !important;
+    row-gap: 2.75rem !important;
+}
+
+#productGrid .glass-card,
+#newProductsGrid .glass-card {
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#productGrid .glass-card:hover,
+#newProductsGrid .glass-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+#productGrid .glass-card > div:first-of-type,
+#newProductsGrid .glass-card > div:first-of-type {
+    border-radius: 0 !important;
+    background: var(--q-cream) !important;
+}
+
+#productGrid .glass-card > div:last-child,
+#newProductsGrid .glass-card > div:last-child {
+    padding: .85rem 0 0 !important;
+    background: transparent !important;
+}
+
+#productGrid .glass-card h3,
+#newProductsGrid .glass-card h3 {
+    color: #111 !important;
+    font-size: .76rem !important;
+    font-weight: 600 !important;
+    letter-spacing: .03em !important;
+}
+
+#productGrid .glass-card button[onclick*="addToCart"],
+#newProductsGrid .glass-card button[onclick*="addToCart"],
+#contactSubmitBtn,
+#startPaytrBtn,
+#refreshBtn,
+#preparedBtn {
+    border: 1px solid #111 !important;
+    border-radius: 2px !important;
+    background: #111 !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+#productGrid .glass-card button[onclick*="showDescription"],
+#newProductsGrid .glass-card button[onclick*="showDescription"] {
+    border-radius: 2px !important;
+    border-color: #111 !important;
+    background: #fff !important;
+    color: #111 !important;
+}
+
+#productGrid .glass-card button[class*="size-btn-"],
+#newProductsGrid .glass-card button[class*="size-btn-"],
+button[class*="size-btn-"] {
+    border-radius: 2px !important;
+    background: #fff !important;
+    color: #111 !important;
+}
+
+.discount-tag {
+    border-radius: 0 !important;
+    background: #111 !important;
+    color: #fff !important;
+}
+
+body > main:has(#contactForm) > .glass-card,
+#contactForm,
+#policyContent,
+body > main.quaora-fade-up.bg-white,
+#ordersApp label,
+#accountingApp label,
+#discountApp > div,
+#detailApp .bg-white,
+#accountingApp .bg-white,
+#lockedState {
+    border-color: var(--q-line) !important;
+    border-radius: 4px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+#contactForm input,
+#contactForm textarea,
+#contactAdminEditor textarea,
+#checkoutContent input,
+#checkoutContent textarea,
+#ordersApp input,
+#ordersApp select,
+#accountingApp input,
+#accountingApp select,
+#discountApp input,
+#discountApp select {
+    border-radius: 2px !important;
+    border-color: var(--q-line) !important;
+    background: #fff !important;
+}
+
+#policyContent h4,
+#descModalTitle {
+    color: #111 !important;
+    font-family: var(--quaora-font-body) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+}
+
+#descModalContent {
+    border-radius: 4px !important;
+    background: #fff !important;
+}
+
+.auth-modal-box,
+#authModal > div,
+#bgAdminModal > div,
+#sliderAdminModal > div {
+    border-radius: 4px !important;
+    background: #fff !important;
+    box-shadow: 0 22px 55px rgba(17,17,17,.14) !important;
+}
+
+#cartItems > div,
+#favoritesList > div,
+#ordersList > div,
+#profileSidePanel .grid button,
+#profileSidePanel .rounded-2xl,
+#quaoraDiscountBox {
+    border-radius: 2px !important;
+    border-color: var(--q-line) !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+#cartPanel button[onclick*="siparisVer"],
+#cartPanel button[onclick*="applyQuaoraDiscountCode"],
+#profileSidePanel button[onclick*="saveProfile"],
+.auth-modal-box button,
+#authModal button[class*="bg-[#964b00]"],
+#authModal button[class*="bg-black"] {
+    border-radius: 2px !important;
+    background: #111 !important;
+    color: #fff !important;
+}
+
+footer {
+    border-top: 1px solid var(--q-line) !important;
+    background: var(--q-cream) !important;
+}
+
+@media (min-width: 760px) {
+    #homeRandomProductsGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 3.5rem 1rem !important;
+    }
+}
+
+@media (min-width: 1100px) {
+    #homeRandomProductsGrid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 759px) {
+    .home-hero-card {
+        min-height: 70svh !important;
+    }
+
+    .home-hero-card::before {
+        background: linear-gradient(180deg, transparent 22%, rgba(0,0,0,.68) 100%) !important;
+    }
+
+    .home-hero-copy {
+        right: 1.2rem !important;
+        bottom: 1.8rem !important;
+        left: 1.2rem !important;
+    }
+
+    .home-hero-title {
+        font-size: clamp(2.5rem, 14vw, 4.25rem) !important;
+    }
+
+    #homeHeroSubtitle {
+        font-size: .86rem !important;
+    }
+
+    #homeHeroNote {
+        display: none;
+    }
+
+    .home-products-section {
+        padding: 3.5rem .8rem 4.5rem !important;
+    }
+
+    .home-products-section .mb-7,
+    .home-products-section .md\:mb-10 {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #homeRandomProductsGrid {
+        gap: 2.4rem .65rem !important;
+    }
+
+    .drop-badge {
+        top: 1rem !important;
+        right: 1rem !important;
+    }
+}
