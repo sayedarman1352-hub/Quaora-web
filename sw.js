@@ -1,7 +1,7 @@
-const CACHE_NAME = "quaora-static-v5";
+const CACHE_NAME = "quaora-static-v6";
 const STATIC_ASSETS = [
   "/quaora-tailwind.css",
-  "/quaora-responsive.css",
+  "/quaora-responsive.css?v=20260714-1",
   "/quaora-performance.js",
   "/quaora-discounts.js"
 ];
@@ -39,8 +39,18 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static dosyalar cache-first.
-  if (/\.(css|js|png|jpg|jpeg|webp|gif|svg|ico)$/i.test(url.pathname) || CACHEABLE_ORIGINS.has(url.origin)) {
+  // CSS ve JS her zaman network-first; yeni tasarim normal yenilemede gelsin.
+  if (/\.(css|js)$/i.test(url.pathname) && url.origin === self.location.origin) {
+    event.respondWith(fetch(req).then((res) => {
+      const copy = res.clone();
+      caches.open(CACHE_NAME).then((cache) => cache.put(req, copy)).catch(() => null);
+      return res;
+    }).catch(() => caches.match(req)));
+    return;
+  }
+
+  // Gorseller ve harici fontlar performans icin cache-first kalabilir.
+  if (/\.(png|jpg|jpeg|webp|gif|svg|ico)$/i.test(url.pathname) || CACHEABLE_ORIGINS.has(url.origin)) {
     event.respondWith(caches.match(req).then((cached) => cached || fetch(req).then((res) => {
       const copy = res.clone();
       caches.open(CACHE_NAME).then((cache) => cache.put(req, copy)).catch(() => null);
