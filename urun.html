@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="QUAORA ürün detayları">
     <title>Ürün Detayı | QUAORA</title>
+    <link id="productCanonical" rel="canonical" href="https://www.quaora.com.tr/urun.html">
+    <meta property="og:type" content="product">
+    <meta property="og:site_name" content="QUAORA">
+    <meta id="productOgTitle" property="og:title" content="QUAORA Ürün">
+    <meta id="productOgDescription" property="og:description" content="QUAORA ürün detayları">
+    <meta id="productOgUrl" property="og:url" content="https://www.quaora.com.tr/urun.html">
+    <meta id="productOgImage" property="og:image" content="https://www.quaora.com.tr/image/seniseviom.jpeg">
+    <script id="productStructuredData" type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "QUAORA Ürün",
+      "brand": {
+        "@type": "Brand",
+        "name": "QUAORA"
+      }
+    }
+    </script>
     <link rel="stylesheet" href="quaora-tailwind.css">
     <link rel="stylesheet" href="quaora-responsive.css?v=20260714-2">
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
@@ -779,6 +797,67 @@
 
         const getTotalStock = () => Object.values(availableSizes).reduce((sum, stock) => sum + Number(stock || 0), 0);
 
+        const absoluteUrl = (value) => {
+            try { return new URL(value, "https://www.quaora.com.tr/").href; }
+            catch (error) { return ""; }
+        };
+
+        const updateProductStructuredData = (salePrice, totalStock) => {
+            const canonicalParams = new URLSearchParams({ collection: collectionName, id: productId });
+            const canonicalUrl = `https://www.quaora.com.tr/urun.html?${canonicalParams.toString()}`;
+            const productName = product.name || "QUAORA Ürün";
+            const description = product.description || `${productName}, QUAORA ${catalogEntry.label} koleksiyonunda.`;
+            const images = (Array.isArray(product.images) ? product.images : [])
+                .map(absoluteUrl)
+                .filter(Boolean);
+
+            el("productCanonical").href = canonicalUrl;
+            document.querySelector('meta[name="description"]')?.setAttribute("content", description.slice(0, 300));
+            el("productOgTitle").content = `${productName} | QUAORA`;
+            el("productOgDescription").content = description.slice(0, 300);
+            el("productOgUrl").content = canonicalUrl;
+            if (images[0]) el("productOgImage").content = images[0];
+
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "@id": `${canonicalUrl}#product`,
+                "url": canonicalUrl,
+                "name": productName,
+                "description": description,
+                "sku": product.sku || productId,
+                "category": catalogEntry.label,
+                "brand": {
+                    "@type": "Brand",
+                    "name": "QUAORA"
+                }
+            };
+
+            if (images.length) schema.image = images;
+            if (product.material) schema.material = product.material;
+            if (product.color) schema.color = product.color;
+            if (salePrice > 0) {
+                schema.offers = {
+                    "@type": "Offer",
+                    "url": canonicalUrl,
+                    "priceCurrency": "TRY",
+                    "price": salePrice,
+                    "itemCondition": "https://schema.org/NewCondition",
+                    "availability": totalStock > 0
+                        ? "https://schema.org/InStock"
+                        : "https://schema.org/OutOfStock",
+                    "seller": {
+                        "@type": "OnlineStore",
+                        "@id": "https://www.quaora.com.tr/#store",
+                        "name": "QUAORA",
+                        "url": "https://www.quaora.com.tr/"
+                    }
+                };
+            }
+
+            el("productStructuredData").textContent = JSON.stringify(schema);
+        };
+
         const renderSizes = () => {
             const rawSizes = product.sizeStocks && typeof product.sizeStocks === "object" ? product.sizeStocks : {};
             availableSizes = { ...rawSizes };
@@ -839,6 +918,7 @@
             updateFavoriteButton();
 
             const totalStock = getTotalStock();
+            updateProductStructuredData(salePrice, totalStock);
             if (salePrice <= 0) {
                 el("stockText").textContent = "Vitrin ürünü";
                 el("purchasePanel").hidden = true;
