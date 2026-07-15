@@ -94,6 +94,26 @@
             outline: 2px solid #111;
             outline-offset: 5px;
         }
+        #productGrid article > .relative > .absolute.inset-0 {
+            align-items: flex-end !important;
+            justify-content: flex-start !important;
+            padding: 12px !important;
+            background: linear-gradient(180deg, transparent 58%, rgba(17, 17, 17, .28)) !important;
+            backdrop-filter: none !important;
+            pointer-events: none;
+        }
+        #productGrid article > .relative > .absolute.inset-0 > span {
+            padding: 7px 10px !important;
+            border: 1px solid rgba(17, 17, 17, .14) !important;
+            border-radius: 0 !important;
+            background: rgba(255, 255, 255, .94) !important;
+            color: #111 !important;
+            box-shadow: none !important;
+            font-size: 8px !important;
+            font-style: normal !important;
+            letter-spacing: .14em !important;
+            transform: none !important;
+        }
     `;
     document.head.appendChild(style);
 

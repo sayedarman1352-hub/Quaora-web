@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="QUAORA tüm ürünler ve koleksiyonlar">
+    <title>Tüm Ürünler | QUAORA</title>
+    <link rel="stylesheet" href="quaora-tailwind.css">
+    <link rel="stylesheet" href="quaora-responsive.css?v=20260714-2">
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="quaora-performance.js" defer></script>
+    <style>
+        :root {
+            --catalog-ink: #111111;
+            --catalog-muted: #706d68;
+            --catalog-cream: #f4f1ea;
+            --catalog-line: rgba(17, 17, 17, .14);
+        }
+
+        [hidden] { display: none !important; }
+
+        body.all-products-page {
+            min-height: 100vh;
+            margin: 0;
+            background: #fff !important;
+            color: var(--catalog-ink) !important;
+        }
+
+        .catalog-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            min-height: 72px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            border-bottom: 1px solid var(--catalog-line);
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(14px);
+        }
+
+        .catalog-home,
+        .catalog-cart {
+            color: var(--catalog-ink);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .catalog-home { justify-self: start; }
+        .catalog-cart { justify-self: end; }
+
+        .catalog-brand {
+            color: var(--catalog-ink);
+            font-family: var(--quaora-font-serif);
+            font-size: 27px;
+            font-weight: 600;
+            letter-spacing: .18em;
+            line-height: 1;
+        }
+
+        .catalog-intro {
+            min-height: 310px;
+            display: flex;
+            align-items: flex-end;
+            padding: 66px max(20px, calc((100vw - 1400px) / 2));
+            background: var(--catalog-cream);
+        }
+
+        .catalog-eyebrow {
+            margin: 0 0 17px;
+            color: var(--catalog-muted);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+        }
+
+        .catalog-title {
+            margin: 0;
+            font-size: clamp(48px, 8vw, 112px);
+            font-weight: 400;
+            letter-spacing: 0;
+            line-height: .88;
+        }
+
+        .catalog-subtitle {
+            max-width: 540px;
+            margin: 24px 0 0;
+            color: var(--catalog-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .catalog-main {
+            width: min(1440px, 100%);
+            margin: 0 auto;
+            padding: 34px 20px 80px;
+        }
+
+        .catalog-toolbar {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) 220px 220px auto;
+            gap: 10px;
+            align-items: end;
+            padding-bottom: 22px;
+            border-bottom: 1px solid var(--catalog-line);
+        }
+
+        .catalog-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--catalog-muted);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .17em;
+            text-transform: uppercase;
+        }
+
+        .catalog-field input,
+        .catalog-field select {
+            width: 100%;
+            height: 45px;
+            padding: 0 12px;
+            border: 1px solid var(--catalog-line);
+            border-radius: 0;
+            outline: 0;
+            background: #fff;
+            color: var(--catalog-ink);
+            font-size: 11px;
+        }
+
+        .catalog-field input:focus,
+        .catalog-field select:focus { border-color: var(--catalog-ink); }
+
+        .catalog-count {
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: var(--catalog-muted);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 34px 14px;
+            margin-top: 28px;
+        }
+
+        .catalog-card {
+            min-width: 0;
+            color: var(--catalog-ink);
+            text-decoration: none;
+        }
+
+        .catalog-card:focus-visible {
+            outline: 2px solid var(--catalog-ink);
+            outline-offset: 5px;
+        }
+
+        .catalog-media {
+            position: relative;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            background: var(--catalog-cream);
+        }
+
+        .catalog-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .45s ease, opacity .25s ease;
+        }
+
+        .catalog-card:hover .catalog-media img { transform: scale(1.025); }
+        .catalog-card.is-sold-out .catalog-media img { opacity: .82; }
+
+        .catalog-no-image {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            color: var(--catalog-muted);
+            font-family: var(--quaora-font-serif);
+            font-size: 19px;
+            letter-spacing: .16em;
+        }
+
+        .catalog-category-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 7px 9px;
+            background: rgba(255, 255, 255, .92);
+            color: var(--catalog-ink);
+            font-size: 7px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .catalog-sold-out {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            padding: 8px 11px;
+            border: 1px solid rgba(17, 17, 17, .14);
+            background: rgba(255, 255, 255, .94);
+            color: var(--catalog-ink);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .catalog-info { padding: 13px 2px 0; }
+
+        .catalog-name {
+            min-height: 36px;
+            margin: 0;
+            overflow-wrap: anywhere;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0;
+            line-height: 1.55;
+            text-transform: uppercase;
+        }
+
+        .catalog-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .catalog-price {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .catalog-old-price {
+            color: var(--catalog-muted);
+            font-size: 9px;
+            text-decoration: line-through;
+        }
+
+        .catalog-detail-text {
+            margin: 8px 0 0;
+            color: var(--catalog-muted);
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .catalog-state {
+            grid-column: 1 / -1;
+            min-height: 280px;
+            display: grid;
+            place-items: center;
+            color: var(--catalog-muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .17em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .catalog-skeleton {
+            aspect-ratio: 3 / 4;
+            background: linear-gradient(100deg, #f2efe9 20%, #faf9f6 45%, #f2efe9 70%);
+            background-size: 220% 100%;
+            animation: catalogShimmer 1.2s linear infinite;
+        }
+
+        @keyframes catalogShimmer { to { background-position-x: -220%; } }
+
+        .catalog-footer {
+            padding: 32px 20px;
+            border-top: 1px solid var(--catalog-line);
+            background: var(--catalog-cream);
+            color: var(--catalog-muted);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-align: center;
+        }
+
+        @media (max-width: 980px) {
+            .catalog-toolbar { grid-template-columns: 1fr 1fr; }
+            .catalog-count { justify-content: flex-start; }
+            .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 640px) {
+            .catalog-header {
+                min-height: 64px;
+                padding: 0 13px;
+            }
+
+            .catalog-brand { font-size: 21px; }
+            .catalog-home span { display: none; }
+            .catalog-cart { font-size: 8px; }
+
+            .catalog-intro {
+                min-height: 245px;
+                padding: 48px 16px;
+            }
+
+            .catalog-title { font-size: clamp(48px, 18vw, 70px); }
+            .catalog-subtitle { font-size: 12px; }
+
+            .catalog-main { padding: 24px 10px 60px; }
+            .catalog-toolbar { grid-template-columns: 1fr 1fr; gap: 9px; }
+            .catalog-field-search { grid-column: 1 / -1; }
+            .catalog-count { min-height: 26px; grid-column: 1 / -1; }
+
+            .catalog-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 25px 8px;
+                margin-top: 18px;
+            }
+
+            .catalog-name { min-height: 42px; font-size: 9px; }
+            .catalog-category-tag { font-size: 6px; }
+            .catalog-sold-out { padding: 7px 9px; font-size: 7px; }
+        }
+    </style>
+</head>
+<body class="all-products-page">
+    <header class="catalog-header">
+        <a class="catalog-home" href="index.html">&larr; <span>Ana sayfa</span></a>
+        <a class="catalog-brand" href="index.html">QUAORA</a>
+        <a class="catalog-cart" href="checkout.html">Sepet (<span id="cartCount">0</span>)</a>
+    </header>
+
+    <section class="catalog-intro">
+        <div>
+            <p class="catalog-eyebrow">QUAORA COLLECTION</p>
+            <h1 class="catalog-title">Tüm Ürünler</h1>
+            <p class="catalog-subtitle">Yeni sezon parçalarından koleksiyonlara ve aksesuarlara kadar bütün QUAORA seçkisini tek yerde keşfet.</p>
+        </div>
+    </section>
+
+    <main class="catalog-main">
+        <section class="catalog-toolbar" aria-label="Ürün filtreleri">
+            <div class="catalog-field catalog-field-search">
+                <label for="searchInput">Ürün ara</label>
+                <input id="searchInput" type="search" placeholder="İsim veya koleksiyon" autocomplete="off">
+            </div>
+            <div class="catalog-field">
+                <label for="categorySelect">Kategori</label>
+                <select id="categorySelect">
+                    <option value="all">Tüm kategoriler</option>
+                </select>
+            </div>
+            <div class="catalog-field">
+                <label for="sortSelect">Sırala</label>
+                <select id="sortSelect">
+                    <option value="recommended">Önerilen</option>
+                    <option value="newest">En yeni</option>
+                    <option value="price-asc">Fiyat: düşükten yükseğe</option>
+                    <option value="price-desc">Fiyat: yüksekten düşüğe</option>
+                </select>
+            </div>
+            <div id="productCount" class="catalog-count" aria-live="polite">Ürünler yükleniyor</div>
+        </section>
+
+        <section id="productGrid" class="catalog-grid" aria-live="polite">
+            <div class="catalog-skeleton"></div>
+            <div class="catalog-skeleton"></div>
+            <div class="catalog-skeleton"></div>
+            <div class="catalog-skeleton"></div>
+            <div class="catalog-skeleton"></div>
+            <div class="catalog-skeleton"></div>
+            <div class="catalog-skeleton"></div>
+            <div class="catalog-skeleton"></div>
+        </section>
+    </main>
+
+    <footer class="catalog-footer">© 2026 QUAORA SWIMWEAR</footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChIV6BI3U6aPxUsRm0akBCPLLBAg6XM9U",
+            authDomain: "quaora-web.firebaseapp.com",
+            projectId: "quaora-web",
+            storageBucket: "quaora-web.firebasestorage.app",
+            messagingSenderId: "69244174750",
+            appId: "1:69244174750:web:5c9e82172704bb39a2568f"
+        };
+
+        const COLLECTIONS = [
+            { name: "yeni_gelenler", page: "yeni-gelenler.html", label: "Yeni Gelenler" },
+            { name: "tops_products", page: "tops.html", label: "Tops" },
+            { name: "bottom_products", page: "bottom.html", label: "Bottoms" },
+            { name: "conquette", page: "coquette.html", label: "Coquette" },
+            { name: "PANZER", page: "panzer.html", label: "Panzer" },
+            { name: "RELOVE", page: "relove.html", label: "Relove" },
+            { name: "PIE", page: "pie.html", label: "Pie" },
+            { name: "mayokini_ustleri", page: "mayokini-ustleri.html", label: "Mayokini Üstleri" },
+            { name: "mayokini_altlari", page: "mayokini-altlari.html", label: "Mayokini Altları" },
+            { name: "bikini_ustleri", page: "bikini-ustleri.html", label: "Bikini Üstleri" },
+            { name: "bikini-altlari", page: "bikini-altlari.html", label: "Bikini Altları" },
+            { name: "mayolar", page: "mayolar.html", label: "Mayolar" },
+            { name: "ayakkabilar", page: "ayakkabilar.html", label: "Ayakkabılar" },
+            { name: "takilar", page: "takilar.html", label: "Takılar" },
+            { name: "cantalar", page: "cantalar.html", label: "Çantalar" },
+            { name: "sapkalar", page: "sapkalar.html", label: "Şapkalar" },
+            { name: "pareolar", page: "pareolar.html", label: "Pareolar" },
+            { name: "gozlukler", page: "gozlukler.html", label: "Gözlükler" },
+            { name: "plaj_aksesuarlari", page: "plaj-aksesuarlari.html", label: "Plaj Aksesuarları" },
+            { name: "outlet_products", page: "outlet.html", label: "Outlet" },
+            { name: "OUTLET", page: "outlet.html", label: "Outlet" }
+        ];
+
+        const el = (id) => document.getElementById(id);
+        const money = (value) => `₺${Number(value || 0).toLocaleString("tr-TR")}`;
+        const escapeHtml = (value) => String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+
+        let allProducts = [];
+
+        try {
+            const cart = JSON.parse(localStorage.getItem("quaora_cart")) || [];
+            el("cartCount").textContent = cart.reduce((sum, item) => sum + Number(item.qty || 1), 0);
+        } catch (error) {
+            el("cartCount").textContent = "0";
+        }
+
+        const createdAtValue = (value) => {
+            if (value && typeof value.toMillis === "function") return value.toMillis();
+            if (value && Number.isFinite(Number(value.seconds))) return Number(value.seconds) * 1000;
+            return Number(value || 0);
+        };
+
+        const stockInfo = (product) => {
+            const sizes = product.sizeStocks && typeof product.sizeStocks === "object" ? product.sizeStocks : {};
+            const sizeNames = Object.keys(sizes);
+            const hasStock = sizeNames.length > 0 || product.stock !== undefined;
+            const total = sizeNames.length
+                ? Object.values(sizes).reduce((sum, value) => sum + Number(value || 0), 0)
+                : Number(product.stock || 0);
+            return { hasStock, total, soldOut: hasStock && total <= 0 };
+        };
+
+        const productUrl = (product) => {
+            const params = new URLSearchParams({
+                collection: product.collectionName,
+                id: product.id,
+                from: product.page
+            });
+            return `urun.html?${params.toString()}`;
+        };
+
+        const renderProducts = (products) => {
+            const grid = el("productGrid");
+            el("productCount").textContent = `${products.length} ürün`;
+
+            if (!products.length) {
+                grid.innerHTML = '<div class="catalog-state">Aramana uygun ürün bulunamadı.</div>';
+                return;
+            }
+
+            grid.innerHTML = products.map((product) => {
+                const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
+                const image = images[0] || "";
+                const name = escapeHtml(product.name || "QUAORA Ürün");
+                const salePrice = Number(product.salePrice || product.price || 0);
+                const originalPrice = Number(product.originalPrice || 0);
+                const stock = stockInfo(product);
+
+                return `
+                    <a class="catalog-card${stock.soldOut ? " is-sold-out" : ""}" href="${productUrl(product)}" aria-label="${name} detaylarını aç">
+                        <div class="catalog-media">
+                            ${image
+                                ? `<img src="${escapeHtml(image)}" alt="${name}" loading="lazy" decoding="async">`
+                                : '<div class="catalog-no-image">QUAORA</div>'}
+                            <span class="catalog-category-tag">${escapeHtml(product.categoryLabel)}</span>
+                            ${stock.soldOut ? '<span class="catalog-sold-out">Tükendi</span>' : ""}
+                        </div>
+                        <div class="catalog-info">
+                            <h2 class="catalog-name">${name}</h2>
+                            ${salePrice > 0 ? `
+                                <div class="catalog-price-row">
+                                    <p class="catalog-price">${money(salePrice)}</p>
+                                    ${originalPrice > salePrice ? `<span class="catalog-old-price">${money(originalPrice)}</span>` : ""}
+                                </div>
+                            ` : '<p class="catalog-detail-text">Detayları gör</p>'}
+                        </div>
+                    </a>
+                `;
+            }).join("");
+        };
+
+        const applyFilters = () => {
+            const search = el("searchInput").value.trim().toLocaleLowerCase("tr-TR");
+            const category = el("categorySelect").value;
+            const sort = el("sortSelect").value;
+
+            const filtered = allProducts.filter((product) => {
+                const searchable = `${product.name || ""} ${product.categoryLabel || ""}`.toLocaleLowerCase("tr-TR");
+                return (!search || searchable.includes(search))
+                    && (category === "all" || product.page === category);
+            });
+
+            filtered.sort((left, right) => {
+                if (sort === "newest") return createdAtValue(right.createdAt) - createdAtValue(left.createdAt);
+                if (sort === "price-asc") return Number(left.salePrice || left.price || 0) - Number(right.salePrice || right.price || 0);
+                if (sort === "price-desc") return Number(right.salePrice || right.price || 0) - Number(left.salePrice || left.price || 0);
+                const stockDifference = Number(stockInfo(left).soldOut) - Number(stockInfo(right).soldOut);
+                return stockDifference || createdAtValue(right.createdAt) - createdAtValue(left.createdAt);
+            });
+
+            renderProducts(filtered);
+        };
+
+        const renderCategoryOptions = () => {
+            const usedPages = new Set(allProducts.map((product) => product.page));
+            const categoryPages = new Map(COLLECTIONS.map((entry) => [entry.page, entry]));
+            Array.from(categoryPages.values())
+                .filter((entry) => usedPages.has(entry.page))
+                .sort((left, right) => left.label.localeCompare(right.label, "tr"))
+                .forEach((entry) => {
+                    const option = document.createElement("option");
+                    option.value = entry.page;
+                    option.textContent = entry.label;
+                    el("categorySelect").appendChild(option);
+                });
+        };
+
+        const loadProducts = async () => {
+            try {
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                const results = await Promise.allSettled(COLLECTIONS.map(async (entry) => {
+                    const snapshot = await getDocs(collection(db, entry.name));
+                    return snapshot.docs.map((productDoc) => ({
+                        id: productDoc.id,
+                        ...productDoc.data(),
+                        collectionName: entry.name,
+                        categoryLabel: entry.label,
+                        page: entry.page
+                    }));
+                }));
+
+                allProducts = results.flatMap((result) => result.status === "fulfilled" ? result.value : []);
+                if (!allProducts.length && results.every((result) => result.status === "rejected")) {
+                    throw new Error("Hiçbir ürün koleksiyonuna erişilemedi.");
+                }
+                const uniqueProducts = new Map();
+                allProducts.forEach((product) => uniqueProducts.set(`${product.collectionName}:${product.id}`, product));
+                allProducts = Array.from(uniqueProducts.values());
+
+                renderCategoryOptions();
+                applyFilters();
+            } catch (error) {
+                console.error("Tüm ürünler yüklenemedi:", error);
+                el("productCount").textContent = "0 ürün";
+                el("productGrid").innerHTML = '<div class="catalog-state">Ürünler şu anda yüklenemedi. Lütfen tekrar deneyin.</div>';
+            }
+        };
+
+        el("searchInput").addEventListener("input", applyFilters);
+        el("categorySelect").addEventListener("change", applyFilters);
+        el("sortSelect").addEventListener("change", applyFilters);
+
+        loadProducts();
+    </script>
+</body>
+</html>
