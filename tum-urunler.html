@@ -64,16 +64,32 @@
         }
 
         .catalog-intro {
-            min-height: 310px;
+            position: relative;
+            isolation: isolate;
+            min-height: 460px;
             display: flex;
             align-items: flex-end;
             padding: 66px max(20px, calc((100vw - 1400px) / 2));
-            background: var(--catalog-cream);
+            overflow: hidden;
+            background: #4f5655 url("image/seniseviom.jpeg") center 53% / cover no-repeat;
+            color: #fff;
+        }
+
+        .catalog-intro::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(90deg, rgba(17,17,17,.72) 0%, rgba(17,17,17,.35) 48%, rgba(17,17,17,.08) 100%);
+        }
+
+        .catalog-intro > div {
+            width: min(720px, 100%);
         }
 
         .catalog-eyebrow {
             margin: 0 0 17px;
-            color: var(--catalog-muted);
+            color: rgba(255,255,255,.8);
             font-size: 9px;
             font-weight: 700;
             letter-spacing: .22em;
@@ -91,7 +107,7 @@
         .catalog-subtitle {
             max-width: 540px;
             margin: 24px 0 0;
-            color: var(--catalog-muted);
+            color: rgba(255,255,255,.86);
             font-size: 13px;
             line-height: 1.7;
         }
@@ -102,46 +118,25 @@
             padding: 34px 20px 80px;
         }
 
-        .catalog-toolbar {
-            display: grid;
-            grid-template-columns: minmax(220px, 1fr) 220px 220px auto;
-            gap: 10px;
-            align-items: end;
+        .catalog-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
             padding-bottom: 22px;
             border-bottom: 1px solid var(--catalog-line);
         }
 
-        .catalog-field label {
-            display: block;
-            margin-bottom: 8px;
+        .catalog-summary-label {
+            margin: 0;
             color: var(--catalog-muted);
             font-size: 8px;
             font-weight: 800;
-            letter-spacing: .17em;
+            letter-spacing: .2em;
             text-transform: uppercase;
         }
 
-        .catalog-field input,
-        .catalog-field select {
-            width: 100%;
-            height: 45px;
-            padding: 0 12px;
-            border: 1px solid var(--catalog-line);
-            border-radius: 0;
-            outline: 0;
-            background: #fff;
-            color: var(--catalog-ink);
-            font-size: 11px;
-        }
-
-        .catalog-field input:focus,
-        .catalog-field select:focus { border-color: var(--catalog-ink); }
-
         .catalog-count {
-            min-height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
             color: var(--catalog-muted);
             font-size: 9px;
             font-weight: 700;
@@ -298,8 +293,6 @@
         }
 
         @media (max-width: 980px) {
-            .catalog-toolbar { grid-template-columns: 1fr 1fr; }
-            .catalog-count { justify-content: flex-start; }
             .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
 
@@ -314,17 +307,16 @@
             .catalog-cart { font-size: 8px; }
 
             .catalog-intro {
-                min-height: 245px;
-                padding: 48px 16px;
+                min-height: 360px;
+                padding: 44px 16px;
+                background-position: 58% center;
             }
 
             .catalog-title { font-size: clamp(48px, 18vw, 70px); }
             .catalog-subtitle { font-size: 12px; }
 
             .catalog-main { padding: 24px 10px 60px; }
-            .catalog-toolbar { grid-template-columns: 1fr 1fr; gap: 9px; }
-            .catalog-field-search { grid-column: 1 / -1; }
-            .catalog-count { min-height: 26px; grid-column: 1 / -1; }
+            .catalog-summary { padding: 0 2px 17px; }
 
             .catalog-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -354,26 +346,8 @@
     </section>
 
     <main class="catalog-main">
-        <section class="catalog-toolbar" aria-label="Ürün filtreleri">
-            <div class="catalog-field catalog-field-search">
-                <label for="searchInput">Ürün ara</label>
-                <input id="searchInput" type="search" placeholder="İsim veya koleksiyon" autocomplete="off">
-            </div>
-            <div class="catalog-field">
-                <label for="categorySelect">Kategori</label>
-                <select id="categorySelect">
-                    <option value="all">Tüm kategoriler</option>
-                </select>
-            </div>
-            <div class="catalog-field">
-                <label for="sortSelect">Sırala</label>
-                <select id="sortSelect">
-                    <option value="recommended">Önerilen</option>
-                    <option value="newest">En yeni</option>
-                    <option value="price-asc">Fiyat: düşükten yükseğe</option>
-                    <option value="price-desc">Fiyat: yüksekten düşüğe</option>
-                </select>
-            </div>
+        <section class="catalog-summary" aria-label="Ürün listesi özeti">
+            <p class="catalog-summary-label">Bütün seçki</p>
             <div id="productCount" class="catalog-count" aria-live="polite">Ürünler yükleniyor</div>
         </section>
 
@@ -511,40 +485,11 @@
             }).join("");
         };
 
-        const applyFilters = () => {
-            const search = el("searchInput").value.trim().toLocaleLowerCase("tr-TR");
-            const category = el("categorySelect").value;
-            const sort = el("sortSelect").value;
-
-            const filtered = allProducts.filter((product) => {
-                const searchable = `${product.name || ""} ${product.categoryLabel || ""}`.toLocaleLowerCase("tr-TR");
-                return (!search || searchable.includes(search))
-                    && (category === "all" || product.page === category);
-            });
-
-            filtered.sort((left, right) => {
-                if (sort === "newest") return createdAtValue(right.createdAt) - createdAtValue(left.createdAt);
-                if (sort === "price-asc") return Number(left.salePrice || left.price || 0) - Number(right.salePrice || right.price || 0);
-                if (sort === "price-desc") return Number(right.salePrice || right.price || 0) - Number(left.salePrice || left.price || 0);
+        const sortProducts = (products) => {
+            return [...products].sort((left, right) => {
                 const stockDifference = Number(stockInfo(left).soldOut) - Number(stockInfo(right).soldOut);
                 return stockDifference || createdAtValue(right.createdAt) - createdAtValue(left.createdAt);
             });
-
-            renderProducts(filtered);
-        };
-
-        const renderCategoryOptions = () => {
-            const usedPages = new Set(allProducts.map((product) => product.page));
-            const categoryPages = new Map(COLLECTIONS.map((entry) => [entry.page, entry]));
-            Array.from(categoryPages.values())
-                .filter((entry) => usedPages.has(entry.page))
-                .sort((left, right) => left.label.localeCompare(right.label, "tr"))
-                .forEach((entry) => {
-                    const option = document.createElement("option");
-                    option.value = entry.page;
-                    option.textContent = entry.label;
-                    el("categorySelect").appendChild(option);
-                });
         };
 
         const loadProducts = async () => {
@@ -570,18 +515,13 @@
                 allProducts.forEach((product) => uniqueProducts.set(`${product.collectionName}:${product.id}`, product));
                 allProducts = Array.from(uniqueProducts.values());
 
-                renderCategoryOptions();
-                applyFilters();
+                renderProducts(sortProducts(allProducts));
             } catch (error) {
                 console.error("Tüm ürünler yüklenemedi:", error);
                 el("productCount").textContent = "0 ürün";
                 el("productGrid").innerHTML = '<div class="catalog-state">Ürünler şu anda yüklenemedi. Lütfen tekrar deneyin.</div>';
             }
         };
-
-        el("searchInput").addEventListener("input", applyFilters);
-        el("categorySelect").addEventListener("change", applyFilters);
-        el("sortSelect").addEventListener("change", applyFilters);
 
         loadProducts();
     </script>

@@ -406,19 +406,24 @@
             color: rgba(255,250,242,.76) !important;
         }
 
-        #homeHeroButton {
-            border: none;
-            border-radius: 999px;
-            background: #fffaf2 !important;
-            color: var(--brown) !important;
-            padding: 15px 20px !important;
-            box-shadow: 0 18px 34px rgba(0,0,0,.16);
+        body #homeHeroButton {
+            min-height: 52px;
+            padding: 16px 25px !important;
+            border: 2px solid #fff !important;
+            border-radius: 2px !important;
+            background: #fff !important;
+            color: #111 !important;
+            box-shadow: 0 16px 38px rgba(0,0,0,.28) !important;
+            font-size: 11px !important;
+            letter-spacing: .16em !important;
             transition: .22s ease;
         }
 
-        #homeHeroButton:hover {
-            transform: translateY(-2px);
-            background: #fff !important;
+        body #homeHeroButton:hover {
+            transform: translateY(-3px);
+            border-color: #111 !important;
+            background: #111 !important;
+            color: #fff !important;
         }
 
         .drop-badge{
@@ -799,18 +804,7 @@ window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
                         <a href="pie.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> pie</a>
                     </div>
                 </div>
-                <div class="flex flex-col">
-                    <button onclick="toggleMenuSection('swimItems', 'swimArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
-                        Swimsuits <span id="swimArrow" class="text-[10px] transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="swimItems" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out flex flex-col pl-4 space-y-2 border-l border-[#964b00]/10 ml-1">
-                        <a href="mayokini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pt-3 flex items-center gap-2"><span>✧</span> mayokini üstleri</a>
-                        <a href="mayokini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> mayokini altları</a>
-                        <a href="bikini-ustleri.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini üstleri</a>
-                        <a href="bikini-altlari.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic flex items-center gap-2"><span>✧</span> bikini altları</a>
-                        <a href="mayolar.html" class="text-sm font-semibold text-gray-700 hover:text-[#964b00] uppercase tracking-[0.15em] italic pb-1 flex items-center gap-2"><span>✧</span> mayolar</a>
-                    </div>
-                </div>
+                <a href="tum-urunler.html" class="text-lg font-bold text-gray-800 hover:text-[#964b00] hover:translate-x-2 transition-all uppercase tracking-widest">B&uuml;t&uuml;n &Uuml;r&uuml;nler</a>
                 <div class="flex flex-col">
                     <button onclick="toggleMenuSection('topsItems', 'topsArrow')" class="flex justify-between items-center text-lg font-bold text-gray-800 hover:text-[#964b00] uppercase tracking-widest focus:outline-none">
                         accessories <span id="topsArrow" class="text-[10px] transition-transform duration-300">▼</span>
@@ -950,7 +944,7 @@ window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
         <h2 id="homeHeroTitle" class="home-hero-title text-white text-5xl md:text-7xl lg:text-[7.6rem] leading-[0.82] mb-6">QUALITY &amp; AURA</h2>
         <p id="homeHeroSubtitle" class="max-w-xl text-white/90 text-sm md:text-base font-semibold leading-7 md:leading-8 mb-4">Denizden ilham alan, giyildi&#287;inde kendini belli eden par&#231;alar.</p>
         <p id="homeHeroNote" class="max-w-lg text-white/75 text-[11px] md:text-xs font-bold uppercase tracking-[0.22em] leading-6 mb-8">Yeni sezon se&#231;kilerini ke&#351;fet, sana en yak&#305;n QUAORA par&#231;as&#305;n&#305; bul.</p>
-        <button id="homeHeroButton" onclick="window.location.href='tum-urunler.html'" class="bg-[#FAE29C] text-[#964b00] px-6 py-3 rounded-full font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-white hover:text-black hover:-translate-y-0.5 transition-all active:scale-95">&Uuml;r&uuml;nleri &#304;ncele</button>
+        <button id="homeHeroButton" onclick="window.location.href='tum-urunler.html'" class="bg-[#FAE29C] text-[#964b00] px-6 py-3 rounded-full font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-white hover:text-black hover:-translate-y-0.5 transition-all active:scale-95">B&uuml;t&uuml;n &Uuml;r&uuml;nleri G&ouml;r</button>
     </div>
     </div>
 </section>
@@ -1056,7 +1050,7 @@ window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
         title: "QUALITY & AURA",
         subtitle: "Denizden ilham alan, giyildi\u011finde kendini belli eden par\u00e7alar.",
         note: "Yeni sezon se\u00e7kilerini ke\u015ffet, sana en yak\u0131n QUAORA par\u00e7as\u0131n\u0131 bul.",
-        buttonText: "\u00dcr\u00fcnleri \u0130ncele"
+        buttonText: "B\u00fct\u00fcn \u00dcr\u00fcnleri G\u00f6r"
     };
     const RANDOM_PRODUCT_PAGES = [
         "yeni-gelenler.html",
@@ -1135,6 +1129,9 @@ window.__quaoraHomeLoaderSafety = window.setTimeout(function () {
 
     const setHeroText = (settings) => {
         const data = { ...HOME_HERO_DEFAULTS, ...(settings || {}) };
+        if (["\u00dcr\u00fcnleri \u0130ncele", "\u00dcr\u00fcnleri G\u00f6r"].includes(data.buttonText)) {
+            data.buttonText = HOME_HERO_DEFAULTS.buttonText;
+        }
         setText('homeHeroEyebrow', encodeURIComponent(data.eyebrow));
         setText('homeHeroTitle', encodeURIComponent(data.title));
         setText('homeHeroSubtitle', encodeURIComponent(data.subtitle));
