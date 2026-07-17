@@ -1,9 +1,10 @@
-const CACHE_NAME = "quaora-static-v10";
+const CACHE_NAME = "quaora-static-v11";
 const STATIC_ASSETS = [
   "/quaora-tailwind.css",
   "/quaora-responsive.css?v=20260714-2",
   "/quaora-performance.js",
   "/quaora-image-utils.js",
+  "/quaora-preorder.js",
   "/quaora-product-links.js?v=20260715-1",
   "/quaora-discounts.js"
 ];

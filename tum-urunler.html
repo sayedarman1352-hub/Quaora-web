@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script src="quaora-performance.js" defer></script>
+    <script src="quaora-preorder.js" defer></script>
     <style>
         :root {
             --catalog-ink: #111111;
@@ -216,6 +217,29 @@
             font-weight: 800;
             letter-spacing: .16em;
             text-transform: uppercase;
+        }
+
+        .catalog-preorder {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            z-index: 4;
+            transform: translateX(-50%);
+            min-width: max-content;
+            padding: 8px 10px;
+            border: 1px solid rgba(255, 255, 255, .75);
+            background: rgba(17, 17, 17, .92);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .13em;
+        }
+
+        .catalog-preorder-date {
+            margin: 7px 0 0;
+            color: var(--catalog-muted);
+            font-size: 9px;
+            line-height: 1.4;
         }
 
         .catalog-info { padding: 13px 2px 0; }
@@ -469,10 +493,12 @@
                                 ? `<img src="${escapeHtml(image)}" alt="${name}" loading="lazy" decoding="async">`
                                 : '<div class="catalog-no-image">QUAORA</div>'}
                             <span class="catalog-category-tag">${escapeHtml(product.categoryLabel)}</span>
+                            ${window.QuaoraPreorder.isPreorder(product) ? '<span class="catalog-preorder">ÖNSİPARİŞ</span>' : ""}
                             ${stock.soldOut ? '<span class="catalog-sold-out">Tükendi</span>' : ""}
                         </div>
                         <div class="catalog-info">
                             <h2 class="catalog-name">${name}</h2>
+                            ${window.QuaoraPreorder.isPreorder(product) ? `<p class="catalog-preorder-date">Tahmini teslim: ${escapeHtml(window.QuaoraPreorder.formatDate(product.preorderEstimatedDate))}</p>` : ""}
                             ${salePrice > 0 ? `
                                 <div class="catalog-price-row">
                                     <p class="catalog-price">${money(salePrice)}</p>

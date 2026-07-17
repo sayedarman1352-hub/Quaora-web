@@ -29,6 +29,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script src="quaora-performance.js" defer></script>
+    <script src="quaora-preorder.js" defer></script>
     <style>
         :root {
             --detail-ink: #111111;
@@ -284,6 +285,38 @@
             font-weight: 700;
             letter-spacing: .1em;
             text-transform: uppercase;
+        }
+
+        .detail-preorder-badge {
+            display: inline-flex;
+            width: fit-content;
+            margin: 0 0 18px;
+            padding: 8px 11px;
+            border: 1px solid var(--detail-ink);
+            background: var(--detail-ink);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .15em;
+        }
+
+        .detail-preorder-notice {
+            margin: 26px 0 0;
+            padding: 18px;
+            border: 1px solid var(--detail-ink);
+            background: var(--detail-cream);
+        }
+
+        .detail-preorder-notice strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 11px;
+            letter-spacing: .12em;
+        }
+
+        .detail-preorder-notice span {
+            color: var(--detail-muted);
+            font-size: 12px;
         }
 
         .detail-description {
@@ -642,6 +675,7 @@
             </div>
 
             <div class="detail-info-wrap">
+                <span id="preorderBadge" class="detail-preorder-badge" hidden>ÖNSİPARİŞ</span>
                 <p id="categoryLabel" class="detail-kicker">QUAORA COLLECTION</p>
                 <div class="detail-title-row">
                     <h1 id="productName" class="detail-title"></h1>
@@ -653,6 +687,11 @@
                     <span id="originalPrice" class="detail-old-price" hidden></span>
                 </div>
                 <p id="stockText" class="detail-stock"></p>
+
+                <div id="preorderNotice" class="detail-preorder-notice" hidden>
+                    <strong>BU ÜRÜN ÖNSİPARİŞTEDİR</strong>
+                    <span id="preorderDateText"></span>
+                </div>
 
                 <section class="detail-description">
                     <span class="detail-label">Ürün hakkında</span>
@@ -837,15 +876,16 @@
             if (product.material) schema.material = product.material;
             if (product.color) schema.color = product.color;
             if (salePrice > 0) {
+                const preorder = window.QuaoraPreorder.isPreorder(product);
                 schema.offers = {
                     "@type": "Offer",
                     "url": canonicalUrl,
                     "priceCurrency": "TRY",
                     "price": salePrice,
                     "itemCondition": "https://schema.org/NewCondition",
-                    "availability": totalStock > 0
-                        ? "https://schema.org/InStock"
-                        : "https://schema.org/OutOfStock",
+                    "availability": preorder
+                        ? "https://schema.org/PreOrder"
+                        : (totalStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"),
                     "seller": {
                         "@type": "OnlineStore",
                         "@id": "https://www.quaora.com.tr/#store",
@@ -901,11 +941,16 @@
             const discount = Number(product.discount || (originalPrice > salePrice && salePrice > 0
                 ? Math.round(((originalPrice - salePrice) / originalPrice) * 100)
                 : 0));
+            const preorder = window.QuaoraPreorder.isPreorder(product);
+            const preorderDate = window.QuaoraPreorder.formatDate(product.preorderEstimatedDate || product.estimatedDate);
 
             document.title = `${product.name || "Ürün"} | QUAORA`;
             el("categoryLabel").textContent = `QUAORA / ${catalogEntry.label}`;
             el("productName").textContent = product.name || "QUAORA Ürün";
-            el("productDescription").textContent = product.description || "Bu ürün için henüz ayrıntılı açıklama eklenmemiştir.";
+            el("productDescription").textContent = window.QuaoraPreorder.descriptionText(product);
+            el("preorderBadge").hidden = !preorder;
+            el("preorderNotice").hidden = !preorder;
+            el("preorderDateText").textContent = preorder ? `Tahmini teslim tarihi: ${preorderDate}` : "";
             el("salePrice").textContent = money(salePrice);
             el("priceRow").hidden = salePrice <= 0;
             el("originalPrice").hidden = !(originalPrice > salePrice && salePrice > 0);
@@ -927,7 +972,10 @@
                 el("addToCartButton").disabled = true;
                 el("addToCartButton").textContent = "Tükendi";
             } else {
-                el("stockText").textContent = totalStock < 5 ? `Son ${totalStock} adet` : "Stokta";
+                el("stockText").textContent = preorder
+                    ? `Önsiparişe açık · Tahmini ${preorderDate}`
+                    : (totalStock < 5 ? `Son ${totalStock} adet` : "Stokta");
+                el("addToCartButton").textContent = preorder ? "Önsipariş Ver" : "Sepete Ekle";
             }
 
             el("loadingState").hidden = true;
@@ -958,6 +1006,7 @@
                     <div>
                         <h3>${escapeHtml(item.name || "Ürün")}</h3>
                         <p>Beden: ${escapeHtml(item.size || "-")}</p>
+                        ${item.isPreorder ? `<p>Önsipariş · Tahmini ${escapeHtml(window.QuaoraPreorder.formatDate(item.preorderEstimatedDate))}</p>` : ""}
                         <p>${money(Number(item.price || 0) * Number(item.qty || 1))}</p>
                         <div class="cart-line-controls">
                             <button type="button" data-cart-action="decrease" data-cart-index="${index}" aria-label="Adedi azalt">&minus;</button>
@@ -1013,7 +1062,9 @@
                     collectionName,
                     stock,
                     paymentLink: product.paymentLink || product.paymentUrl || product.payLink || "",
-                    image: Array.isArray(product.images) && product.images[0] ? product.images[0] : ""
+                    image: Array.isArray(product.images) && product.images[0] ? product.images[0] : "",
+                    isPreorder: window.QuaoraPreorder.isPreorder(product),
+                    preorderEstimatedDate: product.preorderEstimatedDate || ""
                 });
             }
 

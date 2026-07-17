@@ -46,6 +46,7 @@
 <link rel="dns-prefetch" href="//www.paytr.com">
 <script src="quaora-performance.js" defer></script>
   <script src="quaora-image-utils.js" defer></script>
+  <script src="quaora-preorder.js" defer></script>
 <script src="quaora-product-links.js?v=20260715-1" defer></script>
     <link rel="stylesheet" href="quaora-responsive.css?v=20260714-2">
 </head>
@@ -278,6 +279,7 @@
         if (!mount || document.getElementById('productAdminModal')) return;
         const template = await getQuaoraAdminTemplate();
         if (template.modal) mount.innerHTML = qaDecode(template.modal);
+        window.QuaoraPreorder?.mountAdminFields();
     };
 
     window.selectedSizes = {};
@@ -383,7 +385,7 @@
         }
         
         document.getElementById('descModalTitle').innerText = product.name;
-        document.getElementById('descModalText').innerText = product.description || "Bu ürün için detaylı bir açıklama eklenmemiştir.";
+        document.getElementById('descModalText').innerText = window.QuaoraPreorder.descriptionText(product);
         
         descModal.classList.remove('opacity-0', 'pointer-events-none');
         document.getElementById('descModalContent').classList.remove('scale-95');
@@ -561,7 +563,9 @@
             qty: 1,
             collectionName: COLLECTION_NAME,
             paymentLink: product.paymentLink || product.paymentUrl || product.payLink || '',
-            image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''
+            image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '',
+            isPreorder: window.QuaoraPreorder.isPreorder(product),
+            preorderEstimatedDate: product.preorderEstimatedDate || ''
         }];
 
         window.updateCart();
@@ -835,6 +839,7 @@
 
     window.openProductAdmin = async () => {
         await window.ensureProductAdminModal?.();
+        window.QuaoraPreorder?.resetAdminFields();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         window.currentEditId = null;
         document.getElementById('modalTitle').innerText = qaDecode("WUVOxLAgT1VUTEVUIMOcUsOcTsOc");
@@ -884,8 +889,10 @@
             document.getElementById('saveBtnText').innerText = "YÜKLENİYOR...";
             currentImagesBase64 = await window.QuaoraImageUtils.fitDataUrlArray(currentImagesBase64);
             window.renderAdminImagePreviews();
+            const preorderData = window.QuaoraPreorder.readAdminFields();
 
             const productData = {
+                ...preorderData,
                 name: name,
                 description: desc,
                 paymentLink: paymentLink,
@@ -920,9 +927,11 @@
 
     window.editProduct = async (id) => {
         await window.ensureProductAdminModal?.();
+        window.QuaoraPreorder?.resetAdminFields();
         if (!isAdmin) return alert('Bu işlem sadece admin tarafından yapılabilir.');
         const p = window.allProducts.find(item => item.id === id);
         if (!p) return;
+        window.QuaoraPreorder?.fillAdminFields(p);
         
         window.currentEditId = id; 
         document.getElementById('modalTitle').innerText = qaDecode("w5xSw5xOw5wgRMOcWkVOTEU=");
@@ -965,6 +974,7 @@
                 ...doc.data()
             }));
             renderProducts(window.allProducts);
+            window.QuaoraPreorder?.decorateProductCards(window.allProducts);
             if (window.location.hash) {
                 const target = document.querySelector(window.location.hash);
                 if (target) {
@@ -1017,6 +1027,7 @@
 
         if(window.allProducts && window.allProducts.length > 0) {
             renderProducts(window.allProducts);
+            window.QuaoraPreorder?.decorateProductCards(window.allProducts);
         }
     });
 
@@ -1037,6 +1048,7 @@
             }
         }
         renderProducts(window.allProducts);
+            window.QuaoraPreorder?.decorateProductCards(window.allProducts);
     };
 
     updateCart();

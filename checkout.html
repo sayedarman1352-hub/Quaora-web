@@ -14,6 +14,7 @@
 <link rel="dns-prefetch" href="//firestore.googleapis.com">
 <link rel="dns-prefetch" href="//www.paytr.com">
 <script src="quaora-performance.js" defer></script>
+<script src="quaora-preorder.js" defer></script>
 </head>
 <body class="min-h-screen bg-[#FAE29C] text-[#964b00] p-4 md:p-8">
   <main class="quaora-fade-up max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
@@ -141,6 +142,7 @@
                 <div>
                   <h2 class="font-black uppercase text-sm tracking-widest">${item.name || 'Urun'}</h2>
                   <p class="text-xs font-bold text-gray-500 mt-1">${item.size ? `Beden: ${item.size}` : 'Tek urun'} | Adet: ${item.qty || 1}</p>
+                  ${item.isPreorder ? `<p class="mt-2 text-[10px] font-black uppercase tracking-widest text-black">Önsipariş · Tahmini ${escapeHtml(window.QuaoraPreorder.formatDate(item.preorderEstimatedDate))}</p>` : ''}
                 </div>
                 <p class="font-black">${money(Number(item.price || 0) * Number(item.qty || 1))}</p>
               </div>
@@ -335,7 +337,9 @@
           image: item.image || item.imageUrl || (Array.isArray(item.images) ? item.images[0] : "") || "",
           size: item.size || "",
           qty: Number(item.qty || 1),
-          price: Number(item.price || 0)
+          price: Number(item.price || 0),
+          isPreorder: item.isPreorder === true,
+          preorderEstimatedDate: item.preorderEstimatedDate || ""
         }));
 
         const orderPayload = {
@@ -358,6 +362,7 @@
             district: customer.district
           },
           items: itemsPayload,
+          containsPreorder: itemsPayload.some(item => item.isPreorder),
           subtotal: sub,
           discount,
           promoCode: promo?.code || "",
