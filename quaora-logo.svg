@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Quaora</title>
+  <desc id="desc">Quaora marka logosu</desc>
+  <rect width="512" height="512" fill="#faf6ee"/>
+  <rect x="24" y="24" width="464" height="464" fill="none" stroke="#111111" stroke-width="8"/>
+  <text x="256" y="335" fill="#111111" font-family="Georgia, 'Times New Roman', serif" font-size="270" text-anchor="middle">Q</text>
+  <path d="M154 402h204" fill="none" stroke="#b98b48" stroke-width="10"/>
+</svg>

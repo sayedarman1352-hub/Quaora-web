@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /checkout.html
+Disallow: /muhasebe.html
+Disallow: /siparisler.html
+Disallow: /siparis-detay.html
+
+Sitemap: https://www.quaora.com.tr/sitemap.xml
