@@ -40,6 +40,7 @@
 <link rel="dns-prefetch" href="//firestore.googleapis.com">
 <link rel="dns-prefetch" href="//www.paytr.com">
 <script src="quaora-performance.js" defer></script>
+  <script src="quaora-image-utils.js" defer></script>
 <script src="quaora-product-links.js?v=20260715-1" defer></script>
 </head>
 <body class="min-h-screen flex flex-col relative">
@@ -725,6 +726,9 @@
 
         try {
             document.getElementById('saveBtnText').innerText = qaDecode("WcOcS0xFTsSwWU9SLi4u");
+            currentImagesBase64 = await window.QuaoraImageUtils.fitDataUrlArray(currentImagesBase64);
+            window.renderAdminImagePreviews();
+
             const productData = {
                 name: name,
                 description: desc,

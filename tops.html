@@ -54,6 +54,7 @@
 <link rel="dns-prefetch" href="//firestore.googleapis.com">
 <link rel="dns-prefetch" href="//www.paytr.com">
 <script src="quaora-performance.js" defer></script>
+  <script src="quaora-image-utils.js" defer></script>
 <script src="quaora-product-links.js?v=20260715-1" defer></script>
     <link rel="stylesheet" href="quaora-responsive.css?v=20260714-2">
 </head>
@@ -941,6 +942,9 @@
 
         try {
             document.getElementById('saveBtnText').innerText = "YÜKLENİYOR...";
+
+            currentImagesBase64 = await window.QuaoraImageUtils.fitDataUrlArray(currentImagesBase64);
+            window.renderAdminImagePreviews();
 
             const productData = {
                 name,
