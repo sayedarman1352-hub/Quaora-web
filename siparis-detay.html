@@ -24,7 +24,7 @@
 
     <section id="lockedState" class="mt-8 hidden rounded-lg border border-[#e5e0d8] bg-white p-6 shadow-sm">
       <h2 class="text-xl font-black uppercase tracking-widest">Admin girişi gerekiyor</h2>
-      <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece quaoratr@gmail.com hesabı tarafından görüntülenebilir.</p>
+      <p class="mt-2 text-sm font-bold text-gray-500">Bu sayfa sadece yetkili admin hesapları tarafından görüntülenebilir.</p>
       <a href="index.html" class="mt-5 inline-flex rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Ana Sayfaya Dön</a>
     </section>
 
@@ -36,6 +36,31 @@
           <p id="adminPreparedText" class="mt-1 text-xs font-bold text-gray-500">Sipariş bilgileri henüz alınmadı.</p>
         </div>
         <button id="preparedBtn" type="button" class="rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#2f2418]">Bilgileri aldım</button>
+      </div>
+
+      <div class="rounded-lg border border-[#e5e0d8] bg-white p-4 shadow-sm">
+        <div class="flex flex-col gap-2 border-b border-[#e5e0d8] pb-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 class="text-sm font-black uppercase tracking-widest text-[#2f2418]">E-posta ve Fatura</h2>
+            <p id="invoiceStatusText" class="mt-1 text-xs font-bold text-gray-500">Gönderim bilgileri yükleniyor.</p>
+          </div>
+          <span id="invoiceBadge" class="w-fit border border-amber-300 bg-amber-50 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-amber-800">Fatura bekliyor</span>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <label for="invoicePdf" class="mb-2 block text-[10px] font-black uppercase tracking-[0.18em] text-[#7b6b5a]">GİB / e-Arşiv PDF faturası</label>
+            <input id="invoicePdf" type="file" accept="application/pdf,.pdf" class="block w-full border border-[#d8d0c5] bg-white p-3 text-xs font-bold text-[#2f2418] file:mr-3 file:border-0 file:bg-[#f4efe7] file:px-3 file:py-2 file:text-[10px] file:font-black file:uppercase file:tracking-widest">
+            <p class="mt-2 text-[10px] font-bold text-gray-500">En fazla 3 MB. PDF, müşterinin siparişte verdiği e-posta adresine ek olarak gönderilir.</p>
+          </div>
+          <button id="sendInvoiceBtn" type="button" class="min-h-12 bg-[#111111] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#7a4a22] disabled:cursor-not-allowed disabled:opacity-50">Faturayı E-postala</button>
+        </div>
+
+        <div class="mt-4 flex flex-col gap-3 border-t border-[#e5e0d8] pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p id="paymentEmailText" class="text-xs font-bold text-gray-500">Ödeme onay e-postası bekleniyor.</p>
+          <button id="resendConfirmationBtn" type="button" class="border border-[#7a4a22] bg-white px-4 py-3 text-[10px] font-black uppercase tracking-widest text-[#7a4a22] transition-colors hover:bg-[#f4efe7] disabled:cursor-not-allowed disabled:opacity-50">Onay E-postasını Gönder</button>
+        </div>
+        <p id="emailActionStatus" class="mt-4 hidden border p-3 text-xs font-bold"></p>
       </div>
     </section>
   </main>
@@ -61,6 +86,8 @@
     const orderId = new URLSearchParams(window.location.search).get("id");
     let activeAdminEmail = "";
     let currentOrder = null;
+    let emailRequestPending = false;
+    const ADMIN_EMAILS = new Set(["quaoratr@gmail.com", "sayedarman1352@gmail.com", "250508501@st.atlas.edu.tr"]);
 
     const money = (value) => `₺${Number(value || 0).toLocaleString("tr-TR")}`;
     const escapeHtml = (value) => String(value ?? "")
@@ -117,6 +144,117 @@
         : "rounded-lg bg-[#7a4a22] px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-[#2f2418]";
     };
 
+    const isPaidOrder = (order) => order?.paymentStatus === "success" || order?.status === "Ödeme onaylandı" || order?.stockProcessed === true;
+
+    const updateInvoiceUi = () => {
+      if (!currentOrder) return;
+      const paid = isPaidOrder(currentOrder);
+      const invoiceSent = currentOrder.invoiceSent === true;
+      const confirmationSent = currentOrder.paymentConfirmationEmailSent === true;
+      const invoiceBadge = el("invoiceBadge");
+      invoiceBadge.className = invoiceSent
+        ? "w-fit border border-[#079455] bg-[#d1fadf] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-[#064e3b]"
+        : "w-fit border border-amber-300 bg-amber-50 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-amber-800";
+      invoiceBadge.textContent = invoiceSent ? "Fatura gönderildi" : "Fatura bekliyor";
+
+      const invoiceRecipient = currentOrder.invoiceEmailRecipient || getCustomer(currentOrder).email || "müşteri e-postası";
+      el("invoiceStatusText").textContent = invoiceSent
+        ? `${invoiceRecipient} adresine ${new Date(Number(currentOrder.invoiceSentAt || 0)).toLocaleString("tr-TR")} tarihinde gönderildi.`
+        : paid
+          ? `PDF fatura ${invoiceRecipient} adresine gönderilecek.`
+          : "Fatura göndermek için önce ödemenin onaylanması gerekiyor.";
+
+      el("paymentEmailText").textContent = confirmationSent
+        ? `Ödeme onayı ${currentOrder.paymentConfirmationEmailRecipient || getCustomer(currentOrder).email} adresine gönderildi.`
+        : currentOrder.paymentConfirmationEmailStatus === "failed"
+          ? `Otomatik onay e-postası gönderilemedi: ${currentOrder.paymentConfirmationEmailError || "Bilinmeyen hata"}`
+          : "Ödeme onay e-postası henüz gönderilmedi.";
+
+      el("invoicePdf").disabled = !paid || emailRequestPending;
+      el("sendInvoiceBtn").disabled = !paid || emailRequestPending;
+      el("resendConfirmationBtn").disabled = !paid || emailRequestPending;
+      el("sendInvoiceBtn").textContent = emailRequestPending ? "Gönderiliyor..." : (invoiceSent ? "Faturayı Tekrar E-postala" : "Faturayı E-postala");
+      el("resendConfirmationBtn").textContent = emailRequestPending ? "Bekleyin..." : (confirmationSent ? "Onay E-postasını Tekrar Gönder" : "Onay E-postasını Gönder");
+    };
+
+    const setEmailActionStatus = (message, type = "info") => {
+      const status = el("emailActionStatus");
+      status.classList.remove("hidden", "border-red-200", "bg-red-50", "text-red-700", "border-[#079455]", "bg-[#d1fadf]", "text-[#064e3b]");
+      status.classList.add(...(type === "error"
+        ? ["border-red-200", "bg-red-50", "text-red-700"]
+        : ["border-[#079455]", "bg-[#d1fadf]", "text-[#064e3b]"]));
+      status.textContent = message;
+    };
+
+    const fileToDataUrl = (file) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(new Error("PDF dosyası okunamadı."));
+      reader.readAsDataURL(file);
+    });
+
+    const sendOrderEmail = async (mode) => {
+      if (!currentOrder || emailRequestPending) return;
+      const user = auth.currentUser;
+      if (!user || !ADMIN_EMAILS.has(String(user.email || "").toLowerCase())) return;
+
+      const payload = { orderId, mode };
+      let invoiceFile = null;
+      if (mode === "invoice") {
+        invoiceFile = el("invoicePdf").files?.[0];
+        if (!invoiceFile) return setEmailActionStatus("Önce GİB veya muhasebe sisteminden aldığınız PDF faturayı seçin.", "error");
+        if (invoiceFile.type !== "application/pdf" && !invoiceFile.name.toLowerCase().endsWith(".pdf")) {
+          return setEmailActionStatus("Yalnızca PDF faturası yükleyebilirsiniz.", "error");
+        }
+        if (invoiceFile.size <= 0 || invoiceFile.size > 3 * 1024 * 1024) {
+          return setEmailActionStatus("PDF dosyası en fazla 3 MB olabilir.", "error");
+        }
+      }
+
+      emailRequestPending = true;
+      updateInvoiceUi();
+      setEmailActionStatus(mode === "invoice" ? "Fatura e-posta ile gönderiliyor..." : "Ödeme onay e-postası gönderiliyor...");
+
+      try {
+        if (invoiceFile) {
+          payload.fileName = invoiceFile.name;
+          payload.pdfBase64 = await fileToDataUrl(invoiceFile);
+        }
+        const token = await user.getIdToken();
+        const response = await fetch("/api/send-order-email", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || data.status !== "success") throw new Error(data.reason || "E-posta gönderilemedi.");
+
+        if (mode === "invoice") {
+          currentOrder.invoiceSent = true;
+          currentOrder.invoiceSentAt = data.sentAt;
+          currentOrder.invoiceEmailRecipient = data.recipient;
+          currentOrder.invoiceFileName = payload.fileName;
+          el("invoicePdf").value = "";
+          setEmailActionStatus(`Fatura ${data.recipient} adresine gönderildi.`);
+        } else {
+          currentOrder.paymentConfirmationEmailSent = true;
+          currentOrder.paymentConfirmationEmailStatus = "sent";
+          currentOrder.paymentConfirmationEmailSentAt = data.sentAt;
+          currentOrder.paymentConfirmationEmailRecipient = data.recipient;
+          setEmailActionStatus(`Ödeme onayı ${data.recipient} adresine gönderildi.`);
+        }
+      } catch (error) {
+        console.error(error);
+        setEmailActionStatus(error.message || "E-posta gönderilemedi.", "error");
+      } finally {
+        emailRequestPending = false;
+        updateInvoiceUi();
+      }
+    };
+
     const renderOrder = () => {
       const order = currentOrder;
       const customer = getCustomer(order);
@@ -166,6 +304,7 @@
         </div>
       `;
       updatePreparedUi();
+      updateInvoiceUi();
     };
 
     const setPrepared = async () => {
@@ -210,9 +349,11 @@
     };
 
     el("preparedBtn")?.addEventListener("click", setPrepared);
+    el("sendInvoiceBtn")?.addEventListener("click", () => sendOrderEmail("invoice"));
+    el("resendConfirmationBtn")?.addEventListener("click", () => sendOrderEmail("confirmation"));
 
     onAuthStateChanged(auth, async (user) => {
-      const isAdmin = user?.email?.toLowerCase() === "quaoratr@gmail.com";
+      const isAdmin = ADMIN_EMAILS.has(user?.email?.toLowerCase() || "");
       activeAdminEmail = isAdmin ? user.email : "";
       el("lockedState").classList.toggle("hidden", isAdmin);
       el("detailApp").classList.toggle("hidden", !isAdmin);

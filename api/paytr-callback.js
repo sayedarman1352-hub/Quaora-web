@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const admin = require("firebase-admin");
+const { sendPaymentConfirmationOnce } = require("../lib/order-mail");
 
 const PRODUCT_COLLECTIONS = [
   "ayakkabilar",
@@ -271,6 +272,16 @@ module.exports = async function handler(req, res) {
     if (calculatedHash !== paytrHash) return res.status(403).send("PAYTR notification failed: bad hash");
 
     await confirmOrderAndDecreaseStock(merchantOid, status, totalAmount, failedReasonCode, failedReasonMsg);
+    if (status === "success") {
+      const db = getDb();
+      const orderRef = db.collection("orders").doc(merchantOid);
+      await sendPaymentConfirmationOnce(db, orderRef, merchantOid).catch((emailError) => {
+        console.error("PAYTR ödeme onay e-postası gönderilemedi:", {
+          merchantOid,
+          message: emailError.message || String(emailError)
+        });
+      });
+    }
     console.log("PAYTR callback OK", { merchantOid, status, totalAmount, failedReasonCode, failedReasonMsg });
     return res.status(200).send("OK");
   } catch (error) {
