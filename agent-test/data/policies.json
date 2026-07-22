@@ -1,0 +1,53 @@
+{
+  "return_policy": {
+    "title": "İade Politikası",
+    "subtitle": "İade ve değişim koşulları",
+    "blocks": [
+      { "heading": "1. İade süresi", "text": "Müşteri, mevzuatta belirtilen istisnalar saklı kalmak kaydıyla teslim aldığı ürünü 14 gün içinde iade talebiyle bildirebilir." },
+      { "heading": "2. İade koşulları", "text": "İade edilecek ürün kullanılmamış, yıkanmamış, hasar görmemiş, etiketi ve varsa hijyen bandı/koruyucu ambalajı çıkarılmamış olmalıdır. Ürün, tüm aksesuarlarıyla birlikte gönderilmelidir." },
+      { "heading": "3. Hijyen ürünleri", "text": "Mayo, bikini ve benzeri hijyen niteliğindeki ürünlerde koruyucu ambalaj, hijyen bandı veya etiket açıldıysa iade kabul edilmeyebilir. Kusurlu, hasarlı veya yanlış gönderilen ürünler bu kapsamda değerlendirilmez." },
+      { "heading": "4. İade talebi oluşturma", "text": "İade talebi için müşteri QUAORA iletişim kanalları üzerinden sipariş bilgileriyle birlikte başvuru yapmalıdır. Talep incelendikten sonra iade gönderim adımları müşteriye bildirilir." },
+      { "heading": "5. Ücret iadesi", "text": "İade onaylandıktan sonra ücret iadesi, ödeme yapılan yönteme göre ilgili finans kuruluşunun süreçlerine bağlı olarak gerçekleştirilir. Banka/kart kaynaklı yansıtma süreleri QUAORA kontrolünde değildir." },
+      { "heading": "6. Değişim", "text": "Beden veya ürün değişimi stok durumuna bağlıdır. Değişim talebi için müşteri, ürün kullanılmadan ve iade şartları korunarak iletişim kanallarından destek almalıdır." }
+    ]
+  },
+  "delivery_policy": {
+    "title": "Teslimat Bilgileri",
+    "subtitle": "Kargo ve teslimat süreçleri",
+    "blocks": [
+      { "heading": "1. Sipariş hazırlık süreci", "text": "Siparişler, ödeme onayı alındıktan sonra hazırlanır. Kampanya, indirim ve yoğun dönemlerde hazırlık süresi uzayabilir; bu durumda müşteri bilgilendirilir." },
+      { "heading": "2. Teslimat adresi", "text": "Teslimat, müşterinin sipariş sırasında belirttiği adrese yapılır. Adres, telefon ve alıcı bilgilerinin eksiksiz girilmesi müşterinin sorumluluğundadır." },
+      { "heading": "3. Kargo süreci", "text": "Sipariş kargoya teslim edildiğinde takip bilgileri mümkün olan kanallardan müşteriyle paylaşılır. Kargo firmasından kaynaklanan gecikmeler QUAORA’nın doğrudan kontrolü dışındadır." },
+      { "heading": "4. Teslim sırasında kontrol", "text": "Müşteri, paketi teslim alırken hasar, açılma veya eksiklik olup olmadığını kontrol etmelidir. Hasarlı paketlerde kargo görevlisine tutanak tutulması önerilir." },
+      { "heading": "5. Teslim edilemeyen gönderiler", "text": "Adres hatası, alıcının adreste bulunmaması veya kargonun teslim alınmaması nedeniyle geri dönen gönderilerde yeniden gönderim süreci müşteri ile iletişim kurularak planlanır." },
+      { "heading": "6. Kargo ücreti", "text": "Kargo ücreti, kampanya veya sepet tutarına göre değişebilir. Sipariş tamamlanmadan önce ödeme ekranında varsa kargo ücreti müşteriye gösterilir." }
+    ]
+  },
+  "distance_sales_policy": {
+    "title": "Mesafeli Satış Sözleşmesi",
+    "subtitle": "Satış ve ön bilgilendirme koşulları",
+    "blocks": [
+      { "heading": "1. Taraflar", "text": "Bu sözleşme, QUAORA internet sitesi üzerinden alışveriş yapan alıcı ile QUAORA arasında elektronik ortamda kurulmuştur. Satıcı bilgileri, iletişim sayfasında yer alan güncel adres, telefon ve e-posta bilgileri üzerinden takip edilir." },
+      { "heading": "2. Konu", "text": "Bu sözleşmenin konusu; alıcının, QUAORA internet sitesi üzerinden elektronik ortamda sipariş verdiği ürünlerin satışı, teslimatı, ödeme koşulları, cayma hakkı ve tarafların hak/yükümlülüklerinin belirlenmesidir." },
+      { "heading": "3. Ürün ve fiyat bilgileri", "text": "Ürün adı, bedeni, rengi, satış fiyatı, varsa indirimli fiyatı, stok bilgisi ve temel özellikleri ilgili ürün sayfasında gösterilir. Sipariş verilmeden önce sepet ve ödeme ekranında toplam tutar alıcıya gösterilir." },
+      { "heading": "4. Ödeme", "text": "Ödemeler PayTR altyapısı üzerinden güvenli şekilde alınır. Kart bilgileri QUAORA tarafından saklanmaz. Ödeme işlemi başarıyla tamamlanmadan sipariş hazırlanma sürecine alınmaz." },
+      { "heading": "5. Teslimat", "text": "Siparişler, ödeme onayı sonrasında teslimat sayfasında belirtilen süreler içinde hazırlanır ve alıcının sipariş sırasında bildirdiği adrese gönderilir. Eksik veya hatalı adres bilgilerinden kaynaklanan gecikmelerden alıcı sorumludur." },
+      { "heading": "6. Cayma hakkı", "text": "Alıcı, mevzuatta belirtilen istisnalar saklı kalmak kaydıyla ürünü teslim aldığı tarihten itibaren 14 gün içinde cayma hakkını kullanabilir. Cayma hakkının kullanılabilmesi için ürünün kullanılmamış, hasarsız ve yeniden satışa uygun durumda olması gerekir." },
+      { "heading": "7. Hijyen ve iade istisnaları", "text": "Mayo, bikini, iç giyim ve benzeri hijyen niteliği taşıyan ürünlerde; ürünün hijyen bandı, koruyucu ambalajı veya etiketi açılmış, çıkarılmış ya da ürün kullanılmışsa iade kabul edilmeyebilir. Kusurlu veya yanlış gönderilen ürünlerde bu istisna uygulanmaz." },
+      { "heading": "8. Uyuşmazlık", "text": "Taraflar arasında doğabilecek uyuşmazlıklarda yürürlükteki tüketici mevzuatı kapsamında yetkili mercilere başvurulabilir." }
+    ]
+  },
+  "privacy_policy": {
+    "title": "Gizlilik Sözleşmesi",
+    "subtitle": "Kişisel veriler ve gizlilik",
+    "blocks": [
+      { "heading": "1. Toplanan bilgiler", "text": "QUAORA; sipariş, üyelik, iletişim ve ödeme süreçlerinin yürütülmesi için ad-soyad, e-posta, telefon, teslimat adresi, sipariş bilgileri ve işlem kayıtları gibi bilgileri işleyebilir." },
+      { "heading": "2. Kullanım amacı", "text": "Kişisel veriler; siparişin alınması, hazırlanması, teslimatı, müşteri hizmetleri, iade/değişim süreçleri, güvenlik ve yasal yükümlülüklerin yerine getirilmesi amacıyla kullanılır." },
+      { "heading": "3. Ödeme güvenliği", "text": "Kart bilgileri QUAORA tarafından saklanmaz. Ödeme işlemleri PayTR gibi güvenli ödeme altyapıları üzerinden yürütülür." },
+      { "heading": "4. Paylaşım", "text": "Kişisel veriler; sipariş teslimatı için kargo firmalarıyla, ödeme güvenliği için ödeme kuruluşlarıyla ve yasal zorunluluk durumunda yetkili kurumlarla sınırlı şekilde paylaşılabilir." },
+      { "heading": "5. Saklama süresi", "text": "Veriler, yasal saklama süreleri ve işlem amacı gerektirdiği sürece saklanır. Süre sonunda gerekli durumlarda silinir, anonimleştirilir veya mevzuata uygun şekilde muhafaza edilir." },
+      { "heading": "6. Haklarınız", "text": "Kullanıcılar, kişisel verilerine ilişkin bilgi alma, düzeltme, silme, işleme itiraz etme ve ilgili mevzuat kapsamındaki diğer haklarını QUAORA iletişim kanalları üzerinden kullanabilir." },
+      { "heading": "7. İletişim", "text": "Gizlilik ve kişisel verilerle ilgili talepler için QUAORA iletişim sayfasındaki e-posta, telefon ve sosyal medya kanalları kullanılabilir." }
+    ]
+  }
+}

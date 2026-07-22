@@ -3,7 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "agent:test": "node --test agent-test/tests/*.test.js",
+    "agent:serve": "node agent-test/server.js",
+    "agent:smoke": "node agent-test/scripts/live-smoke.js",
+    "agent:preview": "node agent-test/production-preview.js"
   },
   "dependencies": {
     "@vercel/speed-insights": "^2.0.0",

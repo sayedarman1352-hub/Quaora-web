@@ -1,0 +1,36 @@
+[
+  {
+    "id": "pie-black-skirt",
+    "collection": "PIE",
+    "category": "Pie",
+    "name": "Pie siyah fırfırlı etekli mayo",
+    "description": "Fırfırlı etekli mayo",
+    "salePrice": 2190,
+    "sizeStocks": { "32": 0, "36": 2 },
+    "stock": 2
+  },
+  {
+    "id": "test-bordo-bikini",
+    "collection": "bikini-altlari",
+    "category": "Bikini Altları",
+    "name": "Bordo bikini altı",
+    "description": "Test kataloğu ürünü",
+    "material": "Esnek mayo kumaşı",
+    "color": "Bordo",
+    "fit": "Normal kalıp",
+    "sizeDescription": "Normal kalıptır; beden seçimi için bel ve kalça ölçüsü esas alınır.",
+    "salePrice": 990,
+    "sizeStocks": { "34": 1, "36": 3, "38": 0 },
+    "stock": 4
+  },
+  {
+    "id": "test-pareo",
+    "collection": "pareolar",
+    "category": "Pareolar",
+    "name": "Kum rengi pareo",
+    "description": "Standart beden pareo",
+    "salePrice": 790,
+    "sizeStocks": { "Standart": 5 },
+    "stock": 5
+  }
+]
