@@ -131,6 +131,13 @@ test("Yalnızca müşteri destek kapsamındaki konuları kabul eder", () => {
   assert.equal(classifyIntent("Bordo bikini altının kalıbı ve materyali nedir?"), "product");
   assert.equal(classifyIntent("Belim 70, kalçam 96; hangi beden olur?"), "size");
   assert.equal(classifyIntent("Beden seçimi için hangi ölçülerimi paylaşmalıyım?"), "size");
+  assert.equal(classifyIntent("Bu ürün bana olur mu?"), "size");
+  assert.equal(classifyIntent("S mi M mi seçmeliyim?"), "size");
+  assert.equal(classifyIntent("Göğüs 88, bel 70 ve kalça 96"), "size");
+  assert.equal(classifyIntent("Bu mayo nasıl yıkanır?"), "product");
+  assert.equal(classifyIntent("Çanta ve gözlük fiyatları ne kadar?"), "product");
+  assert.equal(classifyIntent("Taksit seçeneği var mı?"), "policy");
+  assert.equal(classifyIntent("Hasarlı ürün gelirse ne yapmalıyım?"), "policy");
   assert.equal(classifyIntent("Merhaba"), "greeting");
   assert.equal(classifyIntent("Bugün hava nasıl?"), "out_of_scope");
   assert.equal(classifyIntent("Bana Python kodu yaz"), "out_of_scope");
@@ -139,7 +146,7 @@ test("Yalnızca müşteri destek kapsamındaki konuları kabul eder", () => {
 
 test("Konu dışı soruya yalnızca izin verilen müşteri destek kapsamını söyler", () => {
   const reply = buildDeterministicReply({ message: "Bugün hava nasıl?" });
-  assert.match(reply, /politikaları.*ürün ve beden açıklamaları.*beden önerisi.*stok durumu/i);
+  assert.match(reply, /ürünleri.*fiyatlar.*bakım.*beden önerisi.*teslimat.*iade/i);
   assert.doesNotMatch(reply, /hava|İstanbul|derece/i);
 });
 

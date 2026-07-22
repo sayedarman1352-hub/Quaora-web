@@ -7,14 +7,16 @@ Bu klasör, QUAORA müşteri danışmanının izole testlerini ve yerel üretim 
 - Firestore ürün koleksiyonlarını yalnızca okur.
 - Firestore'daki güncel politika sayfalarını yalnızca okur; erişim olmazsa repodaki doğrulanmış metinlere döner.
 - İade/değişim, teslimat/kargo, ödeme ve gizlilik gibi müşteriye açık politikaları açıklar.
-- Ürün açıklaması, materyal, renk, kalıp, beden açıklaması, fiyat ve beden bazlı stok bilgisi verir.
-- Ölçü tabanlı beden tavsiyesini geçici test tablosuyla üretir ve mutlaka uyarı gösterir.
+- Ürün keşfi, karşılaştırma, açıklama, materyal, renk, kalıp, bakım, fiyat ve beden bazlı stok bilgisi verir.
+- Ölçü tabanlı beden tavsiyesi aktiftir; ürün türüne göre gerekli ölçüleri ister, stoktaki bedenle karşılaştırır ve genel öneri uyarısı gösterir.
+- “Peki 36 var mı?” veya “Kaç gün?” gibi kısa takip sorularında önceki müşteri bağlamını güvenli biçimde sürdürür.
 - Selamlaşma dışında konu dışı soruları cevaplamaz; yalnızca destek kapsamını belirtir.
 - Varsayılan `mock` modunda API ücreti doğurmaz.
 - `openai` modunda anahtar yalnızca yerel sunucuda tutulur; tarayıcıya gönderilmez.
 - Backend, veri sistemi, servis sağlayıcısı, model, sistem promptu, API yolu ve erişim bilgisi soruları model çağrısından önce reddedilir.
 - Müşteri API'si model, veri kaynağı, anahtar durumu veya hata ayrıntısı döndürmez.
 - Tarayıcıdan gelen sohbet geçmişi güvenilir model rolü olarak kullanılmaz.
+- Takip bağlamı yalnızca izin verilen ürün, beden ve politika niyetlerinde kullanılır; teknik ve konu dışı sınırları aşamaz.
 - Üretim katalog okuması API anahtarı kullanmaz; yalnızca herkese açık ürün belgelerini salt-okunur okur.
 
 ## Çalıştırma

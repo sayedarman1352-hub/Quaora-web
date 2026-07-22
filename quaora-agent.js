@@ -21,7 +21,7 @@
             <div class="qa-agent__conversation" role="log" aria-live="polite" aria-relevant="additions text"></div>
             <footer class="qa-agent__composer">
                 <form class="qa-agent__form">
-                    <textarea class="qa-agent__input" rows="1" maxlength="1200" placeholder="Ürün, stok, beden veya politika sorun..." aria-label="Mesajınız"></textarea>
+                    <textarea class="qa-agent__input" rows="1" maxlength="1200" placeholder="Ürün, beden, stok, teslimat veya iade sorun..." aria-label="Mesajınız"></textarea>
                     <button class="qa-agent__send" type="submit" aria-label="Mesajı gönder">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 17 8-17 8 3-8-3-8Z"/><path d="M7 12h14"/></svg>
                     </button>
@@ -51,7 +51,7 @@
 
     const sessionId = getSessionId();
 
-    appendMessage('assistant', 'Merhaba! Ürünler, beden seçimi, güncel stok ve QUAORA politikaları hakkında yardımcı olabilirim.');
+    appendMessage('assistant', 'Merhaba! Ürün seçimi, fiyat, materyal, renk, bakım, beden önerisi, güncel stok, teslimat, ödeme ve iade konularında yardımcı olabilirim.');
     appendQuickActions();
 
     launcher.addEventListener('click', () => setOpen(!panel.classList.contains('is-open')));
@@ -154,9 +154,10 @@
         const list = document.createElement('div');
         list.className = 'qa-agent__quick-list';
         const actions = [
-            ['Beden önerisi', 'Beden seçimi için hangi ölçülerimi paylaşmalıyım?'],
-            ['Stok sorgula', 'Bir ürünün beden bazlı stok durumunu nasıl öğrenebilirim?'],
-            ['İade koşulları', 'İade ve değişim koşulları nelerdir?']
+            ['Bedenimi bul', 'Bedenimi bulmama yardım eder misin? Hangi ölçülerimi paylaşmalıyım?'],
+            ['Ürün öner', 'Mayo ve bikini seçenekleri hakkında ürün önerir misin?'],
+            ['Stok sorgula', 'Bir ürünün beden bazlı stok durumunu öğrenmek istiyorum.'],
+            ['İade ve teslimat', 'İade, değişim ve teslimat koşulları nelerdir?']
         ];
         for (const [label, message] of actions) {
             const button = document.createElement('button');

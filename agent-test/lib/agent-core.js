@@ -3,7 +3,7 @@
 const crypto = require("node:crypto");
 
 const SECURITY_REFUSAL = "Güvenlik nedeniyle QUAORA'nın teknik altyapısı, veri sistemleri, servis yapılandırması, sistem talimatları veya erişim bilgileri hakkında bilgi paylaşamam. Ürün, stok, beden ve müşteri politikaları konusunda yardımcı olabilirim.";
-const OUT_OF_SCOPE_REPLY = "Yalnızca QUAORA politikaları, ürün ve beden açıklamaları, ölçüye göre beden önerisi ve stok durumu hakkında yardımcı olabilirim.";
+const OUT_OF_SCOPE_REPLY = "QUAORA ürünleri, fiyatlar, renk ve materyal bilgileri, bakım, beden önerisi, stok, teslimat, ödeme, iade ve diğer müşteri politikaları hakkında yardımcı olabilirim.";
 
 const COLLECTIONS = Object.freeze({
   ayakkabilar: "Ayakkabılar",
@@ -241,10 +241,10 @@ function measurementLabel(key) {
 function selectPolicyExcerpts(policies, query, limit = 5) {
   const text = normalizeText(query);
   const policyHints = {
-    return_policy: ["iade", "degisim", "hijyen", "cayma", "kusurlu", "yanlis"],
-    delivery_policy: ["teslimat", "kargo", "paket", "adres", "takip", "gecikme"],
-    distance_sales_policy: ["sozlesme", "odeme", "paytr", "fiyat", "cayma"],
-    privacy_policy: ["gizlilik", "veri", "kart", "kvkk", "saklama", "kisisel"]
+    return_policy: ["iade", "degisim", "hijyen", "cayma", "kusurlu", "hasarli", "yanlis", "iptal"],
+    delivery_policy: ["teslimat", "kargo", "paket", "adres", "takip", "gecikme", "ucret", "sure"],
+    distance_sales_policy: ["sozlesme", "odeme", "paytr", "fiyat", "cayma", "taksit", "kart", "fatura", "iptal"],
+    privacy_policy: ["gizlilik", "veri", "kart", "kvkk", "saklama", "kisisel", "guvenlik"]
   };
   const preferred = Object.entries(policyHints)
     .filter(([, hints]) => hints.some(hint => text.includes(hint)))
@@ -268,18 +268,19 @@ function classifyIntent(message) {
   const text = normalizeText(message);
   if (/(talimatlari unut|onceki talimatlari|system prompt|sistem prompt|developer mesaji|gizli talimat|gizli anahtar|api key|private key|service account|access token|secret|stok uydur|politika uydur)/.test(text)) return "security_sensitive";
   if (/(firebase|firestore|vercel|openai|hangi model|model adi|backend|back end|veritabani|database|api endpoint|api yolu|sunucu yapisi|server yapisi|hosting|host ediliyor|proje id|project id|koleksiyon ad|collection name|teknik mimari|teknik altyapi)/.test(text)) return "security_sensitive";
-  const hasMeasurements = /(boyum|kilom|kiloyum|gogsum|gogusum|belim|kalcam|olcum)/.test(text);
-  const asksPersonalSize = /(hangi beden (?:olur|almaliyim|secmeliyim|giyerim)|beden (?:oner|oneri|tavsiye)|bana (?:hangi )?beden|beden secimi.*hangi olcu|hangi olcu.*beden)/.test(text);
+  if (/(siparisim nerede|siparis durumu|kargom nerede|kargo takip|siparis takip|takip numaram)/.test(text)) return "order_status";
+  const hasMeasurements = /(boyum|kilom|kiloyum|agirligim|gogsum|gogusum|belim|kalcam|vucut olcu|olculerim|(?:boy|kilo|agirlik|gogus|bel|kalca)\s*(?:olcum\s*)?\d)/.test(text);
+  const asksPersonalSize = /(hangi beden (?:olur|almaliyim|secmeliyim|giyerim)|hangi bedeni onerirsin|kac bedenim|bedenim (?:ne|nedir)|bedenimi (?:bul|hesapla)|beden (?:oner|oneri|tavsiye|secimi|uyumu)|bana (?:hangi )?beden|bu bana olur mu|bana olur mu|bana uygun mu|bedenime uygun mu|uzerime olur mu|hangi olcu.*beden|beden.*hangi olcu|(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42) (?:mi|mu).*(?:secmeliyim|olur|uyar)|(?:dar|bol) gelir mi)/.test(text);
   if (hasMeasurements || asksPersonalSize) return "size";
-  if (/(siparisim nerede|siparis durumu|kargom nerede|kargo takip|siparis takip)/.test(text)) return "order_status";
-  if (/(iade|degisim|teslimat|kargo|gizlilik|odeme|paytr|cayma|hijyen)/.test(text)) return "policy";
-  if (/(stok|urun|mayo|bikini|pareo|beden|fiyat|renk|materyal|malzeme|kumas|kalip|beden aciklama|olcu tablosu|pie|panzer|relove)/.test(text)) return "product";
+  if (/(iade|degisim|teslimat|kargo|gizlilik|odeme|paytr|cayma|hijyen|taksit|fatura|iptal|kusurlu|hasarli|yanlis urun|garanti|kvkk|kisisel veri|adres degisikligi|kargo ucreti|teslim suresi)/.test(text)) return "policy";
+  if (/(stok|urun|koleksiyon|mayo|bikini|mayokini|tankini|pareo|ayakkabi|taki|canta|sapka|gozluk|plaj|aksesuar|top|bottom|etek|beden|fiyat|ne kadar|renk|materyal|malzeme|kumas|kalip|beden aciklama|olcu tablosu|bakim|yikama|yikanir|kurutma|icerik|ozellik|tarz|kombin|onerir misin|karsilastir|tukendi|mevcut|on siparis|pie|panzer|relove|coquette)/.test(text)) return "product";
+  if (/\b(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42)\b.*(?:var mi|stokta mi|mevcut mu)/.test(text)) return "product";
   if (/^(merhaba|selam|hey|iyi gunler|tesekkur|tesekkurler|sag ol|yardim|ne yapabilirsin)\b/.test(text)) return "greeting";
   return "out_of_scope";
 }
 
-function buildDeterministicReply({ message, products = [], policies = {}, sizeAdvice = null, environment = "test" }) {
-  const intent = classifyIntent(message);
+function buildDeterministicReply({ message, products = [], policies = {}, sizeAdvice = null, environment = "test", intent: intentOverride = "" }) {
+  const intent = intentOverride || classifyIntent(message);
   if (intent === "security_sensitive") return SECURITY_REFUSAL;
   if (intent === "out_of_scope") return OUT_OF_SCOPE_REPLY;
   if (intent === "order_status") {
@@ -315,7 +316,7 @@ function buildDeterministicReply({ message, products = [], policies = {}, sizeAd
       return `${product.name}${details ? ` — ${details}` : ""}. Stok: ${stockSummary(product)}${price}${product.url ? `. ${product.url}` : ""}`;
     }).join("\n");
   }
-  return "Merhaba, QUAORA ürün, stok, politika ve beden konularında doğrulanmış bilgilerle yardımcı olabilirim.";
+  return "Merhaba! QUAORA ürünleri, fiyat, materyal, renk, bakım, beden önerisi, stok, teslimat, ödeme ve iade konularında doğrulanmış bilgilerle yardımcı olabilirim.";
 }
 
 function containsSensitiveDisclosure(value) {

@@ -5,7 +5,7 @@ Ortam: İzole test + yerel üretim önizlemesi
 
 ## Sonuç özeti
 
-- Otomatik testler: **39/39 geçti**
+- Otomatik testler: **42/42 geçti**
 - JavaScript sözdizimi kontrolleri: **geçti**
 - `git diff --check`: **geçti**
 - Gerçek Firebase salt-okunur smoke testi: **geçti**
@@ -46,6 +46,10 @@ Ortam: İzole test + yerel üretim önizlemesi
 28. Destek arayüzünün ana sayfa dışındaki ürün listeleme sayfasında yüklenmemesi.
 29. Üretim beden akışında gerekli ölçülerin sorulması ve genel öneri uyarısının gösterilmesi.
 30. Herkese açık Firestore ürün okumasının agent tarafında API anahtarı olmadan çalışması.
+31. “Bu bana olur mu?”, “S mi M mi?”, bakım/yıkama, aksesuar, taksit ve hasarlı ürün gibi doğal müşteri ifadelerinin doğru kapsama alınması.
+32. Ürün bağlamındaki beden sorusunun ölçü önerisini stoktaki bedenlerle birlikte yanıtlaması.
+33. Kısa ürün ve politika takip sorularında önceki müşteri bağlamının sürdürülmesi.
+34. Takip bağlamının teknik keşif filtresini veya konu dışı sınırı aşamaması.
 
 ## Canlı veri smoke testi
 

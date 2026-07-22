@@ -193,7 +193,7 @@ test("Konu dışı soruyu modele ve veri katmanına göndermeden kapsam yanıtı
     const body = await response.json();
     assert.equal(response.status, 200);
     assert.equal(calls, 0);
-    assert.match(body.reply, /politikaları.*beden önerisi.*stok durumu/i);
+    assert.match(body.reply, /ürünleri.*beden önerisi.*stok.*teslimat.*iade/i);
   } finally {
     await new Promise(resolve => server.close(resolve));
   }
