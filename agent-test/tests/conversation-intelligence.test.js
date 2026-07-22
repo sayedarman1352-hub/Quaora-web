@@ -86,6 +86,18 @@ test("Renk, bütçe ve stok kısıtlarını birlikte uygular", () => {
   assert.ok(matches.every(product => product.salePrice <= 2000 && product.stock > 0));
 });
 
+test("Belirli ürün türünü daha geniş mayo sonuçlarıyla karıştırmaz", () => {
+  const subtypeCatalog = [
+    normalizeProduct({ id: "navy-short", collection: "RELOVE", name: "Relove lacivert mayo şortu", color: "Lacivert", salePrice: 880, sizeStocks: { 32: 1 } }),
+    normalizeProduct({ id: "navy-shirt", collection: "RELOVE", name: "Relove lacivert t-shirt mayo", color: "Lacivert", salePrice: 940, sizeStocks: { 32: 2 } })
+  ];
+  const query = "Lacivert, 1000 lira altı mayo şortu öner";
+  const constraints = extractProductConstraints(query);
+  assert.deepEqual(constraints.productTypes, ["swim_short"]);
+  const matches = searchProducts(subtypeCatalog, query, 5, { currentMessage: query });
+  assert.deepEqual(matches.map(product => product.name), ["Relove lacivert mayo şortu"]);
+});
+
 test("Ürün özelliğindeki 'var mı' ifadesini stok sorusu sanmaz", () => {
   assert.equal(extractProductConstraints("Cup var mı?").wantsStock, false);
   assert.equal(extractProductConstraints("36 beden var mı?").wantsStock, true);

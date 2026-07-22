@@ -84,6 +84,25 @@ const PRODUCT_COLORS = Object.freeze({
   kahverengi: ["kahverengi", "taba", "bej", "brown"]
 });
 
+// A specific garment request is a hard constraint, not merely a search-score hint.
+// This prevents a query such as "mayo sortu" from returning a t-shirt mayo just
+// because both products contain the broader word "mayo".
+const PRODUCT_TYPE_RULES = Object.freeze([
+  { id: "swim_short", query: /\b(?:mayo\s+)?sort(?:u|lari)?\b/, product: /\bsort(?:u|lari)?\b/ },
+  { id: "tshirt", query: /\b(?:t\s*shirt|tisort)(?:\s+mayo)?\b/, product: /\b(?:t\s*shirt|tisort)\b/ },
+  { id: "bikini_bottom", query: /\bbikini\s+alt(?:i|lari)?\b/, product: /\bbikini\s+alt(?:i|lari)?\b/ },
+  { id: "bikini_top", query: /\bbikini\s+ust(?:u|leri)?\b/, product: /\bbikini\s+ust(?:u|leri)?\b/ },
+  { id: "mayokini_bottom", query: /\bmayokini\s+alt(?:i|lari)?\b/, product: /\bmayokini\s+alt(?:i|lari)?\b/ },
+  { id: "mayokini_top", query: /\bmayokini\s+ust(?:u|leri)?\b/, product: /\bmayokini\s+ust(?:u|leri)?\b/ },
+  { id: "pareo", query: /\bpareo(?:lar)?\b/, product: /\bpareo(?:lar)?\b/ },
+  { id: "bag", query: /\bcanta(?:lar)?\b/, product: /\bcanta(?:lar)?\b/ },
+  { id: "shoe", query: /\bayakkabi(?:lar)?\b/, product: /\bayakkabi(?:lar)?\b/ },
+  { id: "glasses", query: /\bgozluk(?:ler)?\b/, product: /\bgozluk(?:ler)?\b/ },
+  { id: "hat", query: /\bsapka(?:lar)?\b/, product: /\bsapka(?:lar)?\b/ },
+  { id: "jewelry", query: /\btaki(?:lar)?\b/, product: /\btaki(?:lar)?\b/ },
+  { id: "skirt", query: /\betek(?:ler)?\b/, product: /\betek(?:ler)?\b/ }
+]);
+
 const PRODUCT_SEARCH_STOPWORDS = new Set([
   "acaba", "almak", "altinda", "alti", "ama", "bana", "ben", "bi", "bir", "bunun", "bunu", "bu",
   "cok", "daha", "de", "diye", "en", "fiyat", "gecmesin", "gibi", "icin", "istiyorum", "kadar", "lira",
@@ -169,6 +188,7 @@ function extractProductConstraints(query) {
   const sizeMatch = normalizedQuery.match(/\b(2xl|xl|xs|s|m|l|32|34|36|38|40|42|44)\b/);
   return {
     colors,
+    productTypes: PRODUCT_TYPE_RULES.filter(rule => rule.query.test(normalizedQuery)).map(rule => rule.id),
     maxPrice: hasUpperPriceLanguage && priceMatches.length ? Math.max(...priceMatches) : null,
     requestedSize: sizeMatch ? sizeMatch[1].toUpperCase() : "",
     wantsCheaper: /(daha ucuz|en ucuz|uygun fiyat|butce dostu|hesapli)/.test(normalizedQuery),
@@ -191,6 +211,7 @@ function mergeProductConstraints(base, current) {
   return {
     ...base,
     colors: current.colors.length ? current.colors : base.colors,
+    productTypes: current.productTypes.length ? current.productTypes : base.productTypes,
     maxPrice: current.maxPrice || base.maxPrice,
     requestedSize: current.requestedSize || base.requestedSize,
     wantsCheaper: current.wantsCheaper,
@@ -247,6 +268,13 @@ function searchProducts(products, query, limit = 5, options = {}) {
       const product = item.product;
       if (constraints.maxPrice && (!product.salePrice || product.salePrice > constraints.maxPrice)) return false;
       if (constraints.colors.length && !constraints.colors.some(color => productMatchesColor(product, color))) return false;
+      if (constraints.productTypes.length) {
+        const matchesRequestedType = constraints.productTypes.some(type => {
+          const rule = PRODUCT_TYPE_RULES.find(candidate => candidate.id === type);
+          return rule ? rule.product.test(item.fullText) : false;
+        });
+        if (!matchesRequestedType) return false;
+      }
       if (currentConstraints.wantsCheaper && referencePrice && (!product.salePrice || product.salePrice >= referencePrice)) return false;
       if ((currentConstraints.wantsCheaper || currentConstraints.wantsAlternative) && referenceCategories.size && !referenceCategories.has(item.category)) return false;
       if (shouldRequireStock && Number(product.stock || 0) <= 0) return false;
