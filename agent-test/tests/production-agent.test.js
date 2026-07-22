@@ -67,7 +67,8 @@ test("Üretim agentı katalog okunamazsa stok uydurmaz", async () => {
 test("Üretim beden önerisi test ortamı ifadesi taşımaz ve genel öneri uyarısı verir", async () => {
   const service = createAgentService({ catalogClient: catalogClient(), apiKey: "", logger: silentLogger });
   const reply = await service.answer({ message: "Göğsüm 88, belim 70, kalçam 96. Hangi beden?" });
-  assert.match(reply, /36 \(M\)/);
+  assert.match(reply, /36 beden/);
+  assert.doesNotMatch(reply, /\([A-Z0-9]+\)/);
   assert.match(reply, /genel bir beden önerisidir/i);
   assert.doesNotMatch(reply, /test agent|test tablosu|üretim tavsiyesi/i);
 });
@@ -90,9 +91,50 @@ test("Ürün bağlamındaki beden takip sorusu ölçü ve stokla birlikte yanıt
     message: "Belim 70, kalçam 96; bu bana olur mu?",
     history: [{ role: "user", content: "Bordo bikini altının özellikleri nedir?" }]
   });
-  assert.match(reply, /36 \(M\)/);
+  assert.match(reply, /36 beden/);
   assert.match(reply, /Bordo bikini altı için görünen stok: 34: 1 adet, 36: 3 adet/);
   assert.match(reply, /genel bir beden önerisidir/i);
+});
+
+test("Beden isteğinden sonra yazılan salt sayıları konuşma bağlamıyla anlar", async () => {
+  const service = createAgentService({ catalogClient: catalogClient(), apiKey: "", logger: silentLogger });
+  const history = [
+    { role: "user", content: "Bedenimi bulmama yardım eder misin? Ölçülerimi hangi sırayla yazmalıyım?" },
+    { role: "assistant", content: "Beden önerisi için sırasıyla göğüs, bel, kalça ölçünü santimetre olarak yazabilir misin? Örnek: 88 70 96." }
+  ];
+  assert.equal(resolveConversationIntent("88 70 96", history), "size");
+  const reply = await service.answer({ message: "88 70 96", history });
+  assert.match(reply, /36 beden/);
+  assert.doesNotMatch(reply, /\(M\)|harf beden/i);
+
+  const correctionHistory = [
+    ...history,
+    { role: "user", content: "88 70 96" },
+    { role: "assistant", content: reply }
+  ];
+  assert.equal(resolveConversationIntent("90 72 98", correctionHistory), "size");
+  const correctedReply = await service.answer({ message: "90 72 98", history: correctionHistory });
+  assert.match(correctedReply, /36–38 beden aralığı/i);
+});
+
+test("Salt sayıları beden konuşması dışında ölçü sanmaz", () => {
+  assert.equal(resolveConversationIntent("88 70 96", []), "out_of_scope");
+  assert.equal(resolveConversationIntent("36", [{ role: "user", content: "Bordo bikini altını göster" }]), "out_of_scope");
+});
+
+test("Geçersiz veya eksik ölçülerde tek beden uydurmaz", async () => {
+  const service = createAgentService({ catalogClient: catalogClient(), apiKey: "", logger: silentLogger });
+  const history = [
+    { role: "user", content: "Bedenimi bulmama yardım eder misin?" },
+    { role: "assistant", content: "Sırasıyla göğüs, bel, kalça ölçünü santimetre olarak yaz: 88 70 96." }
+  ];
+  const invalidReply = await service.answer({ message: "999 10 20", history });
+  assert.match(invalidReply, /beklenen aralığın dışında/i);
+  assert.doesNotMatch(invalidReply, /\b(?:32|34|36|38|40|42|44) beden\b/);
+
+  const partialReply = await service.answer({ message: "Göğsüm 88, belim 70. Hangi beden?" });
+  assert.match(partialReply, /kalça.*96/i);
+  assert.doesNotMatch(partialReply, /\b(?:32|34|36|38|40|42|44) beden\b/);
 });
 
 test("Kısa ürün ve politika takip soruları önceki müşteri bağlamını güvenle sürdürür", async () => {

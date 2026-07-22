@@ -7,8 +7,10 @@ const fixtures = require("../data/products.fixture.json");
 const {
   buildDeterministicReply,
   classifyIntent,
+  extractContextualMeasurements,
   extractMeasurements,
   firestoreValue,
+  inferGarmentType,
   normalizeProduct,
   parseFirestoreDocument,
   recommendSize,
@@ -42,6 +44,12 @@ test("Ürün aramasında ad eşleşmesini kategori eşleşmesinden öne çıkar�
   assert.equal(results[0].name, "Pie siyah fırfırlı etekli mayo");
 });
 
+test("Etekli mayo ile bikini altını aynı giysi türü sanmaz", () => {
+  assert.equal(inferGarmentType("Pie etekli mayo", [products[0]]), "onepiece");
+  assert.equal(inferGarmentType("Bordo bikini altı", [products[1]]), "lower");
+  assert.equal(inferGarmentType("Kum rengi pareo", [products[2]]), "product_specific");
+});
+
 test("Stok özeti sadece pozitif beden stoklarını gösterir", () => {
   assert.equal(stockSummary(products[1]), "34: 1 adet, 36: 3 adet");
   assert.equal(stockSummary(normalizeProduct({ id: "x", collection: "PIE", name: "X", sizeStocks: { 32: 0 } })), "Tükendi");
@@ -54,7 +62,7 @@ test("Türkçe doğal dilden ölçüleri çıkarır", () => {
   );
 });
 
-test("Tam mayo ölçülerinde test tablosundan 36/M önerir", () => {
+test("Tam mayo ölçülerinde yalnızca doğrulanabilir sayısal bedeni önerir", () => {
   const advice = recommendSize({
     measurements: { bust: 88, waist: 70, hips: 96 },
     garmentType: "onepiece",
@@ -62,9 +70,42 @@ test("Tam mayo ölçülerinde test tablosundan 36/M önerir", () => {
   });
   assert.equal(advice.status, "recommended");
   assert.equal(advice.size, "36");
-  assert.equal(advice.letter, "M");
+  assert.equal(advice.letter, undefined);
   assert.equal(advice.inStock, true);
   assert.equal(advice.provisional, true);
+});
+
+test("Beden konuşmasındaki salt sayıları istenen ölçü sırasına göre çözer", () => {
+  const history = [{
+    role: "assistant",
+    content: "Beden önerisi için sırasıyla göğüs, bel, kalça ölçünü santimetre olarak yazabilir misin? Örnek: 88 70 96."
+  }];
+  const parsed = extractContextualMeasurements("88 70 96", { history, garmentType: "onepiece" });
+  assert.deepEqual(parsed.measurements, { height: null, weight: null, bust: 88, waist: 70, hips: 96 });
+  assert.deepEqual(parsed.inferredFields, ["bust", "waist", "hips"]);
+  assert.equal(parsed.ambiguous, false);
+});
+
+test("Alt ürün bağlamında iki salt sayıyı bel ve kalça olarak çözer", () => {
+  const history = [{
+    role: "assistant",
+    content: "Beden önerisi için sırasıyla bel, kalça ölçünü santimetre olarak yazabilir misin? Örnek: 70 96."
+  }];
+  const parsed = extractContextualMeasurements("70, 96", { history, garmentType: "lower" });
+  assert.equal(parsed.measurements.waist, 70);
+  assert.equal(parsed.measurements.hips, 96);
+  assert.equal(parsed.ambiguous, false);
+});
+
+test("Geçersiz ve bağlamsız sayıları beden ölçüsü gibi kabul etmez", () => {
+  const history = [{
+    role: "assistant",
+    content: "Sırasıyla göğüs, bel, kalça ölçünü santimetre olarak yaz: 88 70 96."
+  }];
+  const invalid = extractContextualMeasurements("999 10 20", { history, garmentType: "onepiece" });
+  assert.deepEqual(invalid.invalidFields, ["bust", "waist", "hips"]);
+  const ambiguous = extractContextualMeasurements("70 96", { history: [], garmentType: "onepiece" });
+  assert.equal(ambiguous.ambiguous, true);
 });
 
 test("Gerekli ölçü yoksa kesin beden uydurmaz", () => {
@@ -72,6 +113,37 @@ test("Gerekli ölçü yoksa kesin beden uydurmaz", () => {
   assert.equal(advice.status, "needs_measurements");
   assert.match(advice.message, /bel.*kalça/);
   assert.equal(advice.size, undefined);
+});
+
+test("Tek bir gerekli ölçü eksikken beden uydurmak yerine o ölçüyü ister", () => {
+  const advice = recommendSize({ measurements: { bust: 88, waist: 70 }, garmentType: "onepiece" });
+  assert.equal(advice.status, "needs_measurements");
+  assert.equal(advice.size, undefined);
+  assert.match(advice.message, /kalça.*96/i);
+});
+
+test("Sınır ölçülerde küçük bedeni sessizce seçmek yerine iki adayı gösterir", () => {
+  const advice = recommendSize({ measurements: { bust: 82, waist: 64, hips: 90 }, garmentType: "onepiece" });
+  assert.equal(advice.status, "between_sizes");
+  assert.deepEqual(advice.sizes, ["32", "34"]);
+  assert.equal(advice.size, undefined);
+});
+
+test("Ürün bağlamı yoksa stok varmış gibi bilgi üretmez", () => {
+  const advice = recommendSize({ measurements: { bust: 88, waist: 70, hips: 96 }, garmentType: "onepiece" });
+  assert.equal(advice.inStock, null);
+  assert.doesNotMatch(advice.message, /stokta/i);
+});
+
+test("Standart beden aksesuar için vücut ölçülerinden sayısal beden uydurmaz", () => {
+  const advice = recommendSize({
+    measurements: { bust: 88, waist: 70, hips: 96 },
+    garmentType: "product_specific",
+    availableSizes: ["Standart"]
+  });
+  assert.equal(advice.status, "product_specific_sizing");
+  assert.equal(advice.size, undefined);
+  assert.match(advice.message, /doğru olmaz/i);
 });
 
 test("Önerilen beden stokta yoksa bunu açıkça işaretler", () => {

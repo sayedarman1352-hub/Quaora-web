@@ -6,8 +6,7 @@ const path = require("node:path");
 const { URL } = require("node:url");
 const {
   buildDeterministicReply,
-  classifyIntent,
-  extractMeasurements,
+  extractContextualMeasurements,
   inferGarmentType,
   recommendSize,
   sanitizeAgentOutput,
@@ -16,6 +15,7 @@ const {
 } = require("./lib/agent-core");
 const { createCatalogClient } = require("./lib/catalog-client");
 const { createOpenAIReply, DEFAULT_MODEL } = require("./lib/openai-client");
+const { buildConversationQuery, resolveConversationIntent, sanitizeHistory } = require("../lib/quaora-agent-service");
 
 loadLocalEnv(path.join(__dirname, ".env.agent-test.local"));
 
@@ -51,8 +51,9 @@ function createServer(options = {}) {
         const message = String(body.message || "").trim();
         if (!message) return sendJson(res, 400, { error: "Mesaj boş olamaz." });
         if (message.length > 1200) return sendJson(res, 400, { error: "Mesaj en fazla 1200 karakter olabilir." });
-        const history = Array.isArray(body.history) ? body.history.slice(-6) : [];
-        const intent = classifyIntent(message);
+        const history = sanitizeHistory(body.history);
+        const intent = resolveConversationIntent(message, history);
+        const contextMessage = buildConversationQuery(message, history, intent);
         if (["security_sensitive", "out_of_scope", "greeting", "order_status"].includes(intent)) {
           return sendJson(res, 200, {
             reply: buildDeterministicReply({ message }),
@@ -60,23 +61,25 @@ function createServer(options = {}) {
           });
         }
         const [catalog, policyData] = await Promise.all([catalogClient.getCatalog(), catalogClient.getPolicies()]);
-        const products = searchProducts(catalog.products, message, 5);
-        const policyExcerpts = selectPolicyExcerpts(policyData.policies, message, 5);
-        const measurements = extractMeasurements(message);
-        const garmentType = inferGarmentType(message, products);
+        const products = searchProducts(catalog.products, contextMessage, 5);
+        const policyExcerpts = selectPolicyExcerpts(policyData.policies, contextMessage, 5);
+        const garmentType = inferGarmentType(contextMessage, products);
+        const measurementContext = extractContextualMeasurements(message, { history, contextMessage, garmentType });
         const availableSizes = products[0]
           ? Object.entries(products[0].sizeStocks || {}).filter(([, stock]) => Number(stock) > 0).map(([size]) => size)
           : [];
         const sizeAdvice = intent === "size"
           ? recommendSize({
-              measurements,
+              measurements: measurementContext.measurements,
               garmentType,
               fit: /rahat|bol/i.test(message) ? "rahat" : "normal",
-              availableSizes
+              availableSizes,
+              invalidFields: measurementContext.invalidFields,
+              ambiguous: measurementContext.ambiguous
             })
           : null;
 
-        if (mode === "openai") {
+        if (mode === "openai" && intent !== "size") {
           const result = await openAIReply({
             message,
             history,
@@ -93,7 +96,7 @@ function createServer(options = {}) {
         }
 
         const reply = buildDeterministicReply({
-          message,
+          message: contextMessage,
           products,
           policies: policyData.policies,
           sizeAdvice

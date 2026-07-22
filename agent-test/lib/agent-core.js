@@ -51,16 +51,26 @@ const COLLECTION_PAGES = Object.freeze({
   yeni_gelenler: "yeni-gelenler.html"
 });
 
-// Bu tablo yalnızca test amaçlıdır. Üretime geçmeden önce QUAORA tarafından
-// ürün/kategori bazında onaylanmalıdır.
+// Bu tablo genel bir sayısal beden referansıdır. QUAORA'ya ait doğrulanmış bir
+// ölçü tablosu olmadığı için harf beden eşlemesi yapılmaz ve her müşteri
+// yanıtında önerinin ürün kalıbına göre değişebileceği açıkça belirtilir.
 const PROVISIONAL_SIZE_CHART = Object.freeze([
-  { size: "32", letter: "XS", bust: [78, 82], waist: [60, 64], hips: [86, 90] },
-  { size: "34", letter: "S", bust: [82, 86], waist: [64, 68], hips: [90, 94] },
-  { size: "36", letter: "M", bust: [86, 90], waist: [68, 72], hips: [94, 98] },
-  { size: "38", letter: "L", bust: [90, 94], waist: [72, 76], hips: [98, 102] },
-  { size: "40", letter: "XL", bust: [94, 98], waist: [76, 80], hips: [102, 106] },
-  { size: "42", letter: "2XL", bust: [98, 103], waist: [80, 85], hips: [106, 111] }
+  { size: "32", bust: [78, 82], waist: [60, 64], hips: [86, 90] },
+  { size: "34", bust: [82, 86], waist: [64, 68], hips: [90, 94] },
+  { size: "36", bust: [86, 90], waist: [68, 72], hips: [94, 98] },
+  { size: "38", bust: [90, 94], waist: [72, 76], hips: [98, 102] },
+  { size: "40", bust: [94, 98], waist: [76, 80], hips: [102, 106] },
+  { size: "42", bust: [98, 103], waist: [80, 85], hips: [106, 111] },
+  { size: "44", bust: [103, 108], waist: [85, 90], hips: [111, 116] }
 ]);
+
+const MEASUREMENT_RANGES = Object.freeze({
+  height: [130, 220],
+  weight: [35, 250],
+  bust: [55, 160],
+  waist: [45, 150],
+  hips: [65, 180]
+});
 
 function normalizeText(value) {
   return String(value ?? "")
@@ -165,70 +175,212 @@ function stockSummary(product) {
   return Number(product?.stock || 0) > 0 ? `Stokta ${Number(product.stock)} adet` : "Tükendi";
 }
 
-function extractMeasurements(message) {
+function extractMeasurementDetails(message) {
   const normalized = normalizeText(message);
-  const read = patterns => {
+  const invalidFields = [];
+  const read = (key, patterns) => {
+    let latest = null;
     for (const pattern of patterns) {
-      const match = normalized.match(pattern);
-      if (match) return Number(match[1]);
+      for (const match of normalized.matchAll(new RegExp(pattern.source, `${pattern.flags.replace("g", "")}g`))) {
+        if (!latest || Number(match.index) >= latest.index) latest = { value: Number(match[1]), index: Number(match.index) };
+      }
     }
-    return null;
+    if (!latest) return null;
+    if (!isPlausibleMeasurement(key, latest.value)) {
+      invalidFields.push(key);
+      return null;
+    }
+    return latest.value;
   };
-  return {
-    height: read([/(?:boyum|boy)\s*(\d{2,3})/, /(\d{3})\s*cm\s*(?:boy|uzunluk)/]),
-    weight: read([/(?:kilom|kilo|agirligim|agirlik)\s*(\d{2,3})/, /(\d{2,3})\s*(?:kg|kiloyum)/]),
-    bust: read([/(?:gogsum|gogusum|gogus)\s*(\d{2,3})/]),
-    waist: read([/(?:belim|bel)\s*(\d{2,3})/]),
-    hips: read([/(?:kalcam|kalca)\s*(\d{2,3})/])
+  const measurements = {
+    height: read("height", [/(?:boyum|boy)\s*(\d{2,3})/, /(\d{3})\s*cm\s*(?:boy|uzunluk)/]),
+    weight: read("weight", [/(?:kilom|kilo|agirligim|agirlik)\s*(\d{2,3})/, /(\d{2,3})\s*(?:kg|kiloyum)/]),
+    bust: read("bust", [/(?:gogsum|gogusum|gogus)(?:\s*olcum)?\s*(\d{2,3})/]),
+    waist: read("waist", [/(?:belim|bel)(?:\s*olcum)?\s*(\d{2,3})/]),
+    hips: read("hips", [/(?:kalcam|kalca)(?:\s*olcum)?\s*(\d{2,3})/])
   };
+  return { measurements, invalidFields: [...new Set(invalidFields)] };
+}
+
+function extractMeasurements(message) {
+  return extractMeasurementDetails(message).measurements;
+}
+
+function isPlausibleMeasurement(key, value) {
+  const range = MEASUREMENT_RANGES[key];
+  return Boolean(range) && Number.isFinite(value) && value >= range[0] && value <= range[1];
+}
+
+function isBareMeasurementReply(message) {
+  const value = String(message || "").toLocaleLowerCase("tr-TR").trim();
+  if (!value || value.length > 80) return false;
+  const numbers = value.match(/\d{2,3}/g) || [];
+  if (!numbers.length || numbers.length > 5) return false;
+  return value
+    .replace(/\d{2,3}/g, "")
+    .replace(/\b(?:cm|kg)\b/g, "")
+    .replace(/[\s,;:/|\-]+/g, "") === "";
+}
+
+function expectedMeasurementFields(history = []) {
+  const lastPrompt = [...history].reverse().find(item => item?.role === "assistant" && String(item.content || "").trim());
+  if (!lastPrompt) return [];
+  const text = normalizeText(lastPrompt.content);
+  if (!/(olcu|santimetre|\bcm\b)/.test(text) || !/(paylas|yaz|girer|belirt|gonder)/.test(text)) return [];
+  const positions = [
+    ["height", text.search(/\bboy\b/)],
+    ["weight", text.search(/\bkilo\b/)],
+    ["bust", text.search(/\bgogus\b/)],
+    ["waist", text.search(/\bbel\b/)],
+    ["hips", text.search(/\bkalca\b/)]
+  ].filter(([, index]) => index >= 0);
+  return positions.sort((a, b) => a[1] - b[1]).map(([key]) => key);
+}
+
+function extractContextualMeasurements(message, { history = [], contextMessage = message, garmentType = "onepiece" } = {}) {
+  const base = extractMeasurementDetails(contextMessage);
+  const current = extractMeasurementDetails(message);
+  const result = {
+    measurements: { ...base.measurements },
+    invalidFields: current.invalidFields,
+    ambiguous: false,
+    inferredFields: []
+  };
+  if (!isBareMeasurementReply(message)) return result;
+
+  const values = (String(message).match(/\d{2,3}/g) || []).map(Number);
+  const expected = expectedMeasurementFields(history);
+  let fields = [];
+  if (expected.length === values.length) fields = expected;
+  else if (values.length === 3) fields = ["bust", "waist", "hips"];
+  else if (values.length === 2 && garmentType === "lower") fields = ["waist", "hips"];
+  else if (values.length === 5) fields = ["height", "weight", "bust", "waist", "hips"];
+  else if (values.length === 1 && expected.length === 1) fields = expected;
+  else {
+    result.ambiguous = true;
+    return result;
+  }
+
+  const invalidFields = fields.filter((key, index) => !isPlausibleMeasurement(key, values[index]));
+  if (invalidFields.length) {
+    result.invalidFields = [...new Set([...result.invalidFields, ...invalidFields])];
+    return result;
+  }
+  fields.forEach((key, index) => { result.measurements[key] = values[index]; });
+  result.inferredFields = fields;
+  return result;
 }
 
 function inferGarmentType(message, products = []) {
   const text = normalizeText(`${message} ${products.map(product => `${product.collection} ${product.category} ${product.name}`).join(" ")}`);
-  if (/bikini ust|mayokini ust|top|ust/.test(text)) return "upper";
-  if (/bikini alt|mayokini alt|bottom|etek/.test(text)) return "lower";
+  if (/\b(?:ayakkabi|ayakkabilar|canta|cantalar|taki|takilar|sapka|sapkalar|gozluk|gozlukler|aksesuar|aksesuarlari|pareo|pareolar)\b/.test(text)) return "product_specific";
+  if (/bikini ust|mayokini ust|\btops?\b|\bust\b/.test(text)) return "upper";
+  if (/bikini alt|mayokini alt|\bbottoms?\b/.test(text)) return "lower";
+  if (/\bmayolar\b|\bmayo\b/.test(text)) return "onepiece";
+  if (/\betek\b/.test(text)) return "lower";
   return "onepiece";
 }
 
-function recommendSize({ measurements = {}, garmentType = "onepiece", fit = "normal", availableSizes = [], environment = "test" } = {}) {
+function recommendSize({ measurements = {}, garmentType = "onepiece", fit = "normal", availableSizes = [], environment = "test", invalidFields = [], ambiguous = false } = {}) {
+  if (garmentType === "product_specific") {
+    return {
+      status: "product_specific_sizing",
+      message: "Bu ürün için vücut ölçülerinden genel sayısal beden hesaplamak doğru olmaz. Ürün adını paylaşırsan mevcut beden seçeneğini ve ürün açıklamasını kontrol edebilirim.",
+      availableSizes: availableSizes.map(String),
+      provisional: true
+    };
+  }
   const keys = garmentType === "upper" ? ["bust"] : garmentType === "lower" ? ["waist", "hips"] : ["bust", "waist", "hips"];
-  const present = keys.filter(key => Number.isFinite(measurements[key]));
   const missing = keys.filter(key => !Number.isFinite(measurements[key]));
-  if (!present.length) {
+  if (invalidFields.length) {
+    return {
+      status: "invalid_measurements",
+      invalidFields,
+      message: `Bazı ölçüler beklenen aralığın dışında görünüyor (${invalidFields.map(measurementLabel).join(", ")}). Lütfen mezurayı çok sıkmadan santimetre olarak yeniden yaz.`,
+      provisional: true
+    };
+  }
+  if (ambiguous) {
+    return {
+      status: "ambiguous_measurements",
+      message: "Sayıların hangi ölçülere ait olduğunu netleştiremedim. Lütfen etiketleyerek yaz: göğüs 88, bel 70, kalça 96.",
+      provisional: true
+    };
+  }
+  if (missing.length) {
+    const sampleValues = { bust: 88, waist: 70, hips: 96 };
+    const example = missing.map(key => sampleValues[key]).join(" ");
     return {
       status: "needs_measurements",
       missing,
-      message: `Beden önerisi için ${missing.map(measurementLabel).join(", ")} ölçünü santimetre olarak paylaşır mısın?`,
+      message: `Beden önerisi için sırasıyla ${missing.map(measurementLabel).join(", ")} ölçünü santimetre olarak yazabilir misin? Örnek: ${example}.`,
       provisional: true
     };
   }
 
-  const ranked = PROVISIONAL_SIZE_CHART.map((row, index) => {
-    const score = present.reduce((sum, key) => {
+  if (keys.some(key => measurements[key] < PROVISIONAL_SIZE_CHART[0][key][0]
+    || measurements[key] > PROVISIONAL_SIZE_CHART.at(-1)[key][1])) {
+    return {
+      status: "outside_reference",
+      message: "Ölçülerinden en az biri genel referans tablosunun dışında kalıyor. Yanlış beden söylememek için ürün adını paylaşmanı ve QUAORA desteğinden kalıp teyidi istemeni öneririm.",
+      provisional: true
+    };
+  }
+
+  const closestIndexes = keys.map(key => {
+    const distances = PROVISIONAL_SIZE_CHART.map((row, index) => {
       const [min, max] = row[key];
       const value = measurements[key];
-      if (value < min) return sum + (min - value) ** 2;
-      if (value > max) return sum + (value - max) ** 2;
-      return sum;
-    }, 0);
-    return { row, score, index };
-  }).sort((a, b) => a.score - b.score || a.index - b.index);
-
-  let selectedIndex = ranked[0].index;
-  const boundary = ranked[1] && Math.abs(ranked[1].score - ranked[0].score) <= 1;
-  if ((fit === "rahat" || fit === "bol") && boundary) selectedIndex = Math.max(selectedIndex, ranked[1].index);
-  const selected = PROVISIONAL_SIZE_CHART[selectedIndex];
+      const distance = value < min ? min - value : value > max ? value - max : 0;
+      return { index, distance };
+    });
+    const minimum = Math.min(...distances.map(item => item.distance));
+    return distances.filter(item => item.distance === minimum).map(item => item.index);
+  });
+  const candidateIndexes = [...new Set(closestIndexes.flat())].sort((a, b) => a - b);
+  const lowestIndex = candidateIndexes[0];
+  const highestIndex = candidateIndexes.at(-1);
   const normalizedAvailable = availableSizes.map(String);
-  const inStock = !normalizedAvailable.length || normalizedAvailable.includes(selected.size) || normalizedAvailable.includes(selected.letter);
+  if (highestIndex - lowestIndex > 1) {
+    return {
+      status: "needs_fit_confirmation",
+      message: `${keys.map(measurementLabel).join(", ")} ölçülerin farklı beden aralıklarına denk geliyor. Tek beden uydurmak yerine ürün adını ve dar mı rahat mı sevdiğini yazarsan kalıp ve stokla birlikte değerlendirebilirim.`,
+      availableSizes: normalizedAvailable,
+      provisional: true
+    };
+  }
+
+  if (candidateIndexes.length > 1) {
+    const sizes = [PROVISIONAL_SIZE_CHART[lowestIndex].size, PROVISIONAL_SIZE_CHART[highestIndex].size];
+    const stockCandidates = normalizedAvailable.length ? sizes.filter(size => normalizedAvailable.includes(size)) : [];
+    const stockText = !normalizedAvailable.length
+      ? ""
+      : stockCandidates.length
+        ? ` Seçili üründe ${stockCandidates.join(" ve ")} beden stokta görünüyor.`
+        : " Bu bedenler seçili üründe stokta görünmüyor.";
+    const fitText = fit === "rahat" || fit === "bol" ? ` Daha rahat kullanım için ${sizes[1]} bedeni değerlendirebilirsin.` : "";
+    return {
+      status: "between_sizes",
+      sizes,
+      confidence: "orta",
+      inStock: normalizedAvailable.length ? stockCandidates.length > 0 : null,
+      availableSizes: normalizedAvailable,
+      message: `${sizes[0]}–${sizes[1]} beden aralığındasın; ürün kalıbı ve kullanım tercihin seçimi değiştirebilir.${fitText}${stockText}`,
+      environment,
+      provisional: true
+    };
+  }
+
+  const selected = PROVISIONAL_SIZE_CHART[lowestIndex];
+  const inStock = normalizedAvailable.length ? normalizedAvailable.includes(selected.size) : null;
   return {
-    status: missing.length ? "provisional" : "recommended",
+    status: "recommended",
     size: selected.size,
-    letter: selected.letter,
-    missing,
-    confidence: missing.length ? "düşük" : (boundary ? "orta" : "yüksek"),
+    missing: [],
+    confidence: "yüksek",
     inStock,
     availableSizes: normalizedAvailable,
-    message: `${selected.size} (${selected.letter}) beden genel ölçü tablosuna göre en yakın seçenek.${inStock ? "" : " Bu beden seçili üründe stokta görünmüyor."}`,
+    message: `${selected.size} beden genel referans aralığına göre en yakın seçenek.${inStock === false ? " Bu beden seçili üründe stokta görünmüyor." : ""}`,
     environment,
     provisional: true
   };
@@ -290,7 +442,9 @@ function buildDeterministicReply({ message, products = [], policies = {}, sizeAd
   }
   if (intent === "size" && sizeAdvice) {
     const stockText = products[0] ? ` ${products[0].name} için görünen stok: ${stockSummary(products[0])}.` : "";
-    if (sizeAdvice.status === "needs_measurements") return `${sizeAdvice.message}${stockText}`;
+    if (["needs_measurements", "invalid_measurements", "ambiguous_measurements", "outside_reference", "needs_fit_confirmation", "product_specific_sizing"].includes(sizeAdvice.status)) {
+      return `${sizeAdvice.message}${stockText}`;
+    }
     const missingText = sizeAdvice.missing?.length ? ` Eksik ölçüler: ${sizeAdvice.missing.map(measurementLabel).join(", ")}.` : "";
     const disclaimer = environment === "production"
       ? " Bu genel bir beden önerisidir; ürünün kalıbına ve kişisel tercihe göre değişebilir."
@@ -345,9 +499,12 @@ module.exports = {
   buildDeterministicReply,
   classifyIntent,
   containsSensitiveDisclosure,
+  expectedMeasurementFields,
+  extractContextualMeasurements,
   extractMeasurements,
   firestoreValue,
   inferGarmentType,
+  isBareMeasurementReply,
   normalizeProduct,
   normalizeText,
   parseFirestoreDocument,

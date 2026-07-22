@@ -51,6 +51,26 @@ test("Sohbet endpointi ürün stoğunu döndürür", async () => {
   });
 });
 
+test("Test endpointi beden isteminden sonraki salt sayı ölçülerini anlar", async () => {
+  await withServer(async baseUrl => {
+    const response = await fetch(`${baseUrl}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "88 70 96",
+        history: [
+          { role: "user", content: "Bedenimi bulmama yardım eder misin?" },
+          { role: "assistant", content: "Sırasıyla göğüs, bel, kalça ölçünü santimetre olarak yaz: 88 70 96." }
+        ]
+      })
+    });
+    const body = await response.json();
+    assert.equal(response.status, 200);
+    assert.match(body.reply, /36 beden/);
+    assert.doesNotMatch(body.reply, /\(M\)/);
+  });
+});
+
 test("Boş mesajı 400 ile reddeder", async () => {
   await withServer(async baseUrl => {
     const response = await fetch(`${baseUrl}/api/chat`, {

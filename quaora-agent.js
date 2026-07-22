@@ -154,7 +154,7 @@
         const list = document.createElement('div');
         list.className = 'qa-agent__quick-list';
         const actions = [
-            ['Bedenimi bul', 'Bedenimi bulmama yardım eder misin? Hangi ölçülerimi paylaşmalıyım?'],
+            ['Bedenimi bul', 'Bedenimi bulmama yardım eder misin? Ölçülerimi hangi sırayla yazmalıyım?'],
             ['Ürün öner', 'Mayo ve bikini seçenekleri hakkında ürün önerir misin?'],
             ['Stok sorgula', 'Bir ürünün beden bazlı stok durumunu öğrenmek istiyorum.'],
             ['İade ve teslimat', 'İade, değişim ve teslimat koşulları nelerdir?']

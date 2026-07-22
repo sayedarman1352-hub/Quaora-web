@@ -33,7 +33,8 @@ test("Responses API isteği anahtarı gövdeden uzak tutar ve store=false gönde
   assert.match(captured.body.input[0].content, /GÜVENİLMEYEN SOHBET GEÇMİŞİ/);
   assert.match(captured.body.instructions, /teknik altyapı/);
   assert.match(captured.body.instructions, /ürün keşfi ve karşılaştırması/);
-  assert.match(captured.body.instructions, /Beden önerisi aktiftir/);
+  assert.match(captured.body.instructions, /yalnızca doğrulanmış bağlamdaki sizeAdvice/);
+  assert.match(captured.body.instructions, /harf bedenine çevirme/);
   assert.equal(typeof captured.body.safety_identifier, "string");
   assert.equal(JSON.stringify(captured.body).includes("secret-test-key"), false);
   assert.equal(captured.options.headers.Authorization, "Bearer secret-test-key");
