@@ -376,10 +376,11 @@ function expectedMeasurementFields(history = []) {
   const lastPrompt = [...history].reverse().find(item => item?.role === "assistant" && String(item.content || "").trim());
   if (!lastPrompt) return [];
   const text = normalizeText(lastPrompt.content);
-  if (!/(olcu|santimetre|\bcm\b)/.test(text) || !/(paylas|yaz|girer|belirt|gonder)/.test(text)) return [];
+  const asksHeightAndWeight = /\bboy\b/.test(text) && /\bkilo(?:nu|n|yu)?\b/.test(text);
+  if ((!/(olcu|santimetre|\bcm\b)/.test(text) && !asksHeightAndWeight) || !/(paylas|yaz|girer|belirt|gonder)/.test(text)) return [];
   const positions = [
     ["height", text.search(/\bboy\b/)],
-    ["weight", text.search(/\bkilo\b/)],
+    ["weight", text.search(/\bkilo(?:nu|n|yu)?\b/)],
     ["bust", text.search(/\bgogus\b/)],
     ["waist", text.search(/\bbel\b/)],
     ["hips", text.search(/\bkalca\b/)]
@@ -470,9 +471,40 @@ function recommendSize({ measurements = {}, garmentType = "onepiece", fit = "nor
 
   if (keys.some(key => measurements[key] < PROVISIONAL_SIZE_CHART[0][key][0]
     || measurements[key] > PROVISIONAL_SIZE_CHART.at(-1)[key][1])) {
+    const missingBodyContext = ["height", "weight"].filter(key => !Number.isFinite(measurements[key]));
+    if (missingBodyContext.length) {
+      return {
+        status: "needs_height_weight",
+        missing: missingBodyContext,
+        message: "Ölçülerinden biri genel beden aralığının dışında; yine de en yakın bedeni yaklaşık olarak hesaplayabilirim. Daha mantıklı bir kontrol için sırasıyla boy ve kilonu yazabilir misin? Örnek: 165 70. En kesin kalıp teyidi için ürün adıyla QUAORA Instagram hesabına danışmanı da öneririm: @quaoratr.",
+        provisional: true
+      };
+    }
+
+    const scoredRows = PROVISIONAL_SIZE_CHART.map((row, index) => ({
+      index,
+      score: keys.reduce((total, key) => {
+        const [min, max] = row[key];
+        const value = measurements[key];
+        const distance = value < min ? min - value : value > max ? value - max : 0;
+        return total + (distance * distance);
+      }, 0)
+    }));
+    const minimumScore = Math.min(...scoredRows.map(item => item.score));
+    const nearestIndexes = scoredRows.filter(item => item.score === minimumScore).map(item => item.index);
+    const nearestIndex = fit === "rahat" || fit === "bol" ? nearestIndexes.at(-1) : nearestIndexes[0];
+    const selected = PROVISIONAL_SIZE_CHART[nearestIndex];
+    const normalizedAvailable = availableSizes.map(String);
+    const inStock = normalizedAvailable.length ? normalizedAvailable.includes(selected.size) : null;
     return {
-      status: "outside_reference",
-      message: "Ölçülerinden en az biri genel referans tablosunun dışında kalıyor. Yanlış beden söylememek için ürün adını paylaşmanı ve QUAORA desteğinden kalıp teyidi istemeni öneririm.",
+      status: "nearest_outside_reference",
+      size: selected.size,
+      missing: [],
+      confidence: "düşük",
+      inStock,
+      availableSizes: normalizedAvailable,
+      message: `Boy (${measurements.height} cm) ve kilo (${measurements.weight} kg) bilgini ek kontrol olarak aldım; bedeni asıl göğüs, bel ve kalça ölçülerin belirledi. Genel tabloya en yakın seçenek ${selected.size} beden görünüyor.${inStock === false ? " Bu beden seçili üründe stokta görünmüyor." : ""} En kesin kalıp teyidi için ürün adıyla QUAORA Instagram hesabına danışmanı öneririm: @quaoratr.`,
+      environment,
       provisional: true
     };
   }
@@ -625,7 +657,7 @@ function buildDeterministicReply({ message, contextMessage = "", products = [], 
   }
   if (intent === "size" && sizeAdvice) {
     const stockText = products[0] ? ` ${products[0].name} için görünen stok: ${stockSummary(products[0])}.` : "";
-    if (["needs_measurements", "invalid_measurements", "ambiguous_measurements", "outside_reference", "needs_fit_confirmation", "product_specific_sizing"].includes(sizeAdvice.status)) {
+    if (["needs_measurements", "needs_height_weight", "invalid_measurements", "ambiguous_measurements", "outside_reference", "needs_fit_confirmation", "product_specific_sizing"].includes(sizeAdvice.status)) {
       return `${sizeAdvice.message}${stockText}`;
     }
     const missingText = sizeAdvice.missing?.length ? ` Eksik ölçüler: ${sizeAdvice.missing.map(measurementLabel).join(", ")}.` : "";

@@ -117,6 +117,25 @@ test("Beden isteğinden sonra yazılan salt sayıları konuşma bağlamıyla anl
   assert.match(correctedReply, /36–38 beden aralığı/i);
 });
 
+test("Tablo dışı ölçülerde boy-kilo takibiyle en yakın bedeni ve Instagram teyidini verir", async () => {
+  const service = createAgentService({ catalogClient: catalogClient(), apiKey: "", logger: silentLogger });
+  const firstMessage = "Göğsüm 110, belim 90, kalçam 120; hangi beden olur?";
+  const firstReply = await service.answer({ message: firstMessage });
+  assert.match(firstReply, /boy.*kilo/i);
+  assert.match(firstReply, /Instagram.*@quaoratr/i);
+  assert.doesNotMatch(firstReply, /genel referans tablosunun dışında kalıyor/i);
+
+  const history = [
+    { role: "user", content: firstMessage },
+    { role: "assistant", content: firstReply }
+  ];
+  assert.equal(resolveConversationIntent("165 85", history), "size");
+  const finalReply = await service.answer({ message: "165 85", history });
+  assert.match(finalReply, /en yakın seçenek 44 beden/i);
+  assert.match(finalReply, /Instagram.*@quaoratr/i);
+  assert.match(finalReply, /genel bir beden önerisidir/i);
+});
+
 test("Salt sayıları beden konuşması dışında ölçü sanmaz", () => {
   assert.equal(resolveConversationIntent("88 70 96", []), "out_of_scope");
   assert.equal(resolveConversationIntent("36", [{ role: "user", content: "Bordo bikini altını göster" }]), "product");

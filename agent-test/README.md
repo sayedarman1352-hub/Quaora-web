@@ -8,7 +8,7 @@ Bu klasör, canlı QUAORA müşteri danışmanının izole testlerini ve yerel �
 - Firestore'daki güncel politika sayfalarını yalnızca okur; erişim olmazsa repodaki doğrulanmış metinlere döner.
 - İade/değişim, teslimat/kargo, ödeme ve gizlilik gibi müşteriye açık politikaları açıklar.
 - Ürün keşfi, karşılaştırma, açıklama, materyal, renk, kalıp, bakım, fiyat ve beden bazlı stok bilgisi verir.
-- Ölçü tabanlı beden tavsiyesi aktiftir; ürün türüne göre gerekli ölçüleri ister, stoktaki bedenle karşılaştırır ve genel öneri uyarısı gösterir.
+- Ölçü tabanlı beden tavsiyesi aktiftir; ürün türüne göre gerekli ölçüleri ister, stoktaki bedenle karşılaştırır ve genel öneri uyarısı gösterir. Ölçüler genel tablonun dışındaysa boy-kilo bilgisini tek takip mesajında tamamlatır, en yakın bedeni yaklaşık olarak verir ve kesin kalıp teyidi için `@quaoratr` Instagram hesabını önerir.
 - “Peki 36 var mı?”, “daha ucuzu?”, “ikincisinin 36'sı?” veya “aynısının kırmızısı?” gibi takip sorularında önceki müşteri bağlamını güvenli biçimde sürdürür.
 - Müşterinin asıl ihtiyacını, memnuniyetsizliğini, tekrar eden sorununu ve insan desteği isteğini izler; aynı bilgiyi yeniden istemeden yanıt, netleştirme, sorun giderme veya güvenli devir hareketini seçer.
 - Ödeme, hesap, indirim kodu ve geciken sipariş sorunlarında konuya özel cevap verir; yapmadığı bir işlemi yaptığını söylemez ve gerektiğinde resmi iletişim kanalına yönlendirir.

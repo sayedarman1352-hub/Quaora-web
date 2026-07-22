@@ -5,7 +5,7 @@ Ortam: İzole test + yerel üretim önizlemesi
 
 ## Sonuç özeti
 
-- Otomatik testler: **73/73 geçti**
+- Otomatik testler: **76/76 geçti**
 - JavaScript sözdizimi kontrolleri: **geçti**
 - `git diff --check`: **geçti**
 - Gerçek Firebase salt-okunur smoke testi: **geçti**
@@ -56,6 +56,7 @@ Ortam: İzole test + yerel üretim önizlemesi
 38. Modelin resmi yönlendirmeyi atması, uydurma bağlantı vermesi veya yapılmamış bir işlem sözü vermesi halinde güvenli sunucu yanıtına dönülmesi.
 39. Anahtar kelimeye sığmayan alışveriş niyetlerinin semantik olarak ürün desteğine alınması.
 40. Son 20 sohbet turunun bağlam olarak korunması ve tarayıcı rol enjeksiyonuna karşı güvenilmeyen metin olarak işlenmesi.
+41. Genel tablonun dışındaki ölçülerde boy ve kilo istenmesi, salt sayı takibinin anlaşılması ve en yakın sayısal bedenin Instagram teyidiyle verilmesi.
 
 ## Canlı veri smoke testi
 

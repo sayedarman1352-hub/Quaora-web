@@ -122,6 +122,39 @@ test("Tek bir gerekli ölçü eksikken beden uydurmak yerine o ölçüyü ister"
   assert.match(advice.message, /kalça.*96/i);
 });
 
+test("Genel tablonun dışındaki ölçülerde önce boy ve kilo ister", () => {
+  const advice = recommendSize({
+    measurements: { bust: 110, waist: 90, hips: 120 },
+    garmentType: "onepiece"
+  });
+  assert.equal(advice.status, "needs_height_weight");
+  assert.deepEqual(advice.missing, ["height", "weight"]);
+  assert.equal(advice.size, undefined);
+  assert.match(advice.message, /boy.*kilo/i);
+  assert.match(advice.message, /Instagram.*@quaoratr/i);
+  assert.doesNotMatch(advice.message, /ürün adını paylaşmanı.*kalıp teyidi/i);
+});
+
+test("Boy ve kilo tamamlanınca tablo dışı ölçülere en yakın bedeni söyler", () => {
+  const high = recommendSize({
+    measurements: { height: 165, weight: 85, bust: 110, waist: 90, hips: 120 },
+    garmentType: "onepiece",
+    availableSizes: ["42"]
+  });
+  assert.equal(high.status, "nearest_outside_reference");
+  assert.equal(high.size, "44");
+  assert.equal(high.inStock, false);
+  assert.match(high.message, /en yakın seçenek 44 beden/i);
+  assert.match(high.message, /Instagram.*@quaoratr/i);
+
+  const low = recommendSize({
+    measurements: { height: 158, weight: 43, bust: 75, waist: 55, hips: 82 },
+    garmentType: "onepiece"
+  });
+  assert.equal(low.status, "nearest_outside_reference");
+  assert.equal(low.size, "32");
+});
+
 test("Sınır ölçülerde küçük bedeni sessizce seçmek yerine iki adayı gösterir", () => {
   const advice = recommendSize({ measurements: { bust: 82, waist: 64, hips: 90 }, garmentType: "onepiece" });
   assert.equal(advice.status, "between_sizes");
