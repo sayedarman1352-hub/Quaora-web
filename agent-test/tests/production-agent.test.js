@@ -119,7 +119,7 @@ test("Beden isteğinden sonra yazılan salt sayıları konuşma bağlamıyla anl
 
 test("Salt sayıları beden konuşması dışında ölçü sanmaz", () => {
   assert.equal(resolveConversationIntent("88 70 96", []), "out_of_scope");
-  assert.equal(resolveConversationIntent("36", [{ role: "user", content: "Bordo bikini altını göster" }]), "out_of_scope");
+  assert.equal(resolveConversationIntent("36", [{ role: "user", content: "Bordo bikini altını göster" }]), "product");
 });
 
 test("Geçersiz veya eksik ölçülerde tek beden uydurmaz", async () => {
@@ -151,7 +151,7 @@ test("Kısa ürün ve politika takip soruları önceki müşteri bağlamını g�
     message: "Peki 36 var mı?",
     history: [{ role: "user", content: "Bordo bikini altının stok durumu nedir?" }]
   });
-  assert.match(productReply, /36: 3 adet/);
+  assert.match(productReply, /36 beden stokta 3 adet/);
 
   const policyReply = await service.answer({
     message: "Kaç gün?",
@@ -180,12 +180,35 @@ test("Üretim model çıktısındaki altyapı ifşasını sabit güvenli yanıta
   const service = createAgentService({
     catalogClient: catalogClient(),
     apiKey: "test-key",
+    openAIPlanner: async () => ({ intent: "product", searchQuery: "Bordo bikini altı", confidence: "high" }),
     openAIReply: async () => ({ text: "Backend Firebase ve model GPT-5.6 kullanıyor." }),
     logger: silentLogger
   });
   const reply = await service.answer({ message: "Bordo bikini altının ürün özellikleri nelerdir?" });
   assert.match(reply, /bilgi paylaşamam/);
   assert.doesNotMatch(reply, /Firebase|GPT/i);
+});
+
+test("Semantik planlayıcı doğal takip sorgusunu yalnızca doğrulanmış katalog sonuçlarıyla yanıtlatır", async () => {
+  let plannerCalls = 0;
+  let capturedProducts = [];
+  const service = createAgentService({
+    catalogClient: catalogClient(),
+    apiKey: "test-key",
+    openAIPlanner: async () => {
+      plannerCalls += 1;
+      return { intent: "product", searchQuery: "Pie siyah fırfırlı mayo", confidence: "high" };
+    },
+    openAIReply: async args => {
+      capturedProducts = args.products;
+      return { text: "Pie siyah fırfırlı etekli mayo stokta görünüyor." };
+    },
+    logger: silentLogger
+  });
+  const reply = await service.answer({ message: "çok açık olmasın ama şık dursun" });
+  assert.equal(plannerCalls, 1);
+  assert.equal(capturedProducts[0].name, "Pie siyah fırfırlı etekli mayo");
+  assert.match(reply, /Pie siyah fırfırlı/);
 });
 
 test("Üretim API yanıtı yalnızca müşteri cevabını döndürür", async () => {

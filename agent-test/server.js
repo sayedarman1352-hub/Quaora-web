@@ -9,6 +9,7 @@ const {
   extractContextualMeasurements,
   inferGarmentType,
   recommendSize,
+  resolveProductReferences,
   sanitizeAgentOutput,
   searchProducts,
   selectPolicyExcerpts
@@ -54,14 +55,15 @@ function createServer(options = {}) {
         const history = sanitizeHistory(body.history);
         const intent = resolveConversationIntent(message, history);
         const contextMessage = buildConversationQuery(message, history, intent);
-        if (["security_sensitive", "out_of_scope", "greeting", "order_status"].includes(intent)) {
+        if (["security_sensitive", "out_of_scope", "greeting", "order_status", "support"].includes(intent)) {
           return sendJson(res, 200, {
-            reply: buildDeterministicReply({ message }),
+            reply: buildDeterministicReply({ message, intent }),
             test: true
           });
         }
         const [catalog, policyData] = await Promise.all([catalogClient.getCatalog(), catalogClient.getPolicies()]);
-        const products = searchProducts(catalog.products, contextMessage, 5);
+        const referencedProducts = resolveProductReferences(catalog.products, message, history);
+        const products = searchProducts(catalog.products, contextMessage, 5, { currentMessage: message, referencedProducts });
         const policyExcerpts = selectPolicyExcerpts(policyData.policies, contextMessage, 5);
         const garmentType = inferGarmentType(contextMessage, products);
         const measurementContext = extractContextualMeasurements(message, { history, contextMessage, garmentType });
@@ -96,10 +98,13 @@ function createServer(options = {}) {
         }
 
         const reply = buildDeterministicReply({
-          message: contextMessage,
+          message,
+          contextMessage,
           products,
           policies: policyData.policies,
-          sizeAdvice
+          policyExcerpts,
+          sizeAdvice,
+          intent
         });
         return sendJson(res, 200, {
           reply: sanitizeAgentOutput(reply),

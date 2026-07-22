@@ -1,6 +1,6 @@
 # QUAORA Agent Güvenlik Notu
 
-Bu belge test agentı ile üretim kaynak entegrasyonunun tehdit modelini açıklar. Entegrasyon kodda tamamlanmış, canlı siteye deploy edilmemiştir.
+Bu belge test agentı ile canlı üretim entegrasyonunun tehdit modelini açıklar. Agent ana sayfada etkindir; değişiklikler izole test ve canlı kabul akışından geçirilir.
 
 ## Müşteriye kapalı bilgiler
 
@@ -25,6 +25,7 @@ Bu sorular modele veya veri katmanına gönderilmeden sabit bir güvenlik yanıt
 - Kullanıcı girişi 1200 karakter, istek gövdesi 32 KB ve model çıktısı 650 token ile sınırlıdır.
 - Oturum için kişisel veri içermeyen hash'lenmiş safety identifier kullanılır.
 - Tarayıcıdan gelen geçmiş, güvenilir `assistant` veya `developer` rolü olarak modele verilmez.
+- Semantik niyet planlayıcısı yalnızca güvenlik ön filtresinden geçen müşteri kapsamındaki mesajlarda çalışır ve katı JSON şeması üretir.
 - `store: false`, CSP, frame engeli, izin politikası ve same-origin kaynak başlıkları kullanılır.
 - Prompt injection, teknik keşif ve çıktı sızıntısı regresyon testleri vardır.
 

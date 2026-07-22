@@ -2,7 +2,35 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { createOpenAIReply, extractOutputText } = require("../lib/openai-client");
+const { createOpenAIIntentPlan, createOpenAIReply, extractOutputText } = require("../lib/openai-client");
+
+test("Niyet planlayıcısı konuşma bağlamını katı JSON şemasıyla çözer", async () => {
+  let captured;
+  const fetchImpl = async (url, options) => {
+    captured = { url, options, body: JSON.parse(options.body) };
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ output_text: JSON.stringify({ intent: "product", searchQuery: "siyah mayo 2000 TL altı daha ucuz", confidence: "high" }) })
+    };
+  };
+  const plan = await createOpenAIIntentPlan({
+    message: "daha ucuzu yok mu",
+    history: [{ role: "user", content: "Siyah ve 2000 TL altı mayo öner" }],
+    sessionId: "planner-test",
+    apiKey: "secret-test-key",
+    model: "gpt-5.6-sol",
+    fetchImpl
+  });
+  assert.equal(plan.intent, "product");
+  assert.match(plan.searchQuery, /siyah mayo/);
+  assert.equal(captured.url, "https://api.openai.com/v1/responses");
+  assert.equal(captured.body.store, false);
+  assert.equal(captured.body.text.format.type, "json_schema");
+  assert.equal(captured.body.text.format.strict, true);
+  assert.equal(JSON.stringify(captured.body).includes("secret-test-key"), false);
+  assert.equal(captured.options.headers.Authorization, "Bearer secret-test-key");
+});
 
 test("Responses API isteği anahtarı gövdeden uzak tutar ve store=false gönderir", async () => {
   let captured;

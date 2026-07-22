@@ -72,6 +72,25 @@ const MEASUREMENT_RANGES = Object.freeze({
   hips: [65, 180]
 });
 
+const PRODUCT_COLORS = Object.freeze({
+  siyah: ["siyah", "black"],
+  beyaz: ["beyaz", "ekru", "krem", "white"],
+  kirmizi: ["kirmizi", "bordo", "kizil", "red"],
+  mavi: ["mavi", "lacivert", "turkuaz", "blue"],
+  yesil: ["yesil", "haki", "mint", "green"],
+  pembe: ["pembe", "fuşya", "fusya", "pink"],
+  sari: ["sari", "yellow"],
+  mor: ["mor", "lila", "purple"],
+  kahverengi: ["kahverengi", "taba", "bej", "brown"]
+});
+
+const PRODUCT_SEARCH_STOPWORDS = new Set([
+  "acaba", "almak", "altinda", "alti", "ama", "bana", "ben", "bi", "bir", "bunun", "bunu", "bu",
+  "cok", "daha", "de", "diye", "en", "fiyat", "gecmesin", "gibi", "icin", "istiyorum", "kadar", "lira",
+  "lazim", "mi", "mu", "miyim", "nedir", "ne", "olsun", "oner", "onerir", "oneririsin", "peki", "sey",
+  "tl", "urun", "var", "ve", "ya", "yok"
+]);
+
 function normalizeText(value) {
   return String(value ?? "")
     .toLocaleLowerCase("tr-TR")
@@ -140,28 +159,121 @@ function productUrl(collection, id) {
   return `https://www.quaora.com.tr/urun.html?${params.toString()}`;
 }
 
-function searchProducts(products, query, limit = 5) {
+function extractProductConstraints(query) {
   const normalizedQuery = normalizeText(query);
-  const tokens = [...new Set(normalizedQuery.split(" ").filter(token => token.length > 1))];
-  if (!tokens.length) return [];
-  return products
+  const priceMatches = [...normalizedQuery.matchAll(/\b(\d{3,6})\s*(?:tl|try|lira)?\b/g)].map(match => Number(match[1]));
+  const hasUpperPriceLanguage = /(butce|en fazla|max|gecmesin|altinda|alti|kadar|civar)/.test(normalizedQuery);
+  const colors = Object.entries(PRODUCT_COLORS)
+    .filter(([, aliases]) => aliases.some(alias => new RegExp(`\\b${normalizeText(alias)}(?:i|si|sini|ini)?\\b`).test(normalizedQuery)))
+    .map(([color]) => color);
+  const sizeMatch = normalizedQuery.match(/\b(2xl|xl|xs|s|m|l|32|34|36|38|40|42|44)\b/);
+  return {
+    colors,
+    maxPrice: hasUpperPriceLanguage && priceMatches.length ? Math.max(...priceMatches) : null,
+    requestedSize: sizeMatch ? sizeMatch[1].toUpperCase() : "",
+    wantsCheaper: /(daha ucuz|en ucuz|uygun fiyat|butce dostu|hesapli)/.test(normalizedQuery),
+    wantsStock: /(stok|kaldi mi|kalmis mi|mevcut)/.test(normalizedQuery)
+      || (Boolean(sizeMatch) && /(var mi|bulunuyor mu)/.test(normalizedQuery))
+      || /^(?:2xl|xl|xs|s|m|l|32|34|36|38|40|42|44)$/.test(normalizedQuery),
+    wantsAlternative: /(aynisi|aynisinin|benzeri|alternatif|baska|farkli renk)/.test(normalizedQuery),
+    wantsComparison: /(karsilastir|hangisi daha|hangisini|aralarindaki fark)/.test(normalizedQuery),
+    asksRecommendation: /(oner|tavsiye|bakiyorum|lazim|istiyorum|hangisini al)/.test(normalizedQuery)
+  };
+}
+
+function productMatchesColor(product, color) {
+  const aliases = PRODUCT_COLORS[color] || [color];
+  const haystack = normalizeText(`${product.name} ${product.color} ${product.description}`);
+  return aliases.some(alias => new RegExp(`\\b${normalizeText(alias)}\\b`).test(haystack));
+}
+
+function mergeProductConstraints(base, current) {
+  return {
+    ...base,
+    colors: current.colors.length ? current.colors : base.colors,
+    maxPrice: current.maxPrice || base.maxPrice,
+    requestedSize: current.requestedSize || base.requestedSize,
+    wantsCheaper: current.wantsCheaper,
+    wantsStock: current.wantsStock,
+    wantsAlternative: current.wantsAlternative,
+    wantsComparison: current.wantsComparison,
+    asksRecommendation: current.asksRecommendation || base.asksRecommendation
+  };
+}
+
+function searchProducts(products, query, limit = 5, options = {}) {
+  const normalizedQuery = normalizeText(query);
+  const currentMessage = normalizeText(options.currentMessage || query);
+  const baseConstraints = extractProductConstraints(query);
+  const currentConstraints = extractProductConstraints(options.currentMessage || query);
+  const constraints = mergeProductConstraints(baseConstraints, currentConstraints);
+  const referencedProducts = Array.isArray(options.referencedProducts) ? options.referencedProducts.filter(Boolean) : [];
+  const tokens = [...new Set(normalizedQuery.split(" ").filter(token => token.length > 1 && !PRODUCT_SEARCH_STOPWORDS.has(token) && !/^\d+$/.test(token)))];
+  const ordinalMatch = currentMessage.match(/\b(?:ikinci(?:si|sinin)?|2 nci|2 inci)\b/)
+    ? 1
+    : currentMessage.match(/\b(?:ucuncu(?:su|sunun)?|3 uncu|3uncu)\b/) ? 2 : currentMessage.match(/\b(?:ilk|birinci(?:si|sinin)?|1 inci)\b/) ? 0 : -1;
+  if (ordinalMatch >= 0 && referencedProducts[ordinalMatch]) return [referencedProducts[ordinalMatch]];
+
+  const isReferenceFollowUp = referencedProducts.length && (/(bu|bunun|bunda|buna|aynisi|aynisinin|kaldı|kaldi|fiyati|bedeni|rengi|materyali|kalibi|daha ucuz)/.test(currentMessage)
+    || (currentConstraints.wantsStock && Boolean(currentConstraints.requestedSize)));
+  if (isReferenceFollowUp && !currentConstraints.wantsCheaper && !currentConstraints.wantsAlternative && !currentConstraints.colors.length) {
+    if (/\b(?:bu|bunun|bunda|buna)\b/.test(currentMessage)) return [referencedProducts[0]];
+    return referencedProducts.slice(0, limit);
+  }
+
+  const referenceCategories = new Set(referencedProducts.map(product => normalizeText(`${product.category} ${product.collection}`)));
+  const referencePrice = referencedProducts.find(product => Number(product.salePrice) > 0)?.salePrice || null;
+  const shouldRequireStock = constraints.asksRecommendation && !constraints.wantsStock;
+  const scored = products
     .map(product => {
       const name = normalizeText(product.name);
       const category = normalizeText(`${product.category} ${product.collection}`);
-    const detail = normalizeText(`${product.description} ${product.color} ${product.material} ${product.fit} ${product.sizeDescription} ${product.sku}`);
+      const detail = normalizeText(`${product.description} ${product.color} ${product.material} ${product.fit} ${product.sizeDescription} ${product.sku}`);
+      const fullText = `${name} ${category} ${detail}`;
       let score = 0;
       if (name === normalizedQuery) score += 100;
       if (name.includes(normalizedQuery)) score += 35;
       for (const token of tokens) {
         if (name.includes(token)) score += 10;
-        if (category.includes(token)) score += 6;
-        if (detail.includes(token)) score += 2;
+        if (category.includes(token)) score += 7;
+        if (detail.includes(token)) score += 3;
       }
-      return { product, score };
+      if (constraints.colors.length && constraints.colors.some(color => productMatchesColor(product, color))) score += 30;
+      if (referenceCategories.has(category)) score += 18;
+      if (currentConstraints.wantsCheaper) score += Math.max(0, 12 - Number(product.salePrice || 0) / 500);
+      return { product, score, fullText, category };
     })
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score || a.product.name.localeCompare(b.product.name, "tr"))
-    .slice(0, limit)
+    .filter(item => {
+      const product = item.product;
+      if (constraints.maxPrice && (!product.salePrice || product.salePrice > constraints.maxPrice)) return false;
+      if (constraints.colors.length && !constraints.colors.some(color => productMatchesColor(product, color))) return false;
+      if (currentConstraints.wantsCheaper && referencePrice && (!product.salePrice || product.salePrice >= referencePrice)) return false;
+      if ((currentConstraints.wantsCheaper || currentConstraints.wantsAlternative) && referenceCategories.size && !referenceCategories.has(item.category)) return false;
+      if (shouldRequireStock && Number(product.stock || 0) <= 0) return false;
+      if (constraints.requestedSize && constraints.asksRecommendation) {
+        if (Number(product.sizeStocks?.[constraints.requestedSize] || 0) <= 0) return false;
+      }
+      return item.score > 0 || (constraints.asksRecommendation && (constraints.colors.length || constraints.maxPrice));
+    })
+    .sort((a, b) => {
+      if (currentConstraints.wantsCheaper) return Number(a.product.salePrice || Infinity) - Number(b.product.salePrice || Infinity) || b.score - a.score;
+      return b.score - a.score || Number(a.product.salePrice || Infinity) - Number(b.product.salePrice || Infinity) || a.product.name.localeCompare(b.product.name, "tr");
+    });
+  return scored.slice(0, limit).map(item => item.product);
+}
+
+function resolveProductReferences(products, message, history = []) {
+  const current = normalizeText(message);
+  if (!/(bu|bunun|bunda|buna|aynisi|aynisinin|ilk|birinci|ikinci|ucuncu|daha ucuz|kaldı|kaldi|fiyati|bedeni|rengi|materyali|kalibi)/.test(current)
+    && !/^(?:2xl|xl|xs|s|m|l|32|34|36|38|40|42|44)$/.test(current)) return [];
+  const lastAssistant = [...history].reverse().find(item => item?.role === "assistant" && String(item.content || "").trim());
+  if (!lastAssistant) return [];
+  const assistantText = normalizeText(lastAssistant.content);
+  return products
+    .map(product => ({ product, index: assistantText.indexOf(normalizeText(product.name)) }))
+    .filter(item => item.index >= 0)
+    .sort((a, b) => a.index - b.index)
+    .slice(0, 5)
     .map(item => item.product);
 }
 
@@ -173,6 +285,16 @@ function stockSummary(product) {
     return available.map(([size, stock]) => `${size}: ${stock} adet`).join(", ");
   }
   return Number(product?.stock || 0) > 0 ? `Stokta ${Number(product.stock)} adet` : "Tükendi";
+}
+
+function compactText(value, maxLength = 150) {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
+function displayColor(color) {
+  return ({ kirmizi: "kırmızı", yesil: "yeşil", sari: "sarı" })[color] || color;
 }
 
 function extractMeasurementDetails(message) {
@@ -392,10 +514,15 @@ function measurementLabel(key) {
 
 function selectPolicyExcerpts(policies, query, limit = 5) {
   const text = normalizeText(query);
+  const evidenceRule = [
+    { query: /hediye paket/, evidence: /hediye paket/ },
+    { query: /yurtdisi|yurt disi|uluslararasi/, evidence: /yurtdisi|yurt disi|uluslararasi/ },
+    { query: /kapida odeme/, evidence: /kapida odeme/ }
+  ].find(rule => rule.query.test(text));
   const policyHints = {
-    return_policy: ["iade", "degisim", "hijyen", "cayma", "kusurlu", "hasarli", "yanlis", "iptal"],
-    delivery_policy: ["teslimat", "kargo", "paket", "adres", "takip", "gecikme", "ucret", "sure"],
-    distance_sales_policy: ["sozlesme", "odeme", "paytr", "fiyat", "cayma", "taksit", "kart", "fatura", "iptal"],
+    return_policy: ["iade", "degisim", "hijyen", "cayma", "kusurlu", "hasarli", "yanlis", "iptal", "geri gonder", "etiket", "denedim", "olmadi", "uymadi"],
+    delivery_policy: ["teslimat", "kargo", "paket", "adres", "takip", "gecikme", "ucret", "sure", "ne zaman", "gelir", "elime", "elimde", "kac gunde"],
+    distance_sales_policy: ["sozlesme", "odeme", "paytr", "fiyat", "cayma", "taksit", "kart", "fatura", "iptal", "kapida"],
     privacy_policy: ["gizlilik", "veri", "kart", "kvkk", "saklama", "kisisel", "guvenlik"]
   };
   const preferred = Object.entries(policyHints)
@@ -406,32 +533,36 @@ function selectPolicyExcerpts(policies, query, limit = 5) {
   for (const key of keys) {
     const policy = policies[key];
     for (const block of policy?.blocks || []) {
-      const blockText = normalizeText(`${block.heading} ${block.text}`);
+      const blockText = normalizeText(`${policy.title} ${block.heading} ${block.text}`);
+      if (evidenceRule && !evidenceRule.evidence.test(blockText)) continue;
       let score = text.split(" ").filter(token => token.length > 2 && blockText.includes(token)).length;
       if (/(kac gun|sure|ne kadar zaman)/.test(text) && /(sure|gun|cayma)/.test(blockText)) score += 5;
       if (/(hijyen|band|ambalaj|etiket)/.test(text) && /(hijyen|band|ambalaj|etiket)/.test(blockText)) score += 3;
       scored.push({ policyKey: key, policyTitle: policy.title, heading: block.heading, text: block.text, score });
     }
   }
-  return scored.sort((a, b) => b.score - a.score).slice(0, limit);
+  return scored.filter(item => item.score > 0).sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
 function classifyIntent(message) {
   const text = normalizeText(message);
   if (/(talimatlari unut|onceki talimatlari|system prompt|sistem prompt|developer mesaji|gizli talimat|gizli anahtar|api key|private key|service account|access token|secret|stok uydur|politika uydur)/.test(text)) return "security_sensitive";
   if (/(firebase|firestore|vercel|openai|hangi model|model adi|backend|back end|veritabani|database|api endpoint|api yolu|sunucu yapisi|server yapisi|hosting|host ediliyor|proje id|project id|koleksiyon ad|collection name|teknik mimari|teknik altyapi)/.test(text)) return "security_sensitive";
-  if (/(siparisim nerede|siparis durumu|kargom nerede|kargo takip|siparis takip|takip numaram)/.test(text)) return "order_status";
+  if (/(siparisim nerede|siparis durumu|kargom nerede|kargo takip|siparis takip|takip numaram|paketim.*gelmedi|siparisim.*gelmedi)/.test(text)) return "order_status";
+  if (/(karttan iki kere|fazla cekil|mukerrer|odeme sorunu|odeme redded|odeme gecm|indirim kod.*calism|kupon.*calism|sifremi|sifre unuttum|mail gelmedi|giris yapam|uye olam|canli (?:biri|destek)|musteri temsilcisi|yetkiliyle|bir insanla|iletisim kur|magaza|sube|nerede satiliyor)/.test(text)) return "support";
   const hasMeasurements = /(boyum|kilom|kiloyum|agirligim|gogsum|gogusum|belim|kalcam|vucut olcu|olculerim|(?:boy|kilo|agirlik|gogus|bel|kalca)\s*(?:olcum\s*)?\d)/.test(text);
-  const asksPersonalSize = /(hangi beden (?:olur|almaliyim|secmeliyim|giyerim)|hangi bedeni onerirsin|kac bedenim|bedenim (?:ne|nedir)|bedenimi (?:bul|hesapla)|beden (?:oner|oneri|tavsiye|secimi|uyumu)|bana (?:hangi )?beden|bu bana olur mu|bana olur mu|bana uygun mu|bedenime uygun mu|uzerime olur mu|hangi olcu.*beden|beden.*hangi olcu|(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42) (?:mi|mu).*(?:secmeliyim|olur|uyar)|(?:dar|bol) gelir mi)/.test(text);
+  const asksPersonalSize = /(hangi beden (?:olur|almaliyim|secmeliyim|giyerim)|hangi bedeni onerirsin|kac bedenim|bedenim (?:ne|nedir)|bedenimi (?:bul|hesapla)|beden (?:oner|oneri|onersi|tavsiye|secimi|uyumu)|bana (?:hangi )?beden|bu bana olur mu|bana olur mu|bana uygun mu|bedenime uygun mu|uzerime olur mu|hangi olcu.*beden|beden.*hangi olcu|normalde\s+(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42|44)\s+giy|(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42|44) (?:mi|mu).*(?:secmeliyim|olur|uyar)|(?:dar|bol|sikar) (?:mi|gelir mi)|bu dar mi gelir|ustum\s*\d|altim\s*\d)/.test(text);
   if (hasMeasurements || asksPersonalSize) return "size";
-  if (/(iade|degisim|teslimat|kargo|gizlilik|odeme|paytr|cayma|hijyen|taksit|fatura|iptal|kusurlu|hasarli|yanlis urun|garanti|kvkk|kisisel veri|adres degisikligi|kargo ucreti|teslim suresi)/.test(text)) return "policy";
-  if (/(stok|urun|koleksiyon|mayo|bikini|mayokini|tankini|pareo|ayakkabi|taki|canta|sapka|gozluk|plaj|aksesuar|top|bottom|etek|beden|fiyat|ne kadar|renk|materyal|malzeme|kumas|kalip|beden aciklama|olcu tablosu|bakim|yikama|yikanir|kurutma|icerik|ozellik|tarz|kombin|onerir misin|karsilastir|tukendi|mevcut|on siparis|pie|panzer|relove|coquette)/.test(text)) return "product";
-  if (/\b(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42)\b.*(?:var mi|stokta mi|mevcut mu)/.test(text)) return "product";
+  if (/(iade|degisim|teslimat|kargo|gizlilik|odeme|paytr|cayma|hijyen|taksit|fatura|iptal|kusurlu|hasarli|yanlis urun|yanlis beden|garanti|kvkk|kisisel veri|adres degisikligi|adresimi yanlis|kargo ucreti|teslim suresi|geri gonder|geri ver|para iadesi|geri odeme|para ne zaman.*yatar|etiketi? (?:cikardim|soktum)|denedim olmadi|uymadi|ne zaman (?:gelir|elimde|elime)|kac gunde|kapida odeme|hediye paket|yurtdisi.*gonder)/.test(text)) return "policy";
+  const constraints = extractProductConstraints(text);
+  if (/(stok|urun|koleksiyon|mayo|bikini|mayokini|tankini|pareo|ayakkabi|taki|canta|sapka|gozluk|plaj|aksesuar|\bust\b|\balt\b|top|bottom|etek|beden|fiyat|ne kadar|renk|materyal|malzeme|kumas|kalip|beden aciklama|olcu tablosu|bakim|yikama|yikanir|kurutma|icerik|ozellik|tarz|kombin|onerir misin|tavsiye|karsilastir|tukendi|mevcut|on siparis|pie|panzer|relove|coquette|tatil|deniz|guneslen|iz yapma|karin bolge|kapatsin|aski|ayarlan|takim olarak|sadece ust|astar|cup|destekli|ic goster|transparan|ceker mi|esner mi|su tutar|cabuk kurur|acik olmasin|kapali olsun|sik dursun|toparlayici|gogsu kucuk|gogsu buyuk|kaldı mi|kaldi mi)/.test(text)) return "product";
+  if (constraints.colors.length || constraints.maxPrice || constraints.wantsCheaper || constraints.wantsAlternative || constraints.wantsComparison) return "product";
+  if (/\b(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42|44)\b.*(?:var mi|stokta mi|mevcut mu|kaldi mi)/.test(text)) return "product";
   if (/^(merhaba|selam|hey|iyi gunler|tesekkur|tesekkurler|sag ol|yardim|ne yapabilirsin)\b/.test(text)) return "greeting";
   return "out_of_scope";
 }
 
-function buildDeterministicReply({ message, products = [], policies = {}, sizeAdvice = null, environment = "test", intent: intentOverride = "" }) {
+function buildDeterministicReply({ message, contextMessage = "", products = [], policies = {}, policyExcerpts = [], sizeAdvice = null, environment = "test", intent: intentOverride = "" }) {
   const intent = intentOverride || classifyIntent(message);
   if (intent === "security_sensitive") return SECURITY_REFUSAL;
   if (intent === "out_of_scope") return OUT_OF_SCOPE_REPLY;
@@ -439,6 +570,9 @@ function buildDeterministicReply({ message, products = [], policies = {}, sizeAd
     return environment === "production"
       ? "Sipariş hesabına erişemiyorum. Sipariş durumunu doğrulamak için QUAORA iletişim kanalından sipariş numaranla destek isteyebilirsin."
       : "Bu test agentı sipariş hesabına erişmiyor. Sipariş durumunu doğrulamak için QUAORA iletişim kanallarından sipariş numaranla destek istemelisin.";
+  }
+  if (intent === "support") {
+    return "Bu konu hesap veya işlem kontrolü gerektiriyor. Kişisel ya da ödeme bilgisi paylaşmadan QUAORA iletişim sayfasından destek ekibine ulaşabilirsin: https://www.quaora.com.tr/iletisim.html";
   }
   if (intent === "size" && sizeAdvice) {
     const stockText = products[0] ? ` ${products[0].name} için görünen stok: ${stockSummary(products[0])}.` : "";
@@ -452,23 +586,63 @@ function buildDeterministicReply({ message, products = [], policies = {}, sizeAd
     return `${sizeAdvice.message}${stockText}${missingText}${disclaimer}`;
   }
   if (intent === "policy") {
-    const excerpts = selectPolicyExcerpts(policies, message, 2);
+    const excerpts = policyExcerpts.length ? policyExcerpts.slice(0, 2) : selectPolicyExcerpts(policies, contextMessage || message, 2);
     if (!excerpts.length) return "Bu konu için doğrulanmış bir QUAORA politika maddesi bulamadım; müşteri temsilcisine yönlendirmem gerekir.";
-    return excerpts.map(item => `${item.policyTitle} — ${item.heading}: ${item.text}`).join("\n\n");
+    return `Doğrulanmış QUAORA politikasına göre: ${excerpts.map(item => item.text).join(" ")}`;
   }
   if (intent === "product") {
-    if (!products.length) return "Bu ifadeyle eşleşen bir ürün bulamadım. Ürün adını veya kategoriyi biraz daha açık yazar mısın?";
-    return products.slice(0, 3).map(product => {
-      const price = product.salePrice > 0 ? `, ₺${product.salePrice.toLocaleString("tr-TR")}` : "";
+    const constraints = mergeProductConstraints(extractProductConstraints(contextMessage || message), extractProductConstraints(message));
+    if (!products.length) {
+      if (constraints.wantsCheaper) {
+        return "Gösterdiğim seçenekten daha ucuz, aynı ürün türünde stokta doğrulanmış bir alternatif bulamadım. İstersen farklı bir renk veya ürün türü deneyebiliriz.";
+      }
+      if (constraints.wantsAlternative && constraints.colors.length) {
+        return `Aynı ürün türünde ${constraints.colors.map(displayColor).join("/")} renkli, stokta doğrulanmış bir alternatif bulamadım. Başka bir renk deneyebiliriz.`;
+      }
       const details = [
-        product.description,
-        product.material ? `Materyal: ${product.material}` : "",
+        constraints.colors.length ? constraints.colors.map(displayColor).join("/") : "",
+        constraints.maxPrice ? `${constraints.maxPrice.toLocaleString("tr-TR")} TL altı` : "",
+        constraints.requestedSize ? `${constraints.requestedSize} beden` : ""
+      ].filter(Boolean).join(", ");
+      return details
+        ? `${details} kriterlerinin tümüne uyan, stokta doğrulanmış bir ürün bulamadım. Renk, bütçe veya ürün türünden hangisini esnetmek istersin?`
+        : "Ne aradığını netleştirelim: ürün türü, renk, yaklaşık bütçe ve gerekiyorsa bedenini yazarsan uygun seçenekleri filtreleyebilirim.";
+    }
+    const asksOnlyStock = constraints.wantsStock && !/(ozellik|materyal|malzeme|kumas|kalip|renk|bakim|aciklama|fiyat|aski|cup|astar|destek|takim|ic goster)/.test(normalizeText(message));
+    if (asksOnlyStock) {
+      const requestedSize = constraints.requestedSize;
+      return `${products.slice(0, 3).map(product => {
+        const sizeStock = requestedSize ? Number(product.sizeStocks?.[requestedSize] || 0) : null;
+        const stockText = requestedSize
+          ? sizeStock > 0 ? `${requestedSize} beden stokta ${sizeStock} adet görünüyor` : `${requestedSize} beden şu anda stokta görünmüyor`
+          : `görünen stok: ${stockSummary(product)}`;
+        return `${product.name} için ${stockText}.${product.url ? ` ${product.url}` : ""}`;
+      }).join("\n")}\nStok anlık değişebilir.`;
+    }
+    if (constraints.wantsComparison && products.length > 1) {
+      return products.slice(0, 3).map(product => {
+        const facts = [product.fit, product.material, product.color, product.salePrice ? `₺${product.salePrice.toLocaleString("tr-TR")}` : "", stockSummary(product)].filter(Boolean);
+        return `${product.name}: ${facts.join(" · ")}${product.url ? `. ${product.url}` : ""}`;
+      }).join("\n");
+    }
+    const intro = constraints.wantsCheaper
+      ? "Daha uygun fiyatlı doğrulanmış seçenekler:"
+      : constraints.asksRecommendation || constraints.colors.length || constraints.maxPrice
+        ? "Kriterlerine uyan stoktaki seçenekler:"
+        : "Bulduğum ürünler:";
+    const lines = products.slice(0, 3).map(product => {
+      const price = product.salePrice > 0 ? `, ₺${product.salePrice.toLocaleString("tr-TR")}` : "";
+      const asksDetails = /(ozellik|materyal|malzeme|kumas|kalip|renk|bakim|aciklama|icerik|aski|cup|astar|destek|takim|ic goster)/.test(normalizeText(message));
+      const details = [
+        compactText(product.description, asksDetails ? 220 : 110),
+        asksDetails && product.material ? `Materyal: ${compactText(product.material, 100)}` : "",
         product.color ? `Renk: ${product.color}` : "",
         product.fit ? `Kalıp: ${product.fit}` : "",
-        product.sizeDescription ? `Beden açıklaması: ${product.sizeDescription}` : ""
+        asksDetails && product.sizeDescription ? `Beden açıklaması: ${compactText(product.sizeDescription, 140)}` : ""
       ].filter(Boolean).join(" · ");
       return `${product.name}${details ? ` — ${details}` : ""}. Stok: ${stockSummary(product)}${price}${product.url ? `. ${product.url}` : ""}`;
     }).join("\n");
+    return `${intro}\n${lines}`;
   }
   return "Merhaba! QUAORA ürünleri, fiyat, materyal, renk, bakım, beden önerisi, stok, teslimat, ödeme ve iade konularında doğrulanmış bilgilerle yardımcı olabilirim.";
 }
@@ -502,6 +676,7 @@ module.exports = {
   expectedMeasurementFields,
   extractContextualMeasurements,
   extractMeasurements,
+  extractProductConstraints,
   firestoreValue,
   inferGarmentType,
   isBareMeasurementReply,
@@ -510,6 +685,7 @@ module.exports = {
   parseFirestoreDocument,
   productUrl,
   recommendSize,
+  resolveProductReferences,
   sanitizeAgentOutput,
   safetyIdentifier,
   searchProducts,

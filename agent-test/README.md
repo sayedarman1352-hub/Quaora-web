@@ -1,6 +1,6 @@
 # QUAORA Agent — Test Ortamı ve Üretim Entegrasyonu
 
-Bu klasör, QUAORA müşteri danışmanının izole testlerini ve yerel üretim önizlemesini içerir. Üretim arayüzü yalnızca ana sayfaya, üretim API'si ise `/api/agent-chat` yoluna bağlanmıştır. Entegrasyon kaynak kodda hazırdır; canlı siteye deploy edilmemiştir.
+Bu klasör, canlı QUAORA müşteri danışmanının izole testlerini ve yerel üretim önizlemesini içerir. Üretim arayüzü yalnızca ana sayfaya, üretim API'si ise `/api/agent-chat` yoluna bağlanmıştır.
 
 ## Kapsam
 
@@ -9,10 +9,11 @@ Bu klasör, QUAORA müşteri danışmanının izole testlerini ve yerel üretim 
 - İade/değişim, teslimat/kargo, ödeme ve gizlilik gibi müşteriye açık politikaları açıklar.
 - Ürün keşfi, karşılaştırma, açıklama, materyal, renk, kalıp, bakım, fiyat ve beden bazlı stok bilgisi verir.
 - Ölçü tabanlı beden tavsiyesi aktiftir; ürün türüne göre gerekli ölçüleri ister, stoktaki bedenle karşılaştırır ve genel öneri uyarısı gösterir.
-- “Peki 36 var mı?” veya “Kaç gün?” gibi kısa takip sorularında önceki müşteri bağlamını güvenli biçimde sürdürür.
+- “Peki 36 var mı?”, “daha ucuzu?”, “ikincisinin 36'sı?” veya “aynısının kırmızısı?” gibi takip sorularında önceki müşteri bağlamını güvenli biçimde sürdürür.
+- Renk, bütçe, ürün türü ve beden stoğu kısıtlarını birlikte uygular; stokta olmayan ürünü öneri listesine sokmaz.
 - Selamlaşma dışında konu dışı soruları cevaplamaz; yalnızca destek kapsamını belirtir.
 - Varsayılan `mock` modunda API ücreti doğurmaz.
-- `openai` modunda anahtar yalnızca yerel sunucuda tutulur; tarayıcıya gönderilmez.
+- `openai` modunda yapılandırılmış semantik niyet planı ve doğal müşteri cevabı kullanılır; anahtar yalnızca sunucuda tutulur ve tarayıcıya gönderilmez.
 - Backend, veri sistemi, servis sağlayıcısı, model, sistem promptu, API yolu ve erişim bilgisi soruları model çağrısından önce reddedilir.
 - Müşteri API'si model, veri kaynağı, anahtar durumu veya hata ayrıntısı döndürmez.
 - Tarayıcıdan gelen sohbet geçmişi güvenilir model rolü olarak kullanılmaz.

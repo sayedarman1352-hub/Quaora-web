@@ -88,7 +88,7 @@
         const message = String(rawMessage || '').trim();
         if (!message || pending) return;
 
-        const previousHistory = history.slice(-6);
+        const previousHistory = history.slice(-12);
         pending = true;
         input.value = '';
         resizeInput();
@@ -141,7 +141,7 @@
             container.append(document.createTextNode(text.slice(lastIndex, match.index)));
             const link = document.createElement('a');
             link.href = match[0];
-            link.textContent = 'Ürünü incele';
+            link.textContent = /\/iletisim\.html(?:[?#]|$)/i.test(match[0]) ? 'İletişime geç' : 'Ürünü incele';
             link.target = '_self';
             link.rel = 'noopener';
             container.append(link);
@@ -196,7 +196,7 @@
     }
 
     function trimHistory() {
-        if (history.length > 8) history.splice(0, history.length - 8);
+        if (history.length > 14) history.splice(0, history.length - 14);
     }
 
     function getSessionId() {

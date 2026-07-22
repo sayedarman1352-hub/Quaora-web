@@ -1,4 +1,4 @@
-const CACHE_NAME = "quaora-static-v15";
+const CACHE_NAME = "quaora-static-v16";
 const STATIC_ASSETS = [
   "/quaora-tailwind.css",
   "/quaora-responsive.css?v=20260714-2",
@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   "/quaora-product-links.js?v=20260715-1",
   "/quaora-discounts.js",
   "/quaora-agent.css?v=20260722-1",
-  "/quaora-agent.js?v=20260722-3"
+  "/quaora-agent.js?v=20260722-4"
 ];
 const CACHEABLE_ORIGINS = new Set([
   "https://cdn.tailwindcss.com",
