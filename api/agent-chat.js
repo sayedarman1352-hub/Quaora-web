@@ -42,7 +42,7 @@ function createAgentHandler({ service = createAgentService(), now = () => Date.n
 
       const reply = await service.answer({
         message,
-        history: Array.isArray(body.history) ? body.history.slice(-12) : [],
+        history: Array.isArray(body.history) ? body.history.slice(-20) : [],
         sessionId: String(body.sessionId || "").slice(0, 100)
       });
       return res.status(200).json({ reply });

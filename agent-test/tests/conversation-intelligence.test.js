@@ -153,10 +153,10 @@ test("Belgelenmemiş hediye paketi veya kapıda ödeme politikasını uydurmaz",
     logger: { error() {} }
   });
   const giftReply = await service.answer({ message: "Hediye paketi yapıyor musunuz?" });
-  assert.match(giftReply, /doğrulanmış.*bulamadım/i);
+  assert.match(giftReply, /ilgili maddeyi bulamadım/i);
   assert.doesNotMatch(giftReply, /hasarlı paket|teslim alırken/i);
   const cashReply = await service.answer({ message: "Kapıda ödeme var mı?" });
-  assert.match(cashReply, /doğrulanmış.*bulamadım/i);
+  assert.match(cashReply, /ilgili maddeyi bulamadım/i);
   assert.doesNotMatch(cashReply, /vardır|yapabilirsiniz/i);
 });
 

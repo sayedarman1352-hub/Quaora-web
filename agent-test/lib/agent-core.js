@@ -577,7 +577,7 @@ function classifyIntent(message) {
   if (/(talimatlari unut|onceki talimatlari|system prompt|sistem prompt|developer mesaji|gizli talimat|gizli anahtar|api key|private key|service account|access token|secret|stok uydur|politika uydur)/.test(text)) return "security_sensitive";
   if (/(firebase|firestore|vercel|openai|hangi model|model adi|backend|back end|veritabani|database|api endpoint|api yolu|sunucu yapisi|server yapisi|hosting|host ediliyor|proje id|project id|koleksiyon ad|collection name|teknik mimari|teknik altyapi)/.test(text)) return "security_sensitive";
   if (/(siparisim nerede|siparis durumu|kargom nerede|kargo takip|siparis takip|takip numaram|paketim.*gelmedi|siparisim.*gelmedi)/.test(text)) return "order_status";
-  if (/(karttan iki kere|fazla cekil|mukerrer|odeme sorunu|odeme redded|odeme gecm|indirim kod.*calism|kupon.*calism|sifremi|sifre unuttum|mail gelmedi|giris yapam|uye olam|canli (?:biri|destek)|musteri temsilcisi|yetkiliyle|bir insanla|iletisim kur|magaza|sube|nerede satiliyor)/.test(text)) return "support";
+  if (/(karttan iki kere|fazla cekil|mukerrer|odeme sorunu|odeme redded|odeme gecm|indirim kod.*calism|kupon.*calism|sifremi|sifre unuttum|mail gelmedi|giris yapam|uye olam|canli (?:biri|destek)|musteri temsilcisi|yetkiliyle|bir insanla|iletisim kur|magaza|sube|nerede satiliyor|hala cozulmedi|sorun devam ediyor|kac kere yaz|memnun degilim|ise yaramadi)/.test(text)) return "support";
   const hasMeasurements = /(boyum|kilom|kiloyum|agirligim|gogsum|gogusum|belim|kalcam|vucut olcu|olculerim|(?:boy|kilo|agirlik|gogus|bel|kalca)\s*(?:olcum\s*)?\d)/.test(text);
   const asksPersonalSize = /(hangi beden (?:olur|almaliyim|secmeliyim|giyerim)|hangi bedeni onerirsin|kac bedenim|bedenim (?:ne|nedir)|bedenimi (?:bul|hesapla)|beden (?:oner|oneri|onersi|tavsiye|secimi|uyumu)|bana (?:hangi )?beden|bu bana olur mu|bana olur mu|bana uygun mu|bedenime uygun mu|uzerime olur mu|hangi olcu.*beden|beden.*hangi olcu|normalde\s+(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42|44)\s+giy|(?:xs|s|m|l|xl|2xl|32|34|36|38|40|42|44) (?:mi|mu).*(?:secmeliyim|olur|uyar)|(?:dar|bol|sikar) (?:mi|gelir mi)|bu dar mi gelir|ustum\s*\d|altim\s*\d)/.test(text);
   if (hasMeasurements || asksPersonalSize) return "size";
@@ -590,17 +590,38 @@ function classifyIntent(message) {
   return "out_of_scope";
 }
 
-function buildDeterministicReply({ message, contextMessage = "", products = [], policies = {}, policyExcerpts = [], sizeAdvice = null, environment = "test", intent: intentOverride = "" }) {
+function buildDeterministicReply({ message, contextMessage = "", products = [], policies = {}, policyExcerpts = [], sizeAdvice = null, serviceContext = {}, environment = "test", intent: intentOverride = "" }) {
   const intent = intentOverride || classifyIntent(message);
   if (intent === "security_sensitive") return SECURITY_REFUSAL;
   if (intent === "out_of_scope") return OUT_OF_SCOPE_REPLY;
   if (intent === "order_status") {
+    const lead = serviceContext.repeatedIssue
+      ? "Sipariş sorununun devam etmesi can sıkıcı; seni aynı bilgileri tekrar yazmaya zorlamayayım. "
+      : serviceContext.sentiment === "frustrated"
+        ? "Siparişinin hâlâ ulaşmaması can sıkıcı. "
+        : "Sipariş durumunu kontrol etmek istediğini anladım. ";
     return environment === "production"
-      ? "Sipariş hesabına erişemiyorum. Sipariş durumunu doğrulamak için QUAORA iletişim kanalından sipariş numaranla destek isteyebilirsin."
-      : "Bu test agentı sipariş hesabına erişmiyor. Sipariş durumunu doğrulamak için QUAORA iletişim kanallarından sipariş numaranla destek istemelisin.";
+      ? `${lead}Bu sohbet sipariş hesabına erişemiyor. Durumu güvenli biçimde kontrol ettirmek için resmi iletişim sayfasından ekibe ulaş; sipariş numaranı yalnızca resmi formda paylaş: https://www.quaora.com.tr/iletisim.html`
+      : `${lead}Bu test agentı sipariş hesabına erişmiyor. Durum kontrolü için QUAORA iletişim kanalına yönlendirilmelisin.`;
   }
   if (intent === "support") {
-    return "Bu konu hesap veya işlem kontrolü gerektiriyor. Kişisel ya da ödeme bilgisi paylaşmadan QUAORA iletişim sayfasından destek ekibine ulaşabilirsin: https://www.quaora.com.tr/iletisim.html";
+    const supportReplies = {
+      duplicate_payment: "Aynı ödemenin iki kez görünmesi can sıkıcı. Bu durum işlem kayıtlarından kontrol edilmeli; kişisel ya da ödeme bilgisi (kart numarası, CVV veya ödeme ekranı) paylaşmadan resmi iletişim sayfasından destek ekibine ulaş: https://www.quaora.com.tr/iletisim.html",
+      payment_failed: "Ödemenin tamamlanmaması can sıkıcı. Kart veya hesap bilgilerini buraya yazmadan resmi iletişim sayfasından işlem kontrolü isteyebilirsin: https://www.quaora.com.tr/iletisim.html",
+      discount_code: "İndirim kodunun çalışmaması için hesabındaki işlem ve kod koşulları kontrol edilmeli. Kişisel bilgi paylaşmadan destek ekibine ulaş: https://www.quaora.com.tr/iletisim.html",
+      account_access: "Hesabına erişemediğini anladım. Şifre veya doğrulama kodu paylaşmadan resmi iletişim sayfasından hesap desteği iste: https://www.quaora.com.tr/iletisim.html",
+      human_support: "Elbette, seni insan desteğine yönlendireyim. Kişisel ya da ödeme bilgisi paylaşmadan QUAORA ekibine buradan ulaşabilirsin: https://www.quaora.com.tr/iletisim.html"
+    };
+    const fallback = serviceContext.repeatedIssue || serviceContext.sentiment === "frustrated"
+      ? "Sorunun devam ettiğini anladım; seni aynı adımlarla oyalamayayım. Kişisel ya da ödeme bilgisi paylaşmadan destek ekibine ulaş: https://www.quaora.com.tr/iletisim.html"
+      : "Bu konu hesap veya işlem kontrolü gerektiriyor. Kişisel ya da ödeme bilgisi paylaşmadan QUAORA iletişim sayfasından destek ekibine ulaşabilirsin: https://www.quaora.com.tr/iletisim.html";
+    return supportReplies[serviceContext.issue] || fallback;
+  }
+  if (intent === "greeting") {
+    const text = normalizeText(message);
+    if (/(tesekkur|sag ol)/.test(text)) return "Rica ederim. İstersen kaldığımız yerden ürün, beden, stok, teslimat veya iade konusunda devam edebiliriz.";
+    if (/(ne yapabilirsin|yardim)/.test(text)) return "Ürün seçimi ve karşılaştırması, beden önerisi, canlı stok, teslimat, ödeme ve iade konularında yardımcı olabilirim. Şu an çözmek istediğin konu nedir?";
+    return "Merhaba! Sana ürün seçimi, beden, stok, teslimat, ödeme veya iade konusunda yardımcı olabilirim. Ne arıyorsun?";
   }
   if (intent === "size" && sizeAdvice) {
     const stockText = products[0] ? ` ${products[0].name} için görünen stok: ${stockSummary(products[0])}.` : "";
@@ -615,8 +636,8 @@ function buildDeterministicReply({ message, contextMessage = "", products = [], 
   }
   if (intent === "policy") {
     const excerpts = policyExcerpts.length ? policyExcerpts.slice(0, 2) : selectPolicyExcerpts(policies, contextMessage || message, 2);
-    if (!excerpts.length) return "Bu konu için doğrulanmış bir QUAORA politika maddesi bulamadım; müşteri temsilcisine yönlendirmem gerekir.";
-    return `Doğrulanmış QUAORA politikasına göre: ${excerpts.map(item => item.text).join(" ")}`;
+    if (!excerpts.length) return "Bu konuda net olmayan bir cevap vermek istemem. Yayımlanmış QUAORA politikalarında ilgili maddeyi bulamadım; destek ekibinden teyit alabilirsin: https://www.quaora.com.tr/iletisim.html";
+    return `QUAORA politikasına göre: ${excerpts.map(item => item.text).join(" ")}`;
   }
   if (intent === "product") {
     const constraints = mergeProductConstraints(extractProductConstraints(contextMessage || message), extractProductConstraints(message));
@@ -632,9 +653,12 @@ function buildDeterministicReply({ message, contextMessage = "", products = [], 
         constraints.maxPrice ? `${constraints.maxPrice.toLocaleString("tr-TR")} TL altı` : "",
         constraints.requestedSize ? `${constraints.requestedSize} beden` : ""
       ].filter(Boolean).join(", ");
-      return details
+      const noMatchReply = details
         ? `${details} kriterlerinin tümüne uyan, stokta doğrulanmış bir ürün bulamadım. Renk, bütçe veya ürün türünden hangisini esnetmek istersin?`
         : "Ne aradığını netleştirelim: ürün türü, renk, yaklaşık bütçe ve gerekiyorsa bedenini yazarsan uygun seçenekleri filtreleyebilirim.";
+      return serviceContext.sentiment === "frustrated" || serviceContext.repeatedIssue
+        ? `Seni aynı seçeneklerle tekrar uğraştırmayayım. ${noMatchReply}`
+        : noMatchReply;
     }
     const asksOnlyStock = constraints.wantsStock && !/(ozellik|materyal|malzeme|kumas|kalip|renk|bakim|aciklama|fiyat|aski|cup|astar|destek|takim|ic goster)/.test(normalizeText(message));
     if (asksOnlyStock) {

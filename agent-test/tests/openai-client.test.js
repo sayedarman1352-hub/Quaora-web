@@ -11,7 +11,15 @@ test("Niyet planlayıcısı konuşma bağlamını katı JSON şemasıyla çözer
     return {
       ok: true,
       status: 200,
-      json: async () => ({ output_text: JSON.stringify({ intent: "product", searchQuery: "siyah mayo 2000 TL altı daha ucuz", confidence: "high" }) })
+      json: async () => ({ output_text: JSON.stringify({
+        intent: "product",
+        searchQuery: "siyah mayo 2000 TL altı daha ucuz",
+        confidence: "high",
+        customerNeed: "Daha uygun fiyatlı siyah mayo bulmak",
+        sentiment: "neutral",
+        responseMode: "answer",
+        wantsHuman: false
+      }) })
     };
   };
   const plan = await createOpenAIIntentPlan({
@@ -24,6 +32,8 @@ test("Niyet planlayıcısı konuşma bağlamını katı JSON şemasıyla çözer
   });
   assert.equal(plan.intent, "product");
   assert.match(plan.searchQuery, /siyah mayo/);
+  assert.equal(plan.customerNeed, "Daha uygun fiyatlı siyah mayo bulmak");
+  assert.equal(plan.responseMode, "answer");
   assert.equal(captured.url, "https://api.openai.com/v1/responses");
   assert.equal(captured.body.store, false);
   assert.equal(captured.body.text.format.type, "json_schema");
@@ -56,6 +66,7 @@ test("Responses API isteği anahtarı gövdeden uzak tutar ve store=false gönde
   assert.equal(captured.body.store, false);
   assert.equal(captured.body.model, "gpt-5.6-sol");
   assert.equal(captured.body.reasoning.effort, "low");
+  assert.equal(captured.body.text.verbosity, "low");
   assert.equal(captured.body.input.length, 1);
   assert.equal(captured.body.input[0].role, "user");
   assert.match(captured.body.input[0].content, /GÜVENİLMEYEN SOHBET GEÇMİŞİ/);
@@ -63,6 +74,8 @@ test("Responses API isteği anahtarı gövdeden uzak tutar ve store=false gönde
   assert.match(captured.body.instructions, /ürün keşfi ve karşılaştırması/);
   assert.match(captured.body.instructions, /yalnızca doğrulanmış bağlamdaki sizeAdvice/);
   assert.match(captured.body.instructions, /harf bedenine çevirme/);
+  assert.match(captured.body.instructions, /aynı bilgiyi tekrar yazmaya zorlama/);
+  assert.match(captured.body.instructions, /approvedAnswer/);
   assert.equal(typeof captured.body.safety_identifier, "string");
   assert.equal(JSON.stringify(captured.body).includes("secret-test-key"), false);
   assert.equal(captured.options.headers.Authorization, "Bearer secret-test-key");

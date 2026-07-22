@@ -51,7 +51,7 @@
 
     const sessionId = getSessionId();
 
-    appendMessage('assistant', 'Merhaba! Ürün seçimi, fiyat, materyal, renk, bakım, beden önerisi, güncel stok, teslimat, ödeme ve iade konularında yardımcı olabilirim.');
+    appendMessage('assistant', 'Merhaba, ben Quaora destek. Ürün seçmekten beden ve stok kontrolüne; teslimat, ödeme ve iade sorunlarına kadar yardımcı olabilirim. Nereden başlayalım?');
     appendQuickActions();
 
     launcher.addEventListener('click', () => setOpen(!panel.classList.contains('is-open')));
@@ -88,7 +88,7 @@
         const message = String(rawMessage || '').trim();
         if (!message || pending) return;
 
-        const previousHistory = history.slice(-12);
+        const previousHistory = history.slice(-20);
         pending = true;
         input.value = '';
         resizeInput();
@@ -157,7 +157,8 @@
             ['Bedenimi bul', 'Bedenimi bulmama yardım eder misin? Ölçülerimi hangi sırayla yazmalıyım?'],
             ['Ürün öner', 'Mayo ve bikini seçenekleri hakkında ürün önerir misin?'],
             ['Stok sorgula', 'Bir ürünün beden bazlı stok durumunu öğrenmek istiyorum.'],
-            ['İade ve teslimat', 'İade, değişim ve teslimat koşulları nelerdir?']
+            ['İade ve teslimat', 'İade, değişim ve teslimat koşulları nelerdir?'],
+            ['Destek al', 'Sipariş, ödeme veya hesabımla ilgili bir sorun için canlı destek istiyorum.']
         ];
         for (const [label, message] of actions) {
             const button = document.createElement('button');
@@ -196,7 +197,7 @@
     }
 
     function trimHistory() {
-        if (history.length > 14) history.splice(0, history.length - 14);
+        if (history.length > 24) history.splice(0, history.length - 24);
     }
 
     function getSessionId() {

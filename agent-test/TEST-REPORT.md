@@ -5,14 +5,14 @@ Ortam: İzole test + yerel üretim önizlemesi
 
 ## Sonuç özeti
 
-- Otomatik testler: **42/42 geçti**
+- Otomatik testler: **73/73 geçti**
 - JavaScript sözdizimi kontrolleri: **geçti**
 - `git diff --check`: **geçti**
 - Gerçek Firebase salt-okunur smoke testi: **geçti**
 - Üretim arayüzü tarayıcı etkileşim testleri: **geçti**
 - Gerçek OpenAI model çağrısı: **çalıştırılmadı — `OPENAI_API_KEY` mevcut değil**
 - Ana sayfa ve üretim API kaynak entegrasyonu: **tamamlandı**
-- Canlı site deployu: **yapılmadı**
+- Canlı site deployu: **önceki sürümde tamamlandı; bu sürüm yayın öncesi yeniden doğrulanacak**
 
 ## Doğrulanan senaryolar
 
@@ -50,6 +50,12 @@ Ortam: İzole test + yerel üretim önizlemesi
 32. Ürün bağlamındaki beden sorusunun ölçü önerisini stoktaki bedenlerle birlikte yanıtlaması.
 33. Kısa ürün ve politika takip sorularında önceki müşteri bağlamının sürdürülmesi.
 34. Takip bağlamının teknik keşif filtresini veya konu dışı sınırı aşamaması.
+35. Tekrarlanan ve çözülmeyen müşteri sorununun önceki sipariş/ürün bağlamına bağlanması.
+36. Müşteri duygusu, insan desteği isteği ve çözüm hareketinin yapılandırılmış semantik planla çıkarılması.
+37. Ödeme, hesap ve indirim kodu sorunlarının konuya özel, güvenli temsilci yanıtlarıyla ele alınması.
+38. Modelin resmi yönlendirmeyi atması, uydurma bağlantı vermesi veya yapılmamış bir işlem sözü vermesi halinde güvenli sunucu yanıtına dönülmesi.
+39. Anahtar kelimeye sığmayan alışveriş niyetlerinin semantik olarak ürün desteğine alınması.
+40. Son 20 sohbet turunun bağlam olarak korunması ve tarayıcı rol enjeksiyonuna karşı güvenilmeyen metin olarak işlenmesi.
 
 ## Canlı veri smoke testi
 

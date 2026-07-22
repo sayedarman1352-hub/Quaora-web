@@ -11,12 +11,19 @@ const {
   recommendSize,
   resolveProductReferences,
   sanitizeAgentOutput,
+  SECURITY_REFUSAL,
   searchProducts,
   selectPolicyExcerpts
 } = require("./lib/agent-core");
 const { createCatalogClient } = require("./lib/catalog-client");
 const { createOpenAIReply, DEFAULT_MODEL } = require("./lib/openai-client");
-const { buildConversationQuery, resolveConversationIntent, sanitizeHistory } = require("../lib/quaora-agent-service");
+const {
+  buildConversationQuery,
+  buildCustomerServiceContext,
+  preservesCustomerServiceContract,
+  resolveConversationIntent,
+  sanitizeHistory
+} = require("../lib/quaora-agent-service");
 
 loadLocalEnv(path.join(__dirname, ".env.agent-test.local"));
 
@@ -55,11 +62,31 @@ function createServer(options = {}) {
         const history = sanitizeHistory(body.history);
         const intent = resolveConversationIntent(message, history);
         const contextMessage = buildConversationQuery(message, history, intent);
-        if (["security_sensitive", "out_of_scope", "greeting", "order_status", "support"].includes(intent)) {
+        if (["security_sensitive", "out_of_scope"].includes(intent)) {
           return sendJson(res, 200, {
             reply: buildDeterministicReply({ message, intent }),
             test: true
           });
+        }
+        const serviceContext = buildCustomerServiceContext(message, history, intent);
+        if (["greeting", "order_status", "support"].includes(intent)) {
+          const approvedAnswer = buildDeterministicReply({ message, intent, serviceContext });
+          if (mode === "openai") {
+            const result = await openAIReply({
+              message,
+              history,
+              serviceContext,
+              approvedAnswer,
+              sessionId: body.sessionId,
+              model
+            });
+            const modelReply = sanitizeAgentOutput(result.text);
+            const reply = modelReply === SECURITY_REFUSAL || preservesCustomerServiceContract(modelReply, approvedAnswer)
+              ? modelReply
+              : approvedAnswer;
+            return sendJson(res, 200, { reply, test: true });
+          }
+          return sendJson(res, 200, { reply: approvedAnswer, test: true });
         }
         const [catalog, policyData] = await Promise.all([catalogClient.getCatalog(), catalogClient.getPolicies()]);
         const referencedProducts = resolveProductReferences(catalog.products, message, history);
@@ -81,6 +108,17 @@ function createServer(options = {}) {
             })
           : null;
 
+        const approvedAnswer = buildDeterministicReply({
+          message,
+          contextMessage,
+          products,
+          policies: policyData.policies,
+          policyExcerpts,
+          sizeAdvice,
+          serviceContext,
+          intent
+        });
+
         if (mode === "openai" && intent !== "size") {
           const result = await openAIReply({
             message,
@@ -88,26 +126,22 @@ function createServer(options = {}) {
             products,
             policyExcerpts,
             sizeAdvice,
+            serviceContext,
+            approvedAnswer,
             sessionId: body.sessionId,
             model
           });
+          const modelReply = sanitizeAgentOutput(result.text);
           return sendJson(res, 200, {
-            reply: sanitizeAgentOutput(result.text),
+            reply: modelReply === SECURITY_REFUSAL || preservesCustomerServiceContract(modelReply, approvedAnswer)
+              ? modelReply
+              : sanitizeAgentOutput(approvedAnswer),
             test: true
           });
         }
 
-        const reply = buildDeterministicReply({
-          message,
-          contextMessage,
-          products,
-          policies: policyData.policies,
-          policyExcerpts,
-          sizeAdvice,
-          intent
-        });
         return sendJson(res, 200, {
-          reply: sanitizeAgentOutput(reply),
+          reply: sanitizeAgentOutput(approvedAnswer),
           test: true
         });
       }
